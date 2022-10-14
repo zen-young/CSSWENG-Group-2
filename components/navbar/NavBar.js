@@ -11,10 +11,9 @@ import {
   Box,
   Autocomplete,
 } from "@mantine/core";
-import { IconChevronDown, IconFileText, IconSearch } from "@tabler/icons";
+import { IconFileText, IconSearch } from "@tabler/icons";
 import Image from "next/image";
 
-// TODO: Override theming to fit design
 const useStyles = createStyles((theme) => ({
   link: {
     display: "flex",
@@ -58,9 +57,19 @@ const useStyles = createStyles((theme) => ({
   },
 
   search: {
+    width: "404px",
+    height: "32px",
+    boxShadow: "0px 3px 10px rgba(0, 0, 0, 0.25)",
+    borderRadius: "5px",
     [theme.fn.smallerThan("xs")]: {
       display: "none",
     },
+  },
+
+  header: {
+    boxShadow: "0px 4px 5px rgba(0, 0, 0, 0.25)",
+    borderBottom: "1px solid rgba(0, 0, 0, 0.3)",
+    background: "#FFFFFF",
   },
 }));
 
@@ -135,9 +144,11 @@ export default function NavBar() {
       <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
         <SimpleGrid cols={1} spacing={0}>
           {category.items.map((item) => (
-            <UnstyledButton className={classes.subLink} key={item}>
-              {item}
-            </UnstyledButton>
+            <a href={`/product/id/${item}`} key={item}>
+              <UnstyledButton className={classes.subLink}>
+                {item}
+              </UnstyledButton>
+            </a>
           ))}
         </SimpleGrid>
       </HoverCard.Dropdown>
@@ -145,7 +156,7 @@ export default function NavBar() {
   ));
 
   return (
-    <Box pb={120}>
+    <Box sx={classes.header}>
       <Header height={92} px="md">
         <Group position="apart" sx={{ height: "100%" }}>
           <Group position="left">
@@ -157,7 +168,10 @@ export default function NavBar() {
                 alt="company logo"
               />
             </Anchor>
-            <Group sx={{ height: "100%" }} spacing={0}>
+            <Group
+              sx={{ height: "60px", borderLeft: "1px solid #000000" }}
+              spacing={0}
+            >
               <HoverCard width={200} position="bottom" shadow="md" withinPortal>
                 <HoverCard.Target>
                   <a href="#" className={classes.link}>
@@ -167,9 +181,11 @@ export default function NavBar() {
                           PRODUCTS
                         </Text>
                       </Box>
-                      <IconChevronDown
-                        size={16}
-                        color={theme.fn.primaryColor()}
+                      <Image
+                        src="/../public/assets/material-symbols_arrow-drop-down-rounded.png"
+                        width="33"
+                        height="33"
+                        alt="down arrow"
                       />
                     </Center>
                   </a>
@@ -192,10 +208,11 @@ export default function NavBar() {
               transition="pop-top-left"
               transitionDuration={80}
               transitionTimingFunction="ease"
+              shadow="md"
               data={products}
             />
 
-            <a href="https://google.com" className={classes.link}>
+            <a href="#" className={classes.link}>
               <Center inline>
                 <IconFileText size="46px" color={theme.fn.primaryColor()} />
                 <Box component="span" mr={5}>
