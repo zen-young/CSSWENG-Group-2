@@ -66,6 +66,7 @@ npm run lint
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs/installation)
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Mantine](https://mantine.dev/pages/getting-started/) - a React component library.
 
 ### Backend
 
