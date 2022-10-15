@@ -2,19 +2,12 @@ import {
   createStyles,
   Anchor,
   Group,
-  Button,
   Stack,
   Text,
   Center,
   Box,
-  UnstyledButton,
 } from "@mantine/core";
-import {
-  IconArrowRightBar,
-  IconBrandFacebook,
-  IconFileText,
-} from "@tabler/icons";
-import Link from "next/link";
+import { IconBrandFacebook, IconFileText } from "@tabler/icons";
 
 const useStyles = createStyles((theme) => ({
   footer: {
