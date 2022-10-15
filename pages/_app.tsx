@@ -2,6 +2,7 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import { MantineProvider } from "@mantine/core";
 import NavBar from "../components/navbar/NavBar";
+import Footer from "../components/footer/Footer";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -28,6 +29,8 @@ export default function App(props: AppProps) {
       >
         <Component {...pageProps} />
       </MantineProvider>
+
+      <Footer />
     </>
   );
 }
