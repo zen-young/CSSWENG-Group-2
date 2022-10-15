@@ -7,6 +7,7 @@ import {
   Text,
   Center,
   Box,
+  UnstyledButton,
 } from "@mantine/core";
 import {
   IconArrowRightBar,
@@ -26,11 +27,34 @@ const useStyles = createStyles((theme) => ({
 
   inner: {
     height: "193px",
-    paddingTop: "20px",
+    paddingTop: "24px",
   },
 
-  link: {
+  links: {
+    marginLeft: "10px",
+    marginRight: "10px",
     textDecoration: "none",
+    fontFamily: "Inter",
+    fontStyle: "normal",
+    fontWeight: "400",
+    fontSize: "20px",
+    color: "#FFFFFF",
+  },
+
+  copyright: {
+    fontFamily: "Inter",
+    fontStyle: "normal",
+    fontWeight: "400",
+    fontSize: "20px",
+    color: "#C1C1C1",
+  },
+
+  backtotop: {
+    fontFamily: "Inter",
+    fontStyle: "normal",
+    fontWeight: "400",
+    fontSize: "20px",
+    color: "#FFFFFF",
   },
 }));
 
@@ -41,37 +65,52 @@ export default function Footer() {
     <div className={classes.footer}>
       <Stack align="center" sx={classes.inner}>
         <Anchor
+          className={classes.backtotop}
           onClick={() => document.body.scrollIntoView({ behavior: "smooth" })}
         >
           Back to Top
         </Anchor>
         <Group>
-          <Link href="/about">About Us</Link>
-
-          <Link href="/contact">Contact Us</Link>
-
-          <a href="#" className={classes.link}>
+          <Anchor href="/about" className={classes.links}>
             <Center inline>
-              <IconFileText size="46px" />
               <Box component="span">
-                <Text size="20px">Ordering Form</Text>
+                <Text>About Us</Text>
               </Box>
             </Center>
-          </a>
+          </Anchor>
 
-          <a
+          <Anchor href="/contact" className={classes.links}>
+            <Center inline>
+              <Box component="span">
+                <Text>Contact Us</Text>
+              </Box>
+            </Center>
+          </Anchor>
+
+          <Anchor href="/order" className={classes.links}>
+            <Center inline>
+              <IconFileText size="46px" color="#6f32be" />
+              <Box component="span">
+                <Text>Ordering Form</Text>
+              </Box>
+            </Center>
+          </Anchor>
+
+          <Anchor
             href="https://www.facebook.com/upscaleprintingsolutions"
-            className={classes.link}
+            className={classes.links}
           >
             <Center inline>
-              <IconBrandFacebook size="46px" />
+              <IconBrandFacebook size="46px" color="#00abfb" />
               <Box component="span">
-                <Text size="20px">Facebook Page</Text>
+                <Text>Facebook Page</Text>
               </Box>
             </Center>
-          </a>
+          </Anchor>
         </Group>
-        <Text>(c) 2022 Upscale Printing Solutions...</Text>
+        <Text className={classes.copyright}>
+          (c) 2022 Upscale Printing Solutions...
+        </Text>
       </Stack>
     </div>
   );
