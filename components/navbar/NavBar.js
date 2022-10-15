@@ -158,7 +158,7 @@ export default function NavBar() {
   return (
     <Box sx={classes.header}>
       <Header height={92} px="md">
-        <Group position="apart" sx={{ height: "100%" }}>
+        <Group noWrap position="apart" sx={{ height: "100%" }}>
           <Group position="left">
             <Anchor href="/">
               <Image
