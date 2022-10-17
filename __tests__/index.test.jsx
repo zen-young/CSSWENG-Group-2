@@ -1,15 +1,23 @@
-import { render, screen } from "@testing-library/react";
-import Home from "../pages/index";
+import { render, screen, fireEvent } from "@testing-library/react";
+
 import "@testing-library/jest-dom";
+import Footer from "../components/footer/Footer";
 
-describe("Home", () => {
-  it("renders a heading", () => {
-    render(<Home />);
 
-    const heading = screen.getByRole("heading", {
-      name: /welcome to next\.js!/i,
-    });
+describe("Footer", () => {
+  it('when "back to top" in footer is clicked, page scrolls up', () => {
+    render(<Footer />);
 
-    expect(heading).toBeInTheDocument();
+    const scrollIntoViewMock = jest.fn();
+    HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+    
+    //simulates clicking on "Back to top"
+    fireEvent.click(screen.getByText("Back to Top"));
+
+    expect(scrollIntoViewMock).toBeCalledWith({ behavior: 'smooth' });
+    
+
   });
+
+  
 });
