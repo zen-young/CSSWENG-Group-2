@@ -2,14 +2,14 @@ import Image from "next/image";
 import React, { useState } from "react";
 import ChevronDown from "../../public/assets/chevronDown.png";
 
-const LabelSection = ({ sizes, quantities }) => {
+const LabelSection = ({ productName, sizes, quantities }) => {
   const [selectedSize, setSelectedSize] = useState(0);
   const [selectedQuantity, setSelectedQuantity] = useState(0);
   const [openSizeDropdown, setOpenSizeDropdown] = useState(false);
   const [openQuantityDropdown, setOpenQuantityDropdown] = useState(false);
   return (
     <div className="flex flex-col">
-      <span className="text-[32px] font-bold">Stickers and Labels</span>
+      <span className="text-[32px] font-bold">{productName}</span>
       <div className="border-b-[1px] border-b-black opacity-30 w-full mt-4" />
 
       <div className="mt-[19px] relative">

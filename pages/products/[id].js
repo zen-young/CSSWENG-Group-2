@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import ImageSection from "../../components/ImageSection/ImageSection";
 import LabelSection from "../../components/LabelSection/LabelSection";
 
@@ -16,6 +17,9 @@ export default function Product() {
     "500",
     "1000",
   ]);
+  const router = useRouter();
+  const { id } = router.query;
+
   return (
     <div className="flex flex-col-reverse sm:flex-row w-full">
       <div className="basis-1/2 p-8">
@@ -26,7 +30,7 @@ export default function Product() {
         />
       </div>
       <div className="basis-1/2 p-8">
-        <LabelSection sizes={sizes} quantities={quantites} />
+        <LabelSection productName={id} sizes={sizes} quantities={quantites} />
       </div>
     </div>
   );
