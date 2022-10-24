@@ -42,11 +42,12 @@ const ImageSection = ({ sizes, content, paperContent }) => {
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-center">
-        <div className="w-full h-[388px] object-contain">
+        <div>
           <Image
             src={images[selectedImage].src}
+            width={640}
+            height={388}
             alt="selectedImage"
-            className="w-full h-full"
           />
         </div>
       </div>
@@ -63,6 +64,8 @@ const ImageSection = ({ sizes, content, paperContent }) => {
             <Image
               src={image.src}
               alt="images"
+              width={96}
+              height={96}
               className={`hover:cursor-pointer w-full h-[80%] ${
                 selectedImage === index ? "opacity-100" : "opacity-70"
               }`}
