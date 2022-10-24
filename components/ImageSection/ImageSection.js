@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import newImage from "../../public/assets/newImage.png";
-import Musk1 from "../../public/assets/musk1.jpeg";
-import Musk2 from "../../public/assets/musk2.jpeg";
-import Musk3 from "../../public/assets/musk3.jpeg";
+import Image1 from "../../public/assets/image1.png";
+import Image2 from "../../public/assets/image2.png";
+import Image3 from "../../public/assets/image3.png";
+import Image4 from "../../public/assets/image4.png";
 import ChevronLeft from "../../public/assets/chevronLeft.svg";
 import ChevronRight from "../../public/assets/chevronRight.svg";
 import Image from "next/image";
@@ -10,16 +10,16 @@ import Image from "next/image";
 const ImageSection = ({ sizes, content, paperContent }) => {
   const [images, setImages] = useState([
     {
-      src: newImage,
+      src: Image1,
     },
     {
-      src: Musk1,
+      src: Image2,
     },
     {
-      src: Musk2,
+      src: Image3,
     },
     {
-      src: Musk3,
+      src: Image4,
     },
   ]);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -75,7 +75,7 @@ const ImageSection = ({ sizes, content, paperContent }) => {
         ))}
         <Image
           src={ChevronRight}
-          alt="rigth"
+          alt="right"
           className="mb-4 hover:cursor-pointer"
           onClick={nextImage}
         />
