@@ -2,11 +2,12 @@ import Image from "next/image";
 import React, { useState } from "react";
 import ChevronDown from "../../public/assets/chevronDown.png";
 
-const LabelSection = ({ productName, sizes, quantities }) => {
+const LabelSection = ({ productName, sizes, quantities, prices }) => {
   const [selectedSize, setSelectedSize] = useState(0);
   const [selectedQuantity, setSelectedQuantity] = useState(0);
   const [openSizeDropdown, setOpenSizeDropdown] = useState(false);
   const [openQuantityDropdown, setOpenQuantityDropdown] = useState(false);
+
   return (
     <div className="flex flex-col">
       <span className="text-[32px] font-bold">{productName}</span>
@@ -81,10 +82,10 @@ const LabelSection = ({ productName, sizes, quantities }) => {
 
       <div className="mt-[33px] flex items-center space-x-4">
         <span className="text-[32px] font-normal">Total: </span>
-        <span className="text-[32px] font-bold">400</span>
+        <span className="text-[32px] font-bold">₱{(quantities[selectedQuantity] * prices[selectedSize]).toFixed(2)}</span>
       </div>
 
-      <div className="flex mt-[31px] items-center justify-center w-full">
+      <div className="flex mt-[31px] items-center justify-center w-full">  
         <button className="bg-black text-white px-6 py-2 text-[24px] font-bold uppercase rounded-md">
           click here to order-ordering from
         </button>

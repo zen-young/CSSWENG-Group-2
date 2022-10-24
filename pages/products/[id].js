@@ -6,6 +6,7 @@ import LabelSection from "../../components/LabelSection/LabelSection";
 export default function Product() {
   const [content, setContent] = useState("Personalized Stickers with Diecut");
   const [sizes, setSizes] = useState(["2.4x1.25", "2.4x2", "3.5x2"]);
+  const [prices, setPrices] = useState([40, 60, 80]);
   const [paperContent, setPaperContent] = useState(
     "Glossy or matte waterproof and scratch proof vinyl stickers"
   );
@@ -30,7 +31,7 @@ export default function Product() {
         />
       </div>
       <div className="basis-1/2 p-8">
-        <LabelSection productName={id} sizes={sizes} quantities={quantites} />
+        <LabelSection productName={id} sizes={sizes} quantities={quantites} prices={prices}/>
       </div>
     </div>
   );
