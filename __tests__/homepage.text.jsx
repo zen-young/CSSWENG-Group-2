@@ -34,6 +34,33 @@ describe("Homepage", () => {
           
       
     });
+
+    it('carousel displays images correctly', () => {
+        render(<Carousel_Comp />);
+
+        const images = [
+            "/assets/sample_1.jpg",
+            "/assets/sample_2.jpg",
+            "/assets/sample_3.jpg",
+        ];
+
+        const image1 = screen.getByAltText('Product 1')
+
+        expect(image1).toHaveProperty('layout', 'fill')
+
+
+
+
+
+        
+        
+      
+       
+          
+      
+    });
+
+
       
         
 });
