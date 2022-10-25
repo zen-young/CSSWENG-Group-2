@@ -10,13 +10,14 @@ function Results_Page() {
     const text = "Notepad"
     const maxCols = 3
 
-    const card1 = (
+    const card = (
         <Card
             component="a"
             href="/"
             shadow={"rgba(0, 0, 0, 0.24) 0px 5px 3px"}
             p="lg"
             withBorder
+            className="hover:scale-[1.01]"
         >
             <Card.Section>
                 <Image
@@ -29,12 +30,19 @@ function Results_Page() {
             </Card.Section>
 
             <Group position="center" mt={20}>
-                <Text align="center" weight={"700"} size="xl">
+                <Text
+                    align="center"
+                    weight={"700"}
+                    size="xl"
+                    className="hover:underline"
+                >
                     {text}
                 </Text>
             </Group>
         </Card>
     );
+
+    let resultsList = [card, card, card]
 
     return (
         <>
@@ -54,9 +62,7 @@ function Results_Page() {
                     spacing={100}
                     sx={{ maxWidth: "100%" }}
                 >
-                    {card1}
-                    {card1}
-                    {card1}
+                    {resultsList}
                 </SimpleGrid>
             </div>
 

@@ -17,9 +17,9 @@ const useStyles = createStyles((_theme, _params, getRef) => ({
         backgroundColor: "rgba( 0, 0, 0, 0)",
         borderColor: "rgba( 0, 0, 0, 0)",
         borderRadius: 10,
-        height: 100,
+        // height: 100,
         "&:hover": {
-            backgroundColor: "rgba( 0, 0, 0, 0.20)",
+            backgroundColor: "rgba( 0, 0, 0, 0.50)",
         },
     },
 
@@ -49,6 +49,7 @@ function Carousel_comp() {
                     src={item}
                     layout="fill"
                     objectFit="cover"
+                    
                 />
             </Carousel.Slide>
         );
@@ -59,7 +60,6 @@ function Carousel_comp() {
     return (
         <>
             <Carousel
-                // sx={{ flex: 1 }}
                 slideSize="100%"
                 height={800}
                 
