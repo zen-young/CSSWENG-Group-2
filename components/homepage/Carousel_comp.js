@@ -57,7 +57,7 @@ function Carousel_comp() {
     const {classes} = useStyles();
 
     return (
-        <div className="flex h-[1000px] w-full border border-black bg-black">
+        <>
             <Carousel
                 // sx={{ flex: 1 }}
                 slideSize="100%"
@@ -77,7 +77,7 @@ function Carousel_comp() {
             >
                 {slideList}
             </Carousel>
-        </div>
+        </>
     );
 }
 
