@@ -5,7 +5,7 @@ function H_Divider() {
         <div
             style={{
                 backgroundColor: "#a09a9a7d",
-                width: "85%",
+                width: "90%",
                 height: 1.3,
                 marginTop: 10,
                 marginBottom: 40,

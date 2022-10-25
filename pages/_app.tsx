@@ -3,6 +3,7 @@ import Head from "next/head";
 import { MantineProvider } from "@mantine/core";
 import NavBar from "../components/navbar/NavBar";
 import Footer from "../components/footer/Footer";
+import "../styles/globals.css";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;

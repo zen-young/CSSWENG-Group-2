@@ -1,11 +1,9 @@
 import React from 'react';
 
-// import Image from 'next/image';
 import H_Divider from './H_Divider';
 
 import { Carousel } from "@mantine/carousel";
-import { Text, Container, Group, Card, Image, SimpleGrid} from '@mantine/core';
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons";
+import { Text, Container, Group, Card, Image, SimpleGrid, createStyles} from '@mantine/core';
 
 function Featured_Products() {
 
@@ -27,20 +25,22 @@ function Featured_Products() {
         "Product Name 6",
     ];
 
-    let cardList = productPics.map((item, index) => {
-        let alt = 'Featured Product ' + index
-        return (
+    let cardList = []
+    for(let i = 0; i < productPics.length; i++){
+        let alt = "Featured Product " + i;
+        cardList.push(
             <Card
                 component="a"
                 href="/"
                 shadow={"rgba(0, 0, 0, 0.24) 0px 5px 3px"}
                 p="lg"
                 withBorder
+                className='hover:scale-[1.01]'
             >
                 <Card.Section>
                     <Image
                         alt={alt}
-                        src={"/assets/" + item}
+                        src={"/assets/" + productPics[i]}
                         height={250}
                         layout="fill"
                         objectFit="cover"
@@ -48,11 +48,35 @@ function Featured_Products() {
                 </Card.Section>
 
                 <Group position="center" mt={20}>
-                    <Text align="center" weight={'700'} size="xl">{productNames[index]}</Text>
+                    <Text 
+                        align="center" 
+                        weight={"700"} size="xl" 
+                        className='hover:underline'
+
+                    >
+                        {productNames[i]}
+                    </Text>
                 </Group>
             </Card>
-        )
-    });
+        );
+    }
+
+    const carouselPages = []
+    for(let i = 0; i < 3; i++){
+        carouselPages.push(
+            <Carousel.Slide>
+                <SimpleGrid
+                    cols={3}
+                    verticalSpacing={50}
+                    spacing={50}
+                    sx={{ maxWidth: "100%" }}
+                >
+                    {cardList}
+                </SimpleGrid>
+            </Carousel.Slide>
+        );
+    }
+
 
     return (
         <Container size="lg" style={{ marginTop: 130 }}>
@@ -63,41 +87,32 @@ function Featured_Products() {
             <H_Divider />
 
             <Carousel
-                // sx={{ flex: 1 }}
                 slideSize="100%"
                 height={800}
                 slideGap="sm"
-                controlsOffset="xs"
-                nextControlIcon={<IconChevronRight size={50} color="black" />}
-                previousControlIcon={
-                    <IconChevronLeft size={50} color="black" />
-                }
-                controlSize={50}
-                withIndicators
+                withControls={false}
+                withIndicators={true}
                 loop
-                // classNames={classes}
-            >
-                <Carousel.Slide>
-                    <SimpleGrid
-                        cols={3}
-                        verticalSpacing={50}
-                        spacing={50}
-                        sx={{ maxWidth: "100%" }}
-                    >
-                        {cardList}
-                    </SimpleGrid>
-                </Carousel.Slide>
 
-                <Carousel.Slide>
-                    <SimpleGrid
-                        cols={3}
-                        verticalSpacing={50}
-                        spacing={50}
-                        sx={{ maxWidth: "100%" }}
-                    >
-                        {cardList}
-                    </SimpleGrid>
-                </Carousel.Slide>
+                styles={{
+                    indicators:{
+                        Button: {
+                            backgroundColor: 'black'
+                        }
+                    },
+
+                    indicator: {
+                        width: 12,
+                        height: 4,
+                        transition: "width 250ms ease",
+
+                        "&[data-active]": {
+                            width: 40,
+                        },
+                    },
+                }}
+            >
+                {carouselPages}
             </Carousel>
         </Container>
     );
