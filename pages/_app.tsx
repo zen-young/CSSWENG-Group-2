@@ -4,6 +4,7 @@ import { MantineProvider } from "@mantine/core";
 import "../styles/globals.css";
 import NavBar from "../components/navbar/NavBar";
 import Footer from "../components/footer/Footer";
+import "../styles/globals.css";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
