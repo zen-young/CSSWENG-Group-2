@@ -19,7 +19,6 @@ const LabelSection = ({ productName, sizes, quantities, prices }) => {
           <input
             value={sizes[selectedSize]}
             className="ml-5 bg-inherit outline-none border-none grow text-[20px] font-normal tracking-wide"
-            id="sizes-form"
           />
           <Image
             src={ChevronDown}
@@ -54,7 +53,6 @@ const LabelSection = ({ productName, sizes, quantities, prices }) => {
           <input
             value={quantities[selectedQuantity] + " Pieces"}
             className="ml-5 bg-inherit outline-none border-none grow text-[20px] font-normal tracking-wide"
-            id="quantity-form"
           />
           <Image
             src={ChevronDown}
