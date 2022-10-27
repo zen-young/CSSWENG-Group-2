@@ -2,7 +2,7 @@
 import React from 'react';
 
 import {IconSearch} from "@tabler/icons";
-import { createStyles, SimpleGrid, Card, Group, Image, Text } from "@mantine/core"
+import { SimpleGrid, Card, Group, Image, Text } from "@mantine/core"
 import H_Divider from '../homepage/H_Divider';
 
 function Results_Page() {
@@ -25,7 +25,6 @@ function Results_Page() {
                     src={"/assets/sample_product_1.jpg"}
                     height={300}
                     layout="fill"
-                    objectFit="cover"
                 />
             </Card.Section>
 

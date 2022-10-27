@@ -1,82 +1,85 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import H_Divider from './H_Divider';
 
-import { Carousel } from "@mantine/carousel";
 import { Text, Container, Group, Card, Image, SimpleGrid, createStyles} from '@mantine/core';
 
-function Featured_Products() {
+function Featured_Products( props ) {
 
-    const productPics = [
-        "sample_product_1.jpg",
-        "sample_product_1.jpg",
-        "sample_product_1.jpg",
-        "sample_product_1.jpg",
-        "sample_product_1.jpg",
-        "sample_product_1.jpg",
+    let tempProdPics = [
+        "/assets/sample_1.jpg",
+        "/assets/sample_2.jpg",
+        "/assets/sample_3.jpg",
     ];
 
-    const productNames = [
-        "Product Name 1",
-        "Product Name 2",
-        "Product Name 3",
-        "Product Name 4",
-        "Product Name 5",
-        "Product Name 6",
-    ];
+    let cardsList = [];
 
-    let cardList = []
-    for(let i = 0; i < productPics.length; i++){
-        let alt = "Featured Product " + i;
-        cardList.push(
-            <Card
-                component="a"
-                href="/"
-                shadow={"rgba(0, 0, 0, 0.24) 0px 5px 3px"}
-                p="lg"
-                withBorder
-                className='hover:scale-[1.01]'
-            >
-                <Card.Section>
-                    <Image
-                        alt={alt}
-                        src={"/assets/" + productPics[i]}
-                        height={250}
-                        layout="fill"
-                        objectFit="cover"
-                    />
-                </Card.Section>
+    let maxCardsPerPage = 6;
+    let pages = [ [], [], [] ]
 
-                <Group position="center" mt={20}>
-                    <Text 
-                        align="center" 
-                        weight={"700"} size="xl" 
-                        className='hover:underline'
-
-                    >
-                        {productNames[i]}
-                    </Text>
-                </Group>
-            </Card>
-        );
-    }
-
-    const carouselPages = []
-    for(let i = 0; i < 3; i++){
-        carouselPages.push(
-            <Carousel.Slide>
-                <SimpleGrid
-                    cols={3}
-                    verticalSpacing={50}
-                    spacing={50}
-                    sx={{ maxWidth: "100%" }}
+    for(let i = 0; i < pages.length; i++){
+        for(let j = 0; j < maxCardsPerPage; j++){
+            let alt = "Featured Product " + j;
+            pages[i].push(
+                <Card
+                    component="a"
+                    href="/"
+                    shadow={"rgba(0, 0, 0, 0.24) 0px 5px 3px"}
+                    p="lg"
+                    withBorder
+                    className="hover:scale-[1.05]"
                 >
-                    {cardList}
-                </SimpleGrid>
-            </Carousel.Slide>
+                    <Card.Section>
+                        <Image
+                            alt={alt}
+                            src={tempProdPics[i]}
+                            height={250}
+                            layout="fill"
+                        />
+                    </Card.Section>
+                    <Group position="center" mt={20}>
+                        <Text
+                            align="center"
+                            weight={"700"}
+                            size="xl"
+                            className="hover:underline"
+                        >
+                            Product in Page {i+1}
+                        </Text>
+                    </Group>
+                </Card>
+            );
+        }
+
+        cardsList.push(
+            <SimpleGrid
+                cols={3}
+                verticalSpacing={50}
+                spacing={50}
+                sx={{ maxWidth: "100%" }}
+            >
+                {pages[i]}
+            </SimpleGrid>
         );
     }
 
+    const [currPage, setCurrPage] = useState(0)
+    let paginationButtons = []
+
+    for(let i = 0; i < props.numPages; i++){
+        paginationButtons.push(
+            <button 
+                className={
+                    `w-fit h-fit my-auto border-2 border-x-neutral-300 px-[7px] rounded-[5px] 
+                    ${currPage == i ? 'bg-neutral-400' : 'bg-white'}
+                    ${i == props.numPages - 1 ? 'mr-[30px]' : 'mr-[10px]'}`
+                }
+                onClick={() => setCurrPage(i)}
+            >
+                <span className='text-[10px] font-bold m-auto'>{i + 1}</span>
+            </button>
+        );
+    }
 
     return (
         <Container size="lg" style={{ marginTop: 130 }}>
@@ -86,34 +89,15 @@ function Featured_Products() {
 
             <H_Divider />
 
-            <Carousel
-                slideSize="100%"
-                height={800}
-                slideGap="sm"
-                withControls={false}
-                withIndicators={true}
-                loop
+            <div className='h-[800px] mt-[50px] w-full'>
 
-                styles={{
-                    indicators:{
-                        Button: {
-                            backgroundColor: 'black'
-                        }
-                    },
+                {cardsList[currPage]}
 
-                    indicator: {
-                        width: 12,
-                        height: 4,
-                        transition: "width 250ms ease",
-
-                        "&[data-active]": {
-                            width: 40,
-                        },
-                    },
-                }}
-            >
-                {carouselPages}
-            </Carousel>
+                <div className='flex mx-auto mt-[50px] justify-center'>
+                    {paginationButtons}
+                    <a href='/products' className='my-auto font-bold text-[20px] hover:underline'>View All Products {'>'}</a>
+                </div>
+            </div>
         </Container>
     );
 }
