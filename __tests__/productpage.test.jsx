@@ -14,6 +14,7 @@ window.ResizeObserver =
 global.CSSObject = jest.fn();
 
 describe("Product Page", () => {
+  //test
   it("Displayed rice changes according to quantity, size and price combination", () => {
     const quantities = ["5", "10", "20", "40", "80", "150"];
 
