@@ -17,7 +17,6 @@ const useStyles = createStyles((_theme, _params, getRef) => ({
         backgroundColor: "rgba( 0, 0, 0, 0)",
         borderColor: "rgba( 0, 0, 0, 0)",
         borderRadius: 10,
-        // height: 100,
         "&:hover": {
             backgroundColor: "rgba( 0, 0, 0, 0.50)",
         },
