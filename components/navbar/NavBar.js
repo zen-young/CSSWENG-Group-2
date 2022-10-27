@@ -144,7 +144,7 @@ export default function NavBar() {
       <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
         <SimpleGrid cols={1} spacing={0}>
           {category.items.map((item) => (
-            <a href={`/product/id/${item}`} key={item}>
+            <a href={`/products/${item}`} key={item}>
               <UnstyledButton className={classes.subLink}>
                 {item}
               </UnstyledButton>
@@ -174,7 +174,7 @@ export default function NavBar() {
             >
               <HoverCard width={200} position="bottom" shadow="md" withinPortal>
                 <HoverCard.Target>
-                  <a href="#" className={classes.link}>
+                  <a href="/products" className={classes.link}>
                     <Center inline>
                       <Box component="span" mr={5}>
                         <Text size="md" underline="true" weight="bold">

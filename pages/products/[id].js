@@ -1,0 +1,38 @@
+import React, { useState } from "react";
+import { useRouter } from "next/router";
+import ImageSection from "../../components/ImageSection/ImageSection";
+import LabelSection from "../../components/LabelSection/LabelSection";
+
+export default function Product() {
+  const [content, setContent] = useState("Personalized Stickers with Diecut");
+  const [sizes, setSizes] = useState(["2.4x1.25", "2.4x2", "3.5x2"]);
+  const [prices, setPrices] = useState([40, 60, 80]);
+  const [paperContent, setPaperContent] = useState(
+    "Glossy or matte waterproof and scratch proof vinyl stickers"
+  );
+  const [quantites, setQuantities] = useState([
+    "10",
+    "20",
+    "50",
+    "100",
+    "500",
+    "1000",
+  ]);
+  const router = useRouter();
+  const { id } = router.query;
+
+  return (
+    <div className="flex flex-col-reverse sm:flex-row w-full">
+      <div className="basis-1/2 p-8">
+        <ImageSection
+          content={content}
+          sizes={sizes}
+          paperContent={paperContent}
+        />
+      </div>
+      <div className="basis-1/2 p-8">
+        <LabelSection productName={id} sizes={sizes} quantities={quantites} prices={prices}/>
+      </div>
+    </div>
+  );
+}
