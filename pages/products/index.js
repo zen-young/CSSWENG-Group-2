@@ -10,7 +10,7 @@ const products = [
   },
   {
     title: "Stickers and Labels",
-    image: "/assets/newImage.png",
+    image: "/assets/image1.png",
   },
   {
     title: "Product 1",
