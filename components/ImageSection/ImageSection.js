@@ -64,10 +64,10 @@ const ImageSection = ({ sizes, content, paperContent }) => {
                 alt: "",
                 width: 640,
                 height: 388,
-                src: "/assets/image1.png",
+                src: "/assets/image 24.png",
               },
               largeImage: {
-                src: "/assets/image1.png",
+                src: "/assets/image 24.png",
                 width: 1200,
                 height: 1800,
               },
