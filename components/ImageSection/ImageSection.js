@@ -1,10 +1,19 @@
 import React, { useState } from "react";
+import {
+  Magnifier,
+  GlassMagnifier,
+  SideBySideMagnifier,
+  PictureInPictureMagnifier,
+  MOUSE_ACTIVATION,
+  TOUCH_ACTIVATION,
+} from "react-image-magnifiers";
 import Image1 from "../../public/assets/image1.png";
 import Image2 from "../../public/assets/image2.png";
 import Image3 from "../../public/assets/image3.png";
 import Image4 from "../../public/assets/image4.png";
 import ChevronLeft from "../../public/assets/chevronLeft.svg";
 import ChevronRight from "../../public/assets/chevronRight.svg";
+import ReactImageMagnify from "react-image-magnify";
 import Image from "next/image";
 
 const ImageSection = ({ sizes, content, paperContent }) => {
@@ -24,7 +33,7 @@ const ImageSection = ({ sizes, content, paperContent }) => {
   ]);
   const [selectedImage, setSelectedImage] = useState(0);
   // const sizes = ["2.4x1.25", "2.4x2", "3.5x2"];
-
+  const props = { width: 400, height: 250, zoomWidth: 500, src: images[0].src };
   const prevImage = () => {
     if (selectedImage === 0) {
       setSelectedImage(images.length - 1);
@@ -42,12 +51,28 @@ const ImageSection = ({ sizes, content, paperContent }) => {
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-center">
-        <div>
-          <Image
+        <div className="flex">
+          {/* <Image
             src={images[selectedImage].src}
             width={640}
             height={388}
             alt="selectedImage"
+          /> */}
+          <ReactImageMagnify
+            {...{
+              smallImage: {
+                alt: "",
+                width: 640,
+                height: 388,
+                src: "/assets/image 24.png",
+              },
+              largeImage: {
+                src: "/assets/image 24.png",
+                width: 1200,
+                height: 1800,
+              },
+              enlargedImageContainerClassName: "absolute bottom-0",
+            }}
           />
         </div>
       </div>
