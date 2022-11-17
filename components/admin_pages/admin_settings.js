@@ -3,8 +3,9 @@ function Admin_Settings() {
     return (
         <>
             <div className="flex bg-[#282828] w-full h-[100px] items-center">
-                <p className="text-[24px] text-white ml-[25px] font-bold">Admin Settings</p>
+                <p className="text-[26px] text-white ml-[25px] font-semibold">Admin Settings</p>
             </div>
+
             <form action="">
                 <div className="flex-row px-[50px] py-[50px]">
                     <label

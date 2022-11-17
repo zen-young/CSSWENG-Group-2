@@ -5,16 +5,17 @@ import { useState } from "react";
 import Admin_Settings from "./admin_settings";
 
 function Admin_Panel() {
+    const [hidden, setHidden] = useState(true);
 
-    const [hidden, setHidden] = useState(true)
-    const [currPage, setCurrPage] = useState("Admin Settings") //Default Page after logging in
+    //Default Page after logging in
+    const [currPage, setCurrPage] = useState("Admin Settings");
 
     //Insert needed Pages into array
-    const pages = []
-    pages.push({pageName: "Admin Settings", html: <Admin_Settings />})
+    const pages = [];
+    pages.push({ pageName: "Admin Settings", html: <Admin_Settings /> });
 
     return (
-        <div className="flex px-[150px] w-full h-full border-2 border-red-500">
+        <div className="flex px-[150px] w-full h-full">
             <div className="text-white w-[350px] h-auto bg-[#282828] pl-[20px] pt-[25px] pb-[100px]">
                 <div className="flex mb-[25px] items-center">
                     <Image
@@ -31,9 +32,13 @@ function Admin_Panel() {
                         width={33}
                         height={33}
                     />
-                    <p 
-                        onClick={() => {setCurrPage("Products")}}
-                        className={`${currPage == "Products" ? "underline" : ""} hover:cursor-pointer font-semibold text-[24px] ml-[10px]`}
+                    <p
+                        onClick={() => {
+                            setCurrPage("Products");
+                        }}
+                        className={`${
+                            currPage == "Products" ? "underline" : ""
+                        } hover:cursor-pointer font-semibold text-[24px] ml-[10px]`}
                     >
                         Manage Products
                     </p>
@@ -48,45 +53,52 @@ function Admin_Panel() {
                     <p
                         onClick={() => {
                             hidden ? setHidden(false) : setHidden(true);
-                            setCurrPage("Manage Website")
+                            setCurrPage("Manage Website");
                         }}
-                        className={`${currPage == "Manage Website" ? "underline" : ""} hover:cursor-pointer font-semibold text-[24px] ml-[10px]`}>
+                        className={`${
+                            currPage == "Manage Website" ? "underline" : ""
+                        } hover:cursor-pointer font-semibold text-[24px] ml-[10px]`}
+                    >
                         Manage Website
                     </p>
                 </div>
 
-                <div className={`${hidden ? "hidden" : "visible"} mb-[20px] pl-[75px]`}>
-                    <p 
+                <div
+                    className={`${
+                        hidden ? "hidden" : "visible"
+                    } mb-[20px] pl-[75px]`}
+                >
+                    <p
                         className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
-                        onClick={() => {}}                   
+                        onClick={() => {}}
                     >
                         Home Page
                     </p>
 
-                    <p 
+                    <p
                         className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
-                        onClick={() => {}}                   
+                        onClick={() => {}}
                     >
                         Order Page
                     </p>
 
-                    <p 
+                    <p
                         className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
-                        onClick={() => {}}                   
+                        onClick={() => {}}
                     >
                         Company Information
                     </p>
 
-                    <p 
+                    <p
                         className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
-                        onClick={() => {}}                   
+                        onClick={() => {}}
                     >
                         Contact Information
                     </p>
 
-                    <p 
+                    <p
                         className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
-                        onClick={() => {}}                   
+                        onClick={() => {}}
                     >
                         View Website
                     </p>
@@ -98,9 +110,13 @@ function Admin_Panel() {
                         width={33}
                         height={33}
                     />
-                    <p 
-                        className={`${currPage == "Admin Settings" ? "underline" : ""} hover:cursor-pointer font-semibold text-[24px] ml-[10px]`}
-                        onClick={() => {setCurrPage("Admin Settings")}}    
+                    <p
+                        className={`${
+                            currPage == "Admin Settings" ? "underline" : ""
+                        } hover:cursor-pointer font-semibold text-[24px] ml-[10px]`}
+                        onClick={() => {
+                            setCurrPage("Admin Settings");
+                        }}
                     >
                         Admin Settings
                     </p>
@@ -118,9 +134,8 @@ function Admin_Panel() {
                 </div>
             </div>
 
-            <div className="w-2/3 h-auto">
-                {pages[0].html}
-            </div>
+            {/* Pages Container */}
+            <div className="w-2/3 h-auto">{pages[0].html}</div>
         </div>
     );
 }
