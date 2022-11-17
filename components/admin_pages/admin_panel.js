@@ -15,7 +15,7 @@ function Admin_Panel() {
     pages.push({ pageName: "Admin Settings", html: <Admin_Settings /> });
 
     return (
-        <div className="flex px-[150px] w-full h-full">
+        <div className="flex px-[150px] w-full h-full shadow-lg bg-gray-200">
             <div className="text-white w-[350px] h-auto bg-[#282828] pl-[20px] pt-[25px] pb-[100px]">
                 <div className="flex mb-[25px] items-center">
                     <Image
@@ -135,7 +135,9 @@ function Admin_Panel() {
             </div>
 
             {/* Pages Container */}
-            <div className="w-2/3 h-auto">{pages[0].html}</div>
+            <div className="w-2/3 h-auto bg-gray-100">
+                {pages[0].html}
+            </div>
         </div>
     );
 }

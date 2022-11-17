@@ -7,7 +7,7 @@ function Admin_Settings() {
             </div>
 
             <form action="">
-                <div className="flex-row px-[50px] py-[50px]">
+                <div className="flex-row px-[50px] py-[25px]">
                     <label
                         htmlFor="email"
                         className="block text-[20px] font-bold mb-[10px]"
