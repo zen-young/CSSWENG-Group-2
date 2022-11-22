@@ -38,6 +38,7 @@ function Add_Product(props) {
             const filename = "images/" + image.name + "_" + uid;
             const storageRef = ref( storage, filename)
             
+            //Uploads Image with unique name
             promises.push(
                 uploadBytesResumable( storageRef,  image).
                 then((uploadResult) => {
@@ -46,6 +47,7 @@ function Add_Product(props) {
             );
         });
 
+        //List of urls per image
         const urls = await Promise.all(promises);
 
         Array.prototype.forEach.call(document.getElementById("product_sizes").elements, (element) => {
