@@ -1,102 +1,234 @@
-
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { IconCircleX } from "@tabler/icons";
+import { setDoc, doc, getDoc } from "firebase/firestore";
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { db, storage } from "../../firebaseConfig";
+import { uuidv4 } from "@firebase/util";
+import Header_Live_Preview from "./Header_LivePreview";
+import { useEffect } from "react";
 
-function Add_Product() {
+function Add_Product(props) {
+    const [message, setMessage] = useState("");
 
-    const router = useRouter()
-    const [images, setImages] = useState([])
-    const [message, setMessage] = useState('')
+    // Values to fetch and put into forms
+    const [images, setImages] = useState([]);
+    const [prodName, setProductName] = useState("");
+    const [category, setCategory] = useState([]);
+    const [prodCateg, setProdCateg] = useState("");
+    const [featured, setFeatured] = useState(false);
+    const [prodDesc, setDescription] = useState("");
+    const [sizes, setSizes] = useState([]);
+    const [paperTypes, setTypes] = useState([]);
+    const [rows, setRows] = useState([]);
+    const [urls, setUrls] = useState([])
 
-    
+    //Arrays holding added input html tags
+    const [sizeInputs, setSizeInputs] = useState([])
+    const [paperInputs, setPaperInputs] = useState([])
+    const [rowInputs, setRowInputs] = useState([])
+
+
+    //Adds a doc to the database
+    async function getURLS(){
+        const promises = [];
+
+        images && images.map((image) => {
+            const uid = uuidv4();
+            const filename = "images/" + image.name + "_" + uid;
+            const storageRef = ref( storage, filename)
+            
+            promises.push(
+                uploadBytesResumable( storageRef,  image).
+                then((uploadResult) => {
+                    return getDownloadURL(uploadResult.ref);
+                })
+            );
+        });
+
+        const urls = await Promise.all(promises);
+
+        Array.prototype.forEach.call(document.getElementById("product_sizes").elements, (element) => {
+            if (element.value.length > 0)
+                sizes.push(element.value)
+        });
+
+        Array.prototype.forEach.call(document.getElementById("paper_types").elements, (element) => {
+            if (element.value.length > 0)
+                paperTypes.push(element.value)
+        });
+
+        var y = new Array()
+        Array.prototype.forEach.call(document.getElementById("row_variations").elements, (element) => {
+            y.push(element.value);
+
+            if (y.length == 3) {
+                rows.push({
+                    size: y[0],
+                    quantity: y[1],
+                    price: y[2]
+                });
+                y = new Array();
+            }
+        });
+
+        try {
+            await setDoc(doc(db, "products", prodName.toString()), {
+                product_name: prodName,
+                category: prodCateg,
+                featured: featured,
+                product_description: prodDesc,
+                sizes: sizes,
+                paper_types: paperTypes,
+                variations: rows,
+                image_urls: urls,
+            }).then(() => {
+                
+                setImages([]);
+                setUrls([])
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     //Add Image to images array
-    function handleImageUpload(e){
-        setMessage("")
-        let file = e.target.files;
+    function handleImageUpload(e) {
+        setMessage("");
 
-        for(let i = 0; i < file.length; i++){
-            const fileType = file[i]['type'];
-            const validTypes = ['image/gif', 'image/jpeg', 'image/png'];
-            if(validTypes.includes(fileType)){
-                setImages([...images, file[i]])
-            }else{
-                setMessage("Only Images of Type JPEG, PNG, and GIF are accepted")
+        let file = e.target.files;
+        for (let i = 0; i < file.length; i++) {
+            const fileType = file[i]["type"];
+            const validTypes = ["image/gif", "image/jpeg", "image/png"];
+
+            if (validTypes.includes(fileType)) {
+                setImages((images) => [...images, file[i]]);
+                setUrls((urls) => [...urls, URL.createObjectURL(file[i])]);
+            } else {
+                setMessage(
+                    "Only Images of Type JPEG, PNG, and GIF are accepted"
+                );
             }
         }
     }
 
-    function removeImage(i){
-        setImages(images.filter(x => x.name !== i));
-    }
+    function removeImage(i) {
+        let index = i
+        console.log("Before: ", images.length, " ", i);
 
-    //Clear all forms and redirect to settings
-    function clear(){
-        document.getElementById('static_form').reset()
-        document.getElementById('product_sizes').reset()
-        document.getElementById('paper_types').reset()
-        document.getElementById('row_variations').reset()
-        // router.push('/admin/settings')
-    }
-
-    //Add another input given element id
-    function add_input(id){
-        var x = document.createElement('li')
+        setImages(images => images.filter((img, i) => i !== index));
+        setUrls(urls => urls.filter((imgurl, i) => i !== index));
         
-        x.innerHTML = 
-        ` <input type="text" class="w-full p-1 border border-black rounded-sm mt-[5px] mb-[10px]"/> `
+        console.log("After: ", images.length)
 
-        document.getElementById(id).appendChild(x) 
+        if (images.length == 0){
+            setImages([]);
+            setUrls([]);
+            document.getElementById("image_files").value = null
+        } 
+    }
+
+    //Add another input for sizes
+    function add_size() {
+        var x =
+            <li key={sizeInputs.length + 1} className="flex">
+                <IconCircleX onClick={(e) => {
+                    let x = e.target.parentNode;
+                    x.nodeName === 'LI' ? x.remove() : x.parentNode.remove()
+                }}
+                    className="cursor-pointer"
+                />
+                <input 
+                    type="text" className="w-full p-1 border border-black rounded-sm mt-[5px] mb-[10px]"
+                /> 
+            </li>
+        setSizeInputs(sizeInputs => [...sizeInputs, x])
+    }
+
+
+    //Add another input for paper types
+    function add_type() {
+        var x = 
+            <li key={paperInputs.length + 1} className="flex">
+                <IconCircleX onClick={(e) => {
+                    let x = e.target.parentNode;
+                    x.nodeName === 'LI' ? x.remove() : x.parentNode.remove()
+                }}
+                    className="cursor-pointer"
+                />
+                <input 
+                    type="text" className="w-full p-1 border border-black rounded-sm mt-[5px] mb-[10px]"
+                /> 
+            </li> 
+        setPaperInputs(paperInputs => [...paperInputs, x])
     }
 
     //Add another row to variation rows
-    function add_row(id){
-        var x = document.createElement('li')
+    function add_row() {
+        var x = (
+            <li key={rowInputs.length + 1} className="flex w-full mb-[10px]">
+                <div className="flex w-1/3 justify-center">
+                    <input
+                        type="text"
+                        className="w-1/2 border border-black rounded-sm"
+                    />
+                </div>
+                <div className="flex w-1/3 justify-center">
+                    <input
+                        type="text"
+                        className="w-1/2 border border-black rounded-sm"
+                    />
+                </div>
+                <div className="flex w-1/3 justify-center">
+                    <input
+                        type="text"
+                        className="w-1/2 border border-black rounded-sm"
+                    />
+                </div>
 
-        x.innerHTML = 
-        `
-            <div class="flex w-1/3 justify-center">
-                <input
-                    type="text"
-                    class="w-1/2 border border-black rounded-sm"
+                <IconCircleX onClick={(e) => {
+                    let x = e.target.parentNode;
+                    x.nodeName === 'LI' ? x.remove() : x.parentNode.remove()
+                }}
+                    className="absolute cursor-pointer"
                 />
-            </div>
-            <div class="flex w-1/3 justify-center">
-                <input
-                    type="text"
-                    class="w-1/2 border border-black rounded-sm"
-                />
-            </div>
-            <div class="flex w-1/3 justify-center">
-                <input
-                    type="text"
-                    class="w-1/2 border border-black rounded-sm"
-                />
-            </div>
-        `
-        x.className = `flex w-full mb-[10px]`;
+            </li>
+        )
 
-        document.getElementById('variations').appendChild(x)
+        setRowInputs(rowInputs => [...rowInputs, x]);
     }
 
+    async function getDocument(dbName, docName){
+
+        const docRef = doc(db, dbName, docName)
+
+        const docSnap = await getDoc(docRef)
+
+        if(docSnap.exists()){
+            return docSnap.data()
+        }else{
+            console.log("Did not find document")
+        }
+    }
+
+    useEffect(() => {
+
+        //Initiates Categories
+        getDocument("categories", "category_list").then((data) => {
+            const values = Object.values(data)
+            setCategory(values)
+            setProdCateg(values[0])
+        })
+
+    }, [])
 
     return (
         <>
-
             {/* TITLE OF PAGE AND LIVE PREVIEW BUTTON */}
-            <div className="flex bg-[#282828] w-full h-[100px] items-center">
-                <p className="text-[26px] text-white ml-[25px] font-semibold">
-                    Add Product
-                </p>
-                <button className="ml-auto mr-10 py-2 px-5 bg-cyan-400 hover:brightness-90 rounded-sm font-bold text-[14px]">
-                    Live Preview
-                </button>
-            </div>
-
+            <Header_Live_Preview title="Add Product"/>
 
             {/* UPLOADING PRODUCT IMAGES */}
-            <div className="flex-col w-full h-auto bg-gray-100 pr-[40px] pt-[50px]">
-
+            <div className="flex-col w-full h-auto bg-gray-100 pr-[40px] pt-[25px]">
                 <p className="w-full text-[12px] align-top text-center text-red-500 mb-[20px]">
                     {message}
                 </p>
@@ -111,19 +243,19 @@ function Add_Product() {
                         className="flex w-full gap-5 overflow-auto"
                     >
                         <div className="flex flex-nowrap gap-2 overflow-auto">
-                            {images.map((file, key) => {
+                            {urls.map((url, key) => {
                                 return (
-                                    <div key={key} className="relative">
+                                    <div key={key + 1} className="relative">
                                         <IconCircleX
                                             onClick={() => {
-                                                removeImage(file.name);
+                                                removeImage(key);
                                             }}
-                                            className="mdi mdi-close absolute right-1 cursor-pointer"
+                                            className="mdi mdi-close absolute right-1 cursor-pointer bg-red-400 rounded-full"
                                         />
-                                            
+
                                         <img
-                                            className="h-[75px] w-[75px] rounded-md cursor-pointer border border-black"
-                                            src={URL.createObjectURL(file)}
+                                            className="h-[75px] w-[75px] rounded-md cursor-pointer"
+                                            src={url}
                                         />
                                     </div>
                                 );
@@ -132,12 +264,13 @@ function Add_Product() {
 
                         <div className="relative w-1/5 justify-center bg-gray-100 rounded-md border-2 border-black border-dotted cursor-pointer hover:brightness-90">
                             <input
+                                id="image_files"
                                 type="file"
                                 onChange={handleImageUpload}
                                 className="absolute h-full w-full bg-transparent opacity-0 z-10 cursor-pointer"
-                                multiple="multiple"
-                                name="images[]"
+                                multiple
                             />
+
                             <img
                                 src="/assets/add_image_icon.png"
                                 alt=""
@@ -150,11 +283,8 @@ function Add_Product() {
                     </div>
                 </div>
 
-
-
                 {/* STATIC FORM */}
                 <form action="" id="static_form">
-
                     {/* PRODUCT NAME*/}
                     <div className="flex mb-[20px] w-full h-auto">
                         <p className="w-2/5 text-[20px] align-top text-right pr-[25px]">
@@ -162,7 +292,11 @@ function Add_Product() {
                         </p>
                         <input
                             type="text"
+                            name="product_name"
                             className="w-full p-1 border border-black rounded-sm mt-[5px]"
+                            onChange={(e) => {
+                                setProductName(e.target.value);
+                            }}
                         />
                     </div>
 
@@ -171,10 +305,17 @@ function Add_Product() {
                         <p className="w-2/5 text-[20px] align-top text-right pr-[25px]">
                             Category:
                         </p>
-                        <input
-                            type="text"
+                        <select
+                            name="category"
+                            onChange={(e) => {setProdCateg(e.target.value)}}
                             className="w-full p-1 border border-black rounded-sm mt-[5px]"
-                        />
+                        >
+                            {category.map((val, key) => {
+                                return (
+                                    <option key={key} value={val}>{val}</option>
+                                )
+                            })}
+                        </select>
                     </div>
 
                     {/* FEATURED CHECKBOX */}
@@ -185,7 +326,11 @@ function Add_Product() {
                         <span className="w-full">
                             <input
                                 type="checkbox"
+                                name="featured"
                                 className="w-[20px] h-[20px] align-middle"
+                                onChange={(e) => {
+                                    setFeatured(e.target.checked);
+                                }}
                             />
                         </span>
                     </div>
@@ -196,9 +341,11 @@ function Add_Product() {
                             Product Description:
                         </p>
                         <textarea
-                            name=""
-                            id=""
+                            name="product_desc"
                             className="w-full h-[150px] p-1 border border-black rounded-sm mt-[5px]"
+                            onChange={(e) => {
+                                setDescription(e.target.value);
+                            }}
                         />
                     </div>
                 </form>
@@ -214,8 +361,10 @@ function Add_Product() {
                                 <input
                                     type="text"
                                     className="w-full p-1 border border-black rounded-sm mt-[5px] mb-[10px]"
+                                    required
                                 />
                             </li>
+                            {sizeInputs}
                         </ul>
                     </div>
                 </form>
@@ -224,7 +373,7 @@ function Add_Product() {
                     <div className="w-2/5 pr-[25px]"></div>
                     <button
                         onClick={() => {
-                            add_input("sizes");
+                            add_size();
                         }}
                         className="w-full border p-1 border-black rounded-sm font-bold bg-cyan-100 text-[16px] hover:brightness-90"
                     >
@@ -243,8 +392,10 @@ function Add_Product() {
                                 <input
                                     type="text"
                                     className="w-full p-1 border border-black rounded-sm mt-[5px] mb-[10px]"
+                                    required
                                 />
                             </li>
+                            {paperInputs}
                         </ul>
                     </div>
                 </form>
@@ -253,7 +404,7 @@ function Add_Product() {
                     <div className="w-2/5 pr-[25px]"></div>
                     <button
                         onClick={() => {
-                            add_input("papers");
+                            add_type();
                         }}
                         className="w-full border p-1 border-black rounded-sm font-bold bg-cyan-100 text-[16px] hover:brightness-90"
                     >
@@ -302,6 +453,7 @@ function Add_Product() {
                                         />
                                     </div>
                                 </li>
+                                {rowInputs}
                             </ul>
                         </div>
                     </div>
@@ -319,18 +471,22 @@ function Add_Product() {
                     </button>
                 </div>
 
-
                 {/* DISCARD AND SAVE BUTTON */}
                 <div className="flex justify-end mb-[50px] gap-5">
                     <button
                         className="font-bold text-[14px] border px-[20px] py-1 bg-gray-300"
                         onClick={() => {
-                            clear();
+                            window.location.reload(false);
                         }}
                     >
-                        Discard
+                        Discard Changes
                     </button>
-                    <button className="font-bold text-[14px] border px-[20px] py-1 bg-green-500">
+                    <button
+                        className="font-bold text-[14px] border px-[20px] py-1 bg-green-500"
+                        onClick={() => {
+                            getURLS().then(() => {window.location.reload(false);});
+                        }}
+                    >
                         Save
                     </button>
                 </div>
