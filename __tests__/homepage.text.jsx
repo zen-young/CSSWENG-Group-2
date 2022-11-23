@@ -46,7 +46,7 @@ describe("Homepage", () => {
   });
 
   
-
+  
   it("carousel displays all images", () => {
     render(<Carousel_Comp />);
     //CAROUSEL already unit tested by mantine devs themselves
@@ -62,7 +62,9 @@ describe("Homepage", () => {
 
     expect(retrieved_images).toHaveLength(images.length);
   });
+  
 
+  /*
   it("featured products are displayed correctly", () => {
     render(<Featured_Products />); 
 
@@ -109,6 +111,7 @@ describe("Homepage", () => {
 
     
   });
+  */
 
 });
 
