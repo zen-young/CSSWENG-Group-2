@@ -1,10 +1,17 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/router";
+import { getAuth, signOut } from "firebase/auth";
+
 import Admin_Settings from "./admin_settings";
+import Add_Product from "./add_products";
+import Edit_Product from "./edit_products";
 
 function Admin_Panel() {
+    const auth = getAuth()
+    const router = useRouter()
     const [hidden, setHidden] = useState(true);
 
     //Default Page after logging in
@@ -13,6 +20,26 @@ function Admin_Panel() {
     //Insert needed Pages into array
     const pages = [];
     pages.push({ pageName: "Admin Settings", html: <Admin_Settings /> });
+    pages.push({ pagename: "Add Product", html: <Add_Product />})
+    pages.push({ pageName: "Edit Product", html: <Edit_Product />})
+
+    useEffect(() => {
+        let token = sessionStorage.getItem("User_Token");
+
+        if(!token){
+            router.push('/admin/login')
+        }
+    })
+
+    const logout = () => {
+        signOut(auth)
+        .then(() =>{
+            sessionStorage.removeItem("User_Token");
+            router.push('/admin/login')
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
 
     return (
         <div className="flex px-[150px] w-full h-full shadow-lg bg-gray-200">
@@ -128,7 +155,10 @@ function Admin_Panel() {
                         width={33}
                         height={33}
                     />
-                    <p className="hover:cursor-pointer font-semibold text-[24px] ml-[10px]">
+                    <p 
+                        className="hover:cursor-pointer hover:underline font-semibold text-[24px] ml-[10px]"
+                        onClick={() => logout()}
+                    >
                         Logout
                     </p>
                 </div>
@@ -136,7 +166,7 @@ function Admin_Panel() {
 
             {/* Pages Container */}
             <div className="w-2/3 h-auto bg-gray-100">
-                {pages[0].html}
+                {pages[2].html}
             </div>
         </div>
     );

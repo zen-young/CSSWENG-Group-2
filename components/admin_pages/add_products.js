@@ -116,12 +116,8 @@ function Add_Product(props) {
 
     function removeImage(i) {
         let index = i
-        console.log("Before: ", images.length, " ", i);
-
         setImages(images => images.filter((img, i) => i !== index));
         setUrls(urls => urls.filter((imgurl, i) => i !== index));
-        
-        console.log("After: ", images.length)
 
         if (images.length == 0){
             setImages([]);
