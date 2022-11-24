@@ -11,23 +11,25 @@ import { useEffect } from "react";
 function Add_Product(props) {
     const [message, setMessage] = useState("");
 
-    // Values to fetch and put into forms
-    const [images, setImages] = useState([]);
-    const [prodName, setProductName] = useState("");
-    const [category, setCategory] = useState([]);
-    const [prodCateg, setProdCateg] = useState("");
-    const [featured, setFeatured] = useState(false);
-    const [prodDesc, setDescription] = useState("");
-    const [sizes, setSizes] = useState([]);
-    const [paperTypes, setTypes] = useState([]);
-    const [rows, setRows] = useState([]);
+    // PRODUCT DATA
+    const [images, setImages] = useState([])
+    const [prodName, setProductName] = useState("")
+    const [category, setCategory] = useState([])
+    const [prodCateg, setProdCateg] = useState("")
+    const [featured, setFeatured] = useState(false)
+    const [prodDesc, setDescription] = useState("")
+    const [sizes, setSizes] = useState([])
+    const [paperTypes, setTypes] = useState([])
+    const [rows, setRows] = useState([])
+    const [colors, setColors] = useState([])
     const [urls, setUrls] = useState([])
 
-    //Arrays holding added input html tags
+    // HTML ELEMENTS LIST
     const [sizeInputs, setSizeInputs] = useState([])
     const [paperInputs, setPaperInputs] = useState([])
+    const [colorInputs, setColorInputs] = useState([])
+    const [includeRow, setIncludedRows] = useState([false, false, false])
     const [rowInputs, setRowInputs] = useState([])
-
 
     //Adds a doc to the database
     async function getURLS(){
@@ -50,30 +52,6 @@ function Add_Product(props) {
         //List of urls per image
         const urls = await Promise.all(promises);
 
-        Array.prototype.forEach.call(document.getElementById("product_sizes").elements, (element) => {
-            if (element.value.length > 0)
-                sizes.push(element.value)
-        });
-
-        Array.prototype.forEach.call(document.getElementById("paper_types").elements, (element) => {
-            if (element.value.length > 0)
-                paperTypes.push(element.value)
-        });
-
-        var y = new Array()
-        Array.prototype.forEach.call(document.getElementById("row_variations").elements, (element) => {
-            y.push(element.value);
-
-            if (y.length == 3) {
-                rows.push({
-                    size: y[0],
-                    quantity: y[1],
-                    price: y[2]
-                });
-                y = new Array();
-            }
-        });
-
         try {
             await setDoc(doc(db, "products", prodName.toString()), {
                 product_name: prodName,
@@ -81,6 +59,7 @@ function Add_Product(props) {
                 featured: featured,
                 product_description: prodDesc,
                 sizes: sizes,
+                colors: colors,
                 paper_types: paperTypes,
                 variations: rows,
                 image_urls: urls,
@@ -126,72 +105,251 @@ function Add_Product(props) {
         } 
     }
 
-    //Add another input for sizes
-    function add_size() {
-        var x =
-            <li key={sizeInputs.length + 1} className="flex">
-                <IconCircleX onClick={(e) => {
-                    let x = e.target.parentNode;
-                    x.nodeName === 'LI' ? x.remove() : x.parentNode.remove()
+    const FeatureRemoveIcon = (
+        <div className="relative">
+            <IconCircleX
+                onClick={(e) => {
+                    let x = e.target.parentNode.parentNode;
+                    x.nodeName === "LI" ? x.remove() : x.parentNode.remove();
                 }}
-                    className="cursor-pointer"
-                />
-                <input 
-                    type="text" className="w-full p-1 border border-black rounded-sm mt-[5px] mb-[10px]"
-                /> 
-            </li>
-        setSizeInputs(sizeInputs => [...sizeInputs, x])
+                className="cursor-pointer absolute left-0 stroke-red-500"
+            />
+        </div>
+    );
+
+    function FeatureButton(buttonTitle, buttonFunc){
+        return (
+            <div className="flex items-end mb-[50px]">
+                <div className="w-1/4 pr-[25px] mt-10" />
+                <div className="flex w-full">
+                    <div className="w-1/6" />
+                    <button
+                        onClick={buttonFunc}
+                        className="w-4/6 border p-1 border-black rounded-sm font-bold bg-gray-300 text-[16px] hover:brightness-90"
+                    >
+                        {buttonTitle}
+                    </button>
+                </div>
+            </div>
+        )
     }
 
+    function handleFeature(feature){
+        switch(feature){
+            case 1:
+                return sizeInputs
+            case 2:
+                return paperInputs
+            case 3:
+                return colorInputs
+        }
+    }
 
-    //Add another input for paper types
-    function add_type() {
-        var x = 
-            <li key={paperInputs.length + 1} className="flex">
-                <IconCircleX onClick={(e) => {
-                    let x = e.target.parentNode;
-                    x.nodeName === 'LI' ? x.remove() : x.parentNode.remove()
-                }}
-                    className="cursor-pointer"
+    function updateFeatureValues(feature){
+        switch (feature) {
+            case 1: //Sizes
+                var x = [];
+                Array.prototype.forEach.call(document.getElementById("product_sizes").elements, (element) => {
+                    if (element.value.length > 0 && element.type != 'checkbox'){
+                        x.push(element.value)
+                    }
+                    if(element.type == 'checkbox'){
+                        var [a, b, c] = includeRow;
+                        setIncludedRows([element.checked, b, c])
+                    }
+                });
+                setSizes(x);
+                break;
+        
+            case 2: //Paper Types
+                var x = [];
+                Array.prototype.forEach.call(document.getElementById("paper_types").elements, (element) => {
+                    if (element.value.length > 0 && element.type != 'checkbox')
+                        x.push(element.value)
+                    if(element.type == 'checkbox'){
+                        var [a, b, c] = includeRow;
+                        setIncludedRows([a, element.checked, c])
+                    }
+                });
+                setTypes(x);
+                break;
+
+            case 3: //Paper Colors
+                var x = [];
+                Array.prototype.forEach.call(document.getElementById("paper_colors").elements, (element) => {
+                    if (element.value.length > 0 && element.type != 'checkbox'){
+                        x.push(element.value)
+                    }
+                    if(element.type == 'checkbox'){
+                        var [a, b, c] = includeRow;
+                        setIncludedRows([a, b, element.checked])
+                    }
+                });
+                setColors(x);
+                break;
+
+        }
+    }
+
+    function updateVariationsValue(){
+        Array.prototype.forEach.call(document.getElementById("variations").children, (child, index) => {
+            let x = child.children; //Each Div
+
+            var Obj = new Object();
+            for(let i = 0; i < x.length; i++){
+                let y = x[i].children
+
+                if(y[0].name == 'ProdSize') Obj['size'] = y[0].value
+
+                if(y[0].name == 'PaperType') Obj['paper_type'] = y[0].value
+
+                if(y[0].name == 'PaperColor') Obj['color'] = y[0].value
+
+                if (y[0].name == "quantity") Obj["quantity"] = y[0].value
+
+                if (y[0].name == "price"){
+                    Obj["price"] = y[0].value;                    
+                    rows.push(structuredClone(Obj));
+                    Obj = {}
+                } 
+            }
+        });
+    }
+
+    function FeatureComponent(title, feature){ 
+        return(
+            <div className="flex w-full h-auto">
+                <p className=" w-1/4 text-[16px] text-right">{title}:</p>
+                <ul id="sizes" className="w-full align-middle">
+                    <li className="flex mb-1">
+                        <div className="flex justify-center w-1/6">
+                            <input
+                                type="checkbox"
+                                onChange={() => {updateFeatureValues(feature)}}
+                                className="w-[20px]"
+                            />
+                        </div>
+                        <input
+                            type="text"
+                            className="w-4/6 p-1 border border-black rounded-sm"
+                            onChange={() => {updateFeatureValues(feature)}}
+                            required
+                        />
+                    </li>
+                    {handleFeature(feature)}
+                </ul>
+            </div>
+            )
+        };
+
+    function add_entry(inputs, inputFunc, feature){
+        var x = (
+            <li key={inputs.length + 1} className="flex mb-1">
+                {FeatureRemoveIcon}
+                <div className="flex justify-center w-1/6" />
+                <input
+                    type="text"
+                    className="w-4/6 p-1 border border-black rounded-sm"
+                    onChange={() => {updateFeatureValues(feature)}}
                 />
-                <input 
-                    type="text" className="w-full p-1 border border-black rounded-sm mt-[5px] mb-[10px]"
-                /> 
-            </li> 
-        setPaperInputs(paperInputs => [...paperInputs, x])
+            </li>
+        );
+        inputFunc(inputs => [...inputs, x])
     }
 
     //Add another row to variation rows
     function add_row() {
         var x = (
             <li key={rowInputs.length + 1} className="flex w-full mb-[10px]">
-                <div className="flex w-1/3 justify-center">
+
+                {includeRow[0] ? 
+                    (
+                        <div className="flex w-1/5 justify-center">
+                            <select
+                                name="ProdSize"
+                                className="w-1/2 border border-black rounded-sm"
+                                defaultValue={'DEFAULT'}
+                            >
+                            <option value='DEFAULT' disabled></option>
+                            {sizes.map((val, key) => {
+                                return (
+                                    <option key={key} value={val}>
+                                        {val}
+                                    </option>
+                                );
+                            })}
+                            </select>
+                        </div>
+                    ) : ''
+                }
+
+                {includeRow[1] ? 
+                    (
+                        <div className="flex w-1/5 justify-center">
+                            <select
+                                name="PaperType"
+                                className="w-1/2 border border-black rounded-sm"
+                                defaultValue={'DEFAULT'}
+                            >
+                            <option value='DEFAULT' disabled></option>
+                            {paperTypes.map((val, key) => {
+                                return (
+                                    <option key={key} value={val}>
+                                        {val}
+                                    </option>
+                                );
+                            })}
+                            </select>
+                        </div>
+                    ) : ''
+                }
+
+                {includeRow[2] ? 
+                    (
+                        <div className="flex w-1/5 justify-center">
+                            <select
+                                name="PaperColor"
+                                className="w-1/2 border border-black rounded-sm"
+                                defaultValue={'DEFAULT'}
+                            >
+                            <option value='DEFAULT' disabled></option>
+                            {colors.map((val, key) => {
+                                return (
+                                    <option key={key} value={val}>
+                                        {val}
+                                    </option>
+                                );
+                            })}
+                            </select>
+                        </div>
+                    ) : ''
+                }
+                
+                <div className="flex w-1/5 justify-center">
                     <input
-                        type="text"
-                        className="w-1/2 border border-black rounded-sm"
-                    />
-                </div>
-                <div className="flex w-1/3 justify-center">
-                    <input
-                        type="text"
-                        className="w-1/2 border border-black rounded-sm"
-                    />
-                </div>
-                <div className="flex w-1/3 justify-center">
-                    <input
+                        name="quantity"
                         type="text"
                         className="w-1/2 border border-black rounded-sm"
                     />
                 </div>
 
-                <IconCircleX onClick={(e) => {
-                    let x = e.target.parentNode;
-                    x.nodeName === 'LI' ? x.remove() : x.parentNode.remove()
-                }}
-                    className="absolute cursor-pointer"
+                <div className="flex w-1/5 justify-center">
+                    <input
+                        name="price"
+                        type="text"
+                        className="w-1/2 border border-black rounded-sm"
+                    />
+                </div>
+
+                <IconCircleX
+                    onClick={(e) => {
+                        let x = e.target.parentNode;
+                        x.nodeName === "LI" ? x.remove() : x.parentNode.remove();
+                    }}
+                    className="absolute cursor-pointer stroke-red-500"
                 />
             </li>
-        )
+        );
 
         setRowInputs(rowInputs => [...rowInputs, x]);
     }
@@ -210,8 +368,7 @@ function Add_Product(props) {
     }
 
     useEffect(() => {
-
-        //Initiates Categories
+        //Fetches Categories from Database
         getDocument("categories", "category_list").then((data) => {
             const values = Object.values(data)
             setCategory(values)
@@ -223,10 +380,10 @@ function Add_Product(props) {
     return (
         <>
             {/* TITLE OF PAGE AND LIVE PREVIEW BUTTON */}
-            <Header_Live_Preview title="Add Product"/>
+            <Header_Live_Preview title="Add Product" />
 
             {/* UPLOADING PRODUCT IMAGES */}
-            <div className="flex-col w-full h-auto bg-gray-100 pr-[40px] pt-[25px]">
+            <div className="flex-col w-full h-auto bg-gray-100 pr-[40px] pt-[25px] pl-[20px]">
                 <p className="w-full text-[12px] align-top text-center text-red-500 mb-[20px]">
                     {message}
                 </p>
@@ -245,9 +402,7 @@ function Add_Product(props) {
                                 return (
                                     <div key={key + 1} className="relative">
                                         <IconCircleX
-                                            onClick={() => {
-                                                removeImage(key);
-                                            }}
+                                            onClick={() => { removeImage(key) }}
                                             className="mdi mdi-close absolute right-1 cursor-pointer bg-red-400 rounded-full"
                                         />
 
@@ -292,9 +447,7 @@ function Add_Product(props) {
                             type="text"
                             name="product_name"
                             className="w-full p-1 border border-black rounded-sm mt-[5px]"
-                            onChange={(e) => {
-                                setProductName(e.target.value);
-                            }}
+                            onChange={(e) => { setProductName(e.target.value) }}
                         />
                     </div>
 
@@ -305,13 +458,19 @@ function Add_Product(props) {
                         </p>
                         <select
                             name="category"
-                            onChange={(e) => {setProdCateg(e.target.value)}}
+                            onChange={(e) => { setProdCateg(e.target.value) }}
                             className="w-full p-1 border border-black rounded-sm mt-[5px]"
+                            defaultValue={'DEFAULT'}
                         >
+                            <option value='DEFAULT' disabled>
+                                --- Select Category ---
+                            </option>
                             {category.map((val, key) => {
                                 return (
-                                    <option key={key} value={val}>{val}</option>
-                                )
+                                    <option key={key} value={val}>
+                                        {val}
+                                    </option>
+                                );
                             })}
                         </select>
                     </div>
@@ -348,126 +507,163 @@ function Add_Product(props) {
                     </div>
                 </form>
 
-                {/* DYNAMIC FORM PRODUCT SIZES */}
-                <form action="" id="product_sizes">
-                    <div className="flex w-full h-auto align-top">
-                        <p className="w-2/5 text-[20px] align-top text-right pr-[25px]">
-                            Product Sizes:
-                        </p>
-                        <ul id="sizes" className="w-full">
-                            <li>
-                                <input
-                                    type="text"
-                                    className="w-full p-1 border border-black rounded-sm mt-[5px] mb-[10px]"
-                                    required
-                                />
-                            </li>
-                            {sizeInputs}
-                        </ul>
+                
+
+                <div className="flex-col pt-5 mb-10">
+                    
+                    <p className="text-[20px] font-bold ml-10 mb-2">Product Features</p>
+                    <div className="flex">
+                        <p className="ml-10 w-1/4 text-right text-[12px] font-bold">Feature Name</p>
+                        <p className="ml-5 w-3/6 text-[12px] font-bold">Add to Variation</p>
+                        <p className="w-full text-[12px] font-bold">Feature Values</p>
                     </div>
-                </form>
 
-                <div className="flex items-end mb-[50px]">
-                    <div className="w-2/5 pr-[25px]"></div>
-                    <button
-                        onClick={() => {
-                            add_size();
-                        }}
-                        className="w-full border p-1 border-black rounded-sm font-bold bg-cyan-100 text-[16px] hover:brightness-90"
-                    >
-                        ADD PRODUCT SIZE
-                    </button>
-                </div>
+                    <div className="mx-auto bg-gray-700 w-11/12 h-[1px] mb-4"/>
+                    {/* === ADD PRODUCT SIZES === */}
+                    <form action="" id="product_sizes">
+                        {FeatureComponent("Product Sizes", 1)}
+                    </form>
+                    { FeatureButton("ADD PRODUCT SIZE", () => add_entry(sizeInputs, setSizeInputs, 1)) }        
 
-                {/* DYNAMIC FORM PAPER TYPES */}
-                <form action="" id="paper_types">
-                    <div className="flex w-full h-auto align-top">
-                        <p className="w-2/5 text-[20px] align-top text-right pr-[25px]">
-                            Paper Types:
-                        </p>
-                        <ul id="papers" className="w-full">
-                            <li>
-                                <input
-                                    type="text"
-                                    className="w-full p-1 border border-black rounded-sm mt-[5px] mb-[10px]"
-                                    required
-                                />
-                            </li>
-                            {paperInputs}
-                        </ul>
-                    </div>
-                </form>
 
-                <div className="flex mb-[20px]">
-                    <div className="w-2/5 pr-[25px]"></div>
-                    <button
-                        onClick={() => {
-                            add_type();
-                        }}
-                        className="w-full border p-1 border-black rounded-sm font-bold bg-cyan-100 text-[16px] hover:brightness-90"
-                    >
-                        ADD PAPER TYPE
-                    </button>
+                    {/* === ADD PAPER TYPES === */}
+                    <form action="" id="paper_types">
+                        {FeatureComponent("Paper Types", 2)}
+                    </form>
+                    { FeatureButton("ADD PAPER TYPE", () => add_entry(paperInputs, setPaperInputs, 2))}
+
+
+                    {/* === ADD PAPER COLOR ==== */}
+                    <form action="" id="paper_colors">
+                        {FeatureComponent("Paper Color", 3)}
+                    </form>
+                    { FeatureButton("ADD PAPER COLOR", () => add_entry(colorInputs, setColorInputs, 3))}
+
+                    <div className="mx-auto bg-black w-11/12 h-[2px] mb-4"/>
                 </div>
 
                 {/* DYNAMIC FORM ROW VARIATIONS */}
-                <div className="flex mb-[10px] w-full h-auto">
-                    <p
-                        htmlFor="product_name"
-                        className="w-2/5 text-[20px] align-top text-right pr-[25px]"
-                    >
-                        Variations:
-                    </p>
+                    <div className="flex mb-[10px] w-full h-auto">
+                        <p
+                            htmlFor="product_name"
+                            className="w-1/5 text-[20px] align-top text-right"
+                        >
+                            Variations:
+                        </p>
 
-                    <div className="flex w-full">
-                        <p className="w-1/3 text-center">Product Size:</p>
-                        <p className="w-1/3 text-center">Quantity (pcs):</p>
-                        <p className="w-1/3 text-center">Price:</p>
-                    </div>
-                </div>
-
-                <form action="" id="row_variations">
-                    <div className="flex w-full mb-[20px]">
-                        <div className="w-2/5 pr-[25px]"></div>
-                        <div className="w-full">
-                            <ul id="variations">
-                                <li className="flex w-full mb-[10px]">
-                                    <div className="flex w-1/3 justify-center">
-                                        <input
-                                            type="text"
-                                            className="w-1/2 border border-black rounded-sm"
-                                        />
-                                    </div>
-                                    <div className="flex w-1/3 justify-center">
-                                        <input
-                                            type="text"
-                                            className="w-1/2 border border-black rounded-sm"
-                                        />
-                                    </div>
-                                    <div className="flex w-1/3 justify-center">
-                                        <input
-                                            type="text"
-                                            className="w-1/2 border border-black rounded-sm"
-                                        />
-                                    </div>
-                                </li>
-                                {rowInputs}
-                            </ul>
+                        <div className="flex w-full ml-5">
+                            {includeRow[0] ? <p className="w-1/5 text-center">Product Size:</p> : ''}
+                            {includeRow[1] ? <p className="w-1/5 text-center">Paper Type:</p> : ''}
+                            {includeRow[2] ? <p className="w-1/5 text-center">Paper Color:</p> : ''}
+                            <p className="w-1/5 text-center">Quantity (pcs):</p>
+                            <p className="w-1/5 text-center">Price:</p>
                         </div>
                     </div>
-                </form>
 
-                <div className="flex mb-[100px]">
-                    <div className="w-2/5 pr-[25px]"></div>
-                    <button
-                        onClick={(e) => {
-                            add_row();
-                        }}
-                        className="w-full border p-1 border-black rounded-sm font-bold bg-cyan-100 text-[16px] hover:brightness-90"
-                    >
-                        ADD ROW
-                    </button>
-                </div>
+                    <form action="" id="row_variations">
+                        <div className="flex w-full mb-[20px]">
+                            <div className="w-1/5 pr-[25px]"></div>
+                            <div className="w-full">
+                                <ul id="variations">
+                                    <li className="flex w-full mb-[10px]">
+
+                                        {includeRow[0] ? 
+                                            (
+                                            <div className="flex w-1/5 justify-center">
+                                                <select
+                                                    name="ProdSize"
+                                                    type=""
+                                                    className="w-1/2 border border-black rounded-sm"
+                                                    defaultValue={'DEFAULT'}
+                                                >
+                                                <option value='DEFAULT' disabled></option>
+                                                {sizes.map((val, key) => {
+                                                    return (
+                                                        <option key={key} value={val}>
+                                                            {val}
+                                                        </option>
+                                                    );
+                                                })}
+                                                </select>
+                                            </div>
+                                            ) : ''
+                                        }
+
+                                        {includeRow[1] ? 
+                                            (
+                                            <div className="flex w-1/5 justify-center">
+                                                <select
+                                                    name="PaperType"
+                                                    className="w-1/2 border border-black rounded-sm"
+                                                    defaultValue={'DEFAULT'}
+                                                >
+                                                <option value='DEFAULT' disabled></option>
+                                                {paperTypes.map((val, key) => {
+                                                    return (
+                                                        <option key={key} value={val}>
+                                                            {val}
+                                                        </option>
+                                                    );
+                                                })}
+                                                </select>
+                                            </div>
+                                            ) : ''
+                                        }
+
+                                        {includeRow[2] ? 
+                                            (
+                                                <div className="flex w-1/5 justify-center">
+                                                    <select
+                                                        name="PaperColor"
+                                                        className="w-1/2 border border-black rounded-sm"
+                                                        defaultValue={'DEFAULT'}
+                                                    >
+                                                    <option value='DEFAULT' disabled></option>
+                                                    {colors.map((val, key) => {
+                                                        return (
+                                                            <option key={key} value={val}>
+                                                                {val}
+                                                            </option>
+                                                        );
+                                                    })}
+                                                    </select>
+                                                </div>
+                                            ) : ''
+                                        }
+
+                                        <div className="flex w-1/5 justify-center">
+                                            <input
+                                                name="quantity"
+                                                type="text"
+                                                className="w-1/2 border border-black rounded-sm"
+                                            />
+                                        </div>
+
+                                        <div className="flex w-1/5 justify-center">
+                                            <input
+                                                name="price"
+                                                type="text"
+                                                className="w-1/2 border border-black rounded-sm"
+                                            />
+                                        </div>
+                                    </li>
+                                    {rowInputs}
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div className="flex mb-[100px]">
+                        <div className="w-2/5 pr-[25px]"></div>
+                        <button
+                            onClick={(e) => {
+                                add_row();
+                            }}
+                            className="w-full border p-1 border-black rounded-sm font-bold bg-cyan-100 text-[16px] hover:brightness-90"
+                        >
+                            ADD ROW
+                        </button>
+                    </div>
 
                 {/* DISCARD AND SAVE BUTTON */}
                 <div className="flex justify-end mb-[50px] gap-5">
@@ -482,7 +678,11 @@ function Add_Product(props) {
                     <button
                         className="font-bold text-[14px] border px-[20px] py-1 bg-green-500"
                         onClick={() => {
-                            getURLS().then(() => {window.location.reload(false);});
+                            updateVariationsValue()
+                            getURLS().then(() => {
+                                //What to do after adding to database
+                                // window.location.reload(false);
+                            });
                         }}
                     >
                         Save
