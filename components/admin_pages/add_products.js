@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { IconCircleX } from "@tabler/icons";
-import { setDoc, doc, getDoc } from "firebase/firestore";
+import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { db, storage } from "../../firebaseConfig";
 import { uuidv4 } from "@firebase/util";
@@ -28,13 +28,14 @@ function Add_Product(props) {
     const [sizeInputs, setSizeInputs] = useState([])
     const [paperInputs, setPaperInputs] = useState([])
     const [colorInputs, setColorInputs] = useState([])
-    const [includeRow, setIncludedRows] = useState([false, false, false])
+    const [includeRow, setIncludedRows] = useState([true, true, true])
     const [rowInputs, setRowInputs] = useState([])
 
     //Adds a doc to the database
-    async function getURLS(){
+    async function addToDatabase(){
         const promises = [];
 
+        //Pushes images to storage with unique filename
         images && images.map((image) => {
             const uid = uuidv4();
             const filename = "images/" + image.name + "_" + uid;
@@ -52,26 +53,39 @@ function Add_Product(props) {
         //List of urls per image
         const urls = await Promise.all(promises);
 
+        //Adds product to database
         try {
             await setDoc(doc(db, "products", prodName.toString()), {
-                product_name: prodName,
+                name: prodName,
                 category: prodCateg,
                 featured: featured,
-                product_description: prodDesc,
-                sizes: sizes,
-                colors: colors,
+                description: prodDesc,
+                product_sizes: sizes,
+                paper_colors: colors,
                 paper_types: paperTypes,
                 variations: rows,
                 image_urls: urls,
             }).then(() => {
+                //Clear stored files and images in states
                 
-                setImages([]);
-                setUrls([])
+                updateDoc(doc(db, "category_schema", "products"), {
+                    products: arrayUnion(prodName),
+                }).then(() => {
+                    setImages([]);
+                    setUrls([])
+                })
             });
         } catch (err) {
             console.log(err);
         }
     };
+
+
+    async function updateCategories(Product_Name, Category_Name){
+        await updateDoc(doc(db, Category_Name, Product_Name), {
+            products: arrayUnion(Product_Name),
+        });
+    }
 
     //Add Image to images array
     function handleImageUpload(e) {
@@ -93,6 +107,7 @@ function Add_Product(props) {
         }
     }
 
+    //Remove selected image
     function removeImage(i) {
         let index = i
         setImages(images => images.filter((img, i) => i !== index));
@@ -105,18 +120,20 @@ function Add_Product(props) {
         } 
     }
 
+    //Icon component for Product Features/Attributes
     const FeatureRemoveIcon = (
-        <div className="relative">
+        <div className="flex w-1/6 justify-center">
             <IconCircleX
                 onClick={(e) => {
                     let x = e.target.parentNode.parentNode;
                     x.nodeName === "LI" ? x.remove() : x.parentNode.remove();
                 }}
-                className="cursor-pointer absolute left-0 stroke-red-500"
+                className="cursor-pointer stroke-red-500"
             />
         </div>
     );
 
+    //Add Feature Button
     function FeatureButton(buttonTitle, buttonFunc){
         return (
             <div className="flex items-end mb-[50px]">
@@ -134,6 +151,7 @@ function Add_Product(props) {
         )
     }
 
+    // Depending on feature, returns list of HTML Elements related to that feature
     function handleFeature(feature){
         switch(feature){
             case 1:
@@ -145,6 +163,7 @@ function Add_Product(props) {
         }
     }
 
+    // Stores values in features to respective arrays
     function updateFeatureValues(feature){
         switch (feature) {
             case 1: //Sizes
@@ -191,6 +210,51 @@ function Add_Product(props) {
         }
     }
 
+    // Feature HTML Element / Component
+    function FeatureComponent(title, feature){ 
+        return(
+            <div className="flex w-full h-auto">
+                <p className=" w-1/4 text-[16px] text-right">{title}:</p>
+                <ul id="sizes" className="w-full align-middle">
+                    <li className="flex mb-1">
+                        <div className="flex justify-center w-1/6">
+                            <input
+                                type="checkbox"
+                                checked={feature == 1 ? includeRow[0] : (feature == 2 ? includeRow[1] : includeRow[2])}
+                                onChange={() => {updateFeatureValues(feature)}}
+                                className="w-[20px]"
+                            />
+                        </div>
+                        <input
+                            type="text"
+                            className="w-4/6 p-1 border border-black rounded-sm"
+                            onChange={() => {updateFeatureValues(feature)}}
+                            required
+                        />
+                    </li>
+                    {handleFeature(feature)}
+                </ul>
+            </div>
+            )
+        };
+
+    // Add new entry for feature
+    function add_entry(inputs, inputFunc, feature){
+        var x = (
+            <li key={inputs.length + 1} className="flex mb-1">
+                {FeatureRemoveIcon}
+                {/* <div className="flex w-1/6" /> */}
+                <input
+                    type="text"
+                    className="w-4/6 p-1 border border-black rounded-sm"
+                    onChange={() => {updateFeatureValues(feature)}}
+                />
+            </li>
+        );
+        inputFunc(inputs => [...inputs, x])
+    }
+
+        // Gets data for variation and stores it to rows
     function updateVariationsValue(){
         Array.prototype.forEach.call(document.getElementById("variations").children, (child, index) => {
             let x = child.children; //Each Div
@@ -216,48 +280,8 @@ function Add_Product(props) {
         });
     }
 
-    function FeatureComponent(title, feature){ 
-        return(
-            <div className="flex w-full h-auto">
-                <p className=" w-1/4 text-[16px] text-right">{title}:</p>
-                <ul id="sizes" className="w-full align-middle">
-                    <li className="flex mb-1">
-                        <div className="flex justify-center w-1/6">
-                            <input
-                                type="checkbox"
-                                onChange={() => {updateFeatureValues(feature)}}
-                                className="w-[20px]"
-                            />
-                        </div>
-                        <input
-                            type="text"
-                            className="w-4/6 p-1 border border-black rounded-sm"
-                            onChange={() => {updateFeatureValues(feature)}}
-                            required
-                        />
-                    </li>
-                    {handleFeature(feature)}
-                </ul>
-            </div>
-            )
-        };
 
-    function add_entry(inputs, inputFunc, feature){
-        var x = (
-            <li key={inputs.length + 1} className="flex mb-1">
-                {FeatureRemoveIcon}
-                <div className="flex justify-center w-1/6" />
-                <input
-                    type="text"
-                    className="w-4/6 p-1 border border-black rounded-sm"
-                    onChange={() => {updateFeatureValues(feature)}}
-                />
-            </li>
-        );
-        inputFunc(inputs => [...inputs, x])
-    }
-
-    //Add another row to variation rows
+    //Add another row to variations' rows
     function add_row() {
         var x = (
             <li key={rowInputs.length + 1} className="flex w-full mb-[10px]">
@@ -354,6 +378,7 @@ function Add_Product(props) {
         setRowInputs(rowInputs => [...rowInputs, x]);
     }
 
+    // Fetches document given name of Database and Document Name
     async function getDocument(dbName, docName){
 
         const docRef = doc(db, dbName, docName)
@@ -367,6 +392,7 @@ function Add_Product(props) {
         }
     }
 
+    // Runs when page is loaded
     useEffect(() => {
         //Fetches Categories from Database
         getDocument("categories", "category_list").then((data) => {
