@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { IconCircleX } from "@tabler/icons";
-import { setDoc, doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { setDoc, doc, getDoc, updateDoc, arrayUnion, query, collection, getDocs } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { db, storage } from "../../firebaseConfig";
 import { uuidv4 } from "@firebase/util";
-import Header_Live_Preview from "./Header_LivePreview";
 import { useEffect } from "react";
+import Header_Live_Preview from "./Header_LivePreview";
 
 function Add_Product(props) {
     const [message, setMessage] = useState("");
@@ -74,22 +74,15 @@ function Add_Product(props) {
             console.log(err);
         }
 
-        //Updata Categories
+        //Update Categories
         try {
-            await updateDoc(doc(db, "categories", "category_schema"), {
+            await updateDoc(doc(db, "categories", prodCateg), {
                 products: arrayUnion(prodName.toString()),
             })
         } catch (error) {
             console.log(error);
         }
     };
-
-
-    async function updateCategories(Product_Name, Category_Name){
-        await updateDoc(doc(db, Category_Name, Product_Name), {
-            products: arrayUnion(Product_Name),
-        });
-    }
 
     //Add Image to images array
     function handleImageUpload(e) {
@@ -382,45 +375,22 @@ function Add_Product(props) {
         setRowInputs(rowInputs => [...rowInputs, x]);
     }
 
-    // Fetches document given name of Database and Document Name
-    async function getDocument(dbName, docName){
+    // Gets all product categories
+    async function getCategories(){
 
-        const docRef = doc(db, dbName, docName)
-
-        const docSnap = await getDoc(docRef)
-
-        if(docSnap.exists()){
-            return docSnap.data()
-        }else{
-            console.log("Did not find document")
-        }
+        const arr = []
+        const querySnapshot = await getDocs(query(collection(db, "categories")));
+        querySnapshot.forEach((doc) => {
+            arr.push(doc.id)
+        });
+        setCategory(arr)
     }
 
     // Runs when page is loaded
     useEffect(() => {
-        //Fetches Categories from Database
-        getDocument("categories", "category_list").then((data) => {
-            const values = Object.values(data)
-            setCategory(values)
-            setProdCateg(values[0])
-        })
-
-        getDocument("products", "123").then((data) => {
-            // const values = Object.values(data);
-            console.log("Variations: ");
-            console.log(data.variations);
-
-            var x = data.variations
-            console.log(x[0].price)
-        });
-
+        getCategories()
     }, [])
 
-    var arrTest = []
-
-    async function fetchData(){
-        
-    }
 
     return (
         <>

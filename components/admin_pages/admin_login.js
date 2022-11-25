@@ -1,14 +1,12 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup} from 'firebase/auth'
-import { app } from '../../firebaseConfig'
+import { signInWithEmailAndPassword} from 'firebase/auth'
+import { app, auth } from '../../firebaseConfig'
 
 import { useRouter } from "next/router";
 
 function Admin_Login() {
 
-    const auth = getAuth(app)
-    const provider = new GoogleAuthProvider()
     const router = useRouter()
 
     const [message, setMessage] = useState('')

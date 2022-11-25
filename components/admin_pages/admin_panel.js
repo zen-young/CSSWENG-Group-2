@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { getAuth, signOut } from "firebase/auth";
+import { app, auth } from "../../firebaseConfig"
 
 import Admin_Settings from "./admin_settings";
 import Add_Product from "./add_products";
@@ -12,7 +13,7 @@ import Company_Info from "./company_info";
 import Contact_Info from "./contact_info";
 
 function Admin_Panel() {
-    const auth = getAuth()
+    // const auth = getAuth(app)
     const router = useRouter()
     const [hidden, setHidden] = useState(true);
 
@@ -33,7 +34,7 @@ function Admin_Panel() {
         if(!token){
             router.push('/admin/login')
         }
-        
+
     })
 
     const logout = () => {

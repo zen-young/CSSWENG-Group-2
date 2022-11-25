@@ -4,17 +4,20 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore"
 import { getStorage } from "firebase/storage"
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyC3gknBKtYUdObP8-Pgtgjbk3mH4snh0jk",
-    authDomain: "practice-a80a2.firebaseapp.com",
-    projectId: "practice-a80a2",
-    storageBucket: "practice-a80a2.appspot.com",
-    messagingSenderId: "241177419412",
-    appId: "1:241177419412:web:c15ec4b70258dcf878de81",
+    apiKey: "AIzaSyAo2gr7KKRfZcDwl_AKR2WkLe9DAK4-510",
+    authDomain: "upscale-printing-solutions.firebaseapp.com",
+    projectId: "upscale-printing-solutions",
+    storageBucket: "upscale-printing-solutions.appspot.com",
+    messagingSenderId: "607895251568",
+    appId: "1:607895251568:web:c9d7007078225de698a2b5",
+    // measurementId: "G-F87076YXG0",
 };
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig, "upscale printing solutions");
 export const storage = getStorage(app);
 export const db = getFirestore(app);
+export const auth = getAuth(app);
 
