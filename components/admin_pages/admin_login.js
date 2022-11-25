@@ -1,32 +1,37 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup} from 'firebase/auth'
 import { app } from '../../firebaseConfig'
+
 import { useRouter } from "next/router";
 
 function Admin_Login() {
 
     const auth = getAuth(app)
+    const provider = new GoogleAuthProvider()
     const router = useRouter()
 
-    useEffect(() => {
+    const [message, setMessage] = useState('')
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    useEffect(() => {    
         let token = sessionStorage.getItem("User_Token");
         if (token) {
             router.push("/admin/settings");
         }
     }, []);
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-
     const login = () => {
         signInWithEmailAndPassword(auth, email, password)
         .then((response) => {
+            setMessage("Logging in...")
             sessionStorage.setItem("User_Token", response.user.accessToken);
             router.push('/admin/settings')
 
         }).catch((error) =>{
             console.log(error)
+            setMessage("Incorrect Email or Password")
         })
     }
 
@@ -36,6 +41,7 @@ function Admin_Login() {
                 <h1 className="font-bold text-[40px] text-center mb-[25px]">
                     Admin Login
                 </h1>
+                <p className="text-center mb-3 text-red-600">{message}</p>
                 <div className="w-1/3 mx-auto">
                     <label
                         htmlFor="email"
@@ -68,6 +74,10 @@ function Admin_Login() {
                         id="password"
                         className="w-full rounded-sm border border-black mb-[25px] p-3"
                         placeholder="Enter password..."
+                        onKeyDown={(e) => {
+                            if(e.key === 'Enter')
+                                login()
+                        }}
                         onChange={(e) => {
                             setPassword(e.target.value);
                         }}

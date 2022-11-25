@@ -1,18 +1,18 @@
 
 import { useEffect, useState } from "react";
-import { getAuth } from "firebase/auth";
-import { async } from "@firebase/util";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/router";
 
 function Admin_Settings() {
 
+    const Router = useRouter()
     const auth = getAuth()
-    const user = auth.currentUser;
-    console.log(user)
 
+    const [currUser, setUser] = useState('')
     const [newEmail, setNewEmail] = useState('')
     const [newPass, setNewPass] = useState('')
     const [repPass, setRepeatPass] = useState('')
-    const [message, setMessage] = useState()
+    const [message, setMessage] = useState('')
 
     useEffect(() => {
         if(newPass.length > 0 && newPass != repPass){
@@ -26,6 +26,19 @@ function Admin_Settings() {
     async function updateUser(){
         
     }
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setUser(user);
+            }else{
+                Router.push("/admin/login");
+            }
+        });
+        // if(!currUser){
+        //     Router.push('/admin/login')
+        // }
+    }, [])
 
     return (
         <>
@@ -48,7 +61,7 @@ function Admin_Settings() {
                         name="email"
                         id="email"
                         className="w-full rounded-sm border border-black block mb-[25px] p-3"
-                        value={user.email}
+                        value={currUser.email}
                         readOnly
                     />
 
@@ -76,7 +89,6 @@ function Admin_Settings() {
                         name="currentpass"
                         id="currentpass"
                         className="w-full rounded-sm border border-black block mb-[25px] p-3"
-                        value={user.prov}
                     />
 
                     <p className="w-full text-[12px] align-top text-center text-red-500">

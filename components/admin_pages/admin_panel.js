@@ -8,6 +8,8 @@ import { getAuth, signOut } from "firebase/auth";
 import Admin_Settings from "./admin_settings";
 import Add_Product from "./add_products";
 import Edit_Product from "./edit_products";
+import Company_Info from "./company_info";
+import Contact_Info from "./contact_info";
 
 function Admin_Panel() {
     const auth = getAuth()
@@ -16,19 +18,22 @@ function Admin_Panel() {
 
     //Default Page after logging in
     const [currPage, setCurrPage] = useState("Admin Settings");
+    const [pageIndex, setIndex]= useState(0);
 
     //Insert needed Pages into array
     const pages = [];
     pages.push({ pageName: "Admin Settings", html: <Admin_Settings /> });
     pages.push({ pagename: "Add Product", html: <Add_Product />})
     pages.push({ pageName: "Edit Product", html: <Edit_Product />})
+    pages.push({ pageName: "Edit Product", html: <Company_Info /> });
+    pages.push({ pageName: "Edit Product", html: <Contact_Info /> });
 
     useEffect(() => {
         let token = sessionStorage.getItem("User_Token");
-
         if(!token){
             router.push('/admin/login')
         }
+        
     })
 
     const logout = () => {
@@ -111,14 +116,14 @@ function Admin_Panel() {
 
                     <p
                         className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
-                        onClick={() => {}}
+                        onClick={() => {setIndex(3)}}
                     >
                         Company Information
                     </p>
 
                     <p
                         className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
-                        onClick={() => {}}
+                        onClick={() => {setIndex(4)}}
                     >
                         Contact Information
                     </p>
@@ -142,7 +147,7 @@ function Admin_Panel() {
                             currPage == "Admin Settings" ? "underline" : ""
                         } hover:cursor-pointer font-semibold text-[24px] ml-[10px]`}
                         onClick={() => {
-                            setCurrPage("Admin Settings");
+                            setIndex(0);
                         }}
                     >
                         Admin Settings
@@ -166,7 +171,7 @@ function Admin_Panel() {
 
             {/* Pages Container */}
             <div className="w-2/3 h-auto bg-gray-100">
-                {pages[2].html}
+                {pages[1].html}
             </div>
         </div>
     );
