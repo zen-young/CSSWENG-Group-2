@@ -258,7 +258,7 @@ function Add_Product(props) {
         inputFunc(inputs => [...inputs, x])
     }
 
-        // Gets data for variation and stores it to rows
+    // Gets data for variation and stores it to rows
     function updateVariationsValue(){
         Array.prototype.forEach.call(document.getElementById("variations").children, (child, index) => {
             let x = child.children; //Each Div
@@ -405,7 +405,22 @@ function Add_Product(props) {
             setProdCateg(values[0])
         })
 
+        getDocument("products", "123").then((data) => {
+            // const values = Object.values(data);
+            console.log("Variations: ");
+            console.log(data.variations);
+
+            var x = data.variations
+            console.log(x[0].price)
+        });
+
     }, [])
+
+    var arrTest = []
+
+    async function fetchData(){
+        
+    }
 
     return (
         <>
