@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { IconCircleX } from "@tabler/icons";
-import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { setDoc, doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { db, storage } from "../../firebaseConfig";
 import { uuidv4 } from "@firebase/util";
@@ -67,16 +67,20 @@ function Add_Product(props) {
                 image_urls: urls,
             }).then(() => {
                 //Clear stored files and images in states
-                
-                updateDoc(doc(db, "category_schema", "products"), {
-                    products: arrayUnion(prodName),
-                }).then(() => {
-                    setImages([]);
-                    setUrls([])
-                })
+                setImages([]);
+                setUrls([]);
             });
         } catch (err) {
             console.log(err);
+        }
+
+        //Updata Categories
+        try {
+            await updateDoc(doc(db, "categories", "category_schema"), {
+                products: arrayUnion(prodName.toString()),
+            })
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -705,7 +709,7 @@ function Add_Product(props) {
                         className="font-bold text-[14px] border px-[20px] py-1 bg-green-500"
                         onClick={() => {
                             updateVariationsValue()
-                            getURLS().then(() => {
+                            addToDatabase().then(() => {
                                 //What to do after adding to database
                                 // window.location.reload(false);
                             });
