@@ -172,7 +172,14 @@ function Admin_Panel() {
 
             {/* Pages Container */}
             <div className="w-2/3 h-auto bg-gray-100">
-                {pages[1].html}
+
+                {/* 
+                    CHANGE INDEX TO VIEW PAGE FROM PAGES ARRAY
+                    index 0 = admin settings
+                    index 1 = add products page
+                    index 2 = edit/delete products page
+                */}
+                {pages[2].html}
             </div>
         </div>
     );

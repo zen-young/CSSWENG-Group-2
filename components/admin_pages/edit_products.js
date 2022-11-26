@@ -532,7 +532,8 @@ function Add_Product(props) {
             return data
         } else {
             // doc.data() will be undefined in this case
-            console.log("No such document!");
+            console.log("No such document!")
+            alert("Document Does Not Exist")
         }
     }
 
