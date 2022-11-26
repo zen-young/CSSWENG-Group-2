@@ -14,7 +14,7 @@ function Admin_Login() {
     if (user) {
       router.push("/admin/settings");
     }
-  }, []);
+  }, [router, user]);
 
   const handleLogin = async () => {
     try {
