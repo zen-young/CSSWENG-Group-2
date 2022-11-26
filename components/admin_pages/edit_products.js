@@ -543,7 +543,9 @@ function Add_Product(props) {
     useEffect(() => {
         if(isFirstRender.current == true){
             getCategories()
-            getProduct("Product 2")
+
+            // Product Parameter is to be changed later on
+            getProduct("Product 3")
 
             isFirstRender.current = false;
             return
