@@ -33,15 +33,15 @@ export default function ProductCardsGrid({ productList }) {
       key={product.title}
       p="0"
       component="a"
-      href={`/products/${product.title}`}
+      href={`/products/${product.name}`}
       className={classes.card}
       style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
     >
       <AspectRatio ratio={16 / 9}>
-        <Image src={product.image} alt="product image" fit="contain" />
+        <Image src={product.image_urls[0]} alt="product image" fit="contain" />
       </AspectRatio>
       <Text className={classes.title} m="md">
-        {product.title}
+        {product.name}
       </Text>
     </Card>
   ));

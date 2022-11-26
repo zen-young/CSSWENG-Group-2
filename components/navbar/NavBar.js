@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from "react";
+import { db } from "../../firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 import {
   createStyles,
   Header,
@@ -73,51 +76,41 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-// TODO: Fetch the categories from Firebase instead of hardcoding it here.
-const categories = [
-  {
-    title: "Business & Marketing",
-    items: [
-      "Placeholder 1",
-      "Placeholder 2",
-      "Placeholder 3",
-      "Placeholder 4",
-      "Placeholder 5",
-    ],
-  },
-  {
-    title: "Events",
-    items: [
-      "Placeholder 6",
-      "Placeholder 7",
-      "Placeholder 8",
-      "Placeholder 9",
-      "Placeholder 10",
-      "Placeholder 11",
-      "Placeholder 12",
-    ],
-  },
-  {
-    title: "Office & Stationery",
-    items: ["Placeholder 13", "Placeholder 14", "Placeholder 15"],
-  },
-];
-
-const products = [
-  "Gift Tags",
-  "Gift Wrapping Paper",
-  "Notecards",
-  "Notecards Again",
-  "Some Random Stuff 1",
-  "Some Random Stuff 2",
-  "Some Random Stuff 3",
-  "Some Random Stuff 4",
-  "Photocards",
-  "Sticker and Labels",
-];
-
 export default function NavBar() {
   const { classes, theme } = useStyles();
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    try {
+      // get products
+      getDocs(collection(db, "products"))
+        .then((res) => {
+          const productList = [];
+          res.forEach((doc) => {
+            productList.push(doc.data().name);
+          });
+          setProducts(productList);
+        })
+        .catch((err) => console.error(err));
+
+      // get categories
+      getDocs(collection(db, "categories"))
+        .then((res) => {
+          const categoriesList = [];
+          res.forEach((doc) => {
+            categoriesList.push(doc.data());
+          });
+          setCategories(categoriesList);
+        })
+        .catch((err) => console.error(err));
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
+  console.log(products);
+  console.log(categories);
 
   // TODO: Extract this into another component
   const links = categories.map((category) => (
@@ -127,14 +120,14 @@ export default function NavBar() {
       shadow="md"
       withinPortal
       closeDelay={0}
-      key={category.title}
+      key={category.name}
     >
       <HoverCard.Target>
         <UnstyledButton className={classes.subLink}>
           <Group noWrap align="flex-start">
             <div>
               <Text size="sm" weight={500}>
-                {category.title}
+                {category.name}
               </Text>
             </div>
           </Group>
@@ -143,7 +136,7 @@ export default function NavBar() {
 
       <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
         <SimpleGrid cols={1} spacing={0}>
-          {category.items.map((item) => (
+          {category.products.map((item) => (
             <a href={`/products/${item}`} key={item}>
               <UnstyledButton className={classes.subLink}>
                 {item}
