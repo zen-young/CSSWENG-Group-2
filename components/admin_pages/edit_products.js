@@ -1,120 +1,148 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/router";
 import { IconCircleX } from "@tabler/icons";
-import { setDoc, doc, getDoc } from "firebase/firestore";
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import {
+    deleteDoc,
+    doc,
+    getDoc,
+    updateDoc,
+    arrayUnion,
+    query,
+    collection,
+    getDocs,
+} from "firebase/firestore";
+import { ref, getDownloadURL, uploadBytesResumable, deleteObject } from "firebase/storage";
 import { db, storage } from "../../firebaseConfig";
 import { uuidv4 } from "@firebase/util";
-import Header_Live_Preview from "./Header_LivePreview";
 import { useEffect } from "react";
+import Header_Live_Preview from "./Header_LivePreview";
 
-function Edit_Product(props) {
+function Add_Product(props) {
     const [message, setMessage] = useState("");
 
-    // Values to fetch and put into forms
+    // PRODUCT DATA
     const [images, setImages] = useState([]);
     const [prodName, setProductName] = useState("");
     const [category, setCategory] = useState([]);
-    const [prodCateg, setProdCateg] = useState("")
-    const [featured, setFeatured] = useState();
+    const [prodCateg, setProdCateg] = useState("");
+    const [featured, setFeatured] = useState(false);
     const [prodDesc, setDescription] = useState("");
     const [sizes, setSizes] = useState([]);
     const [paperTypes, setTypes] = useState([]);
     const [rows, setRows] = useState([]);
-    const [urls, setUrls] = useState([]);
+    const [colors, setColors] = useState([]);
+    
 
-    //Arrays holding added input html tags
+
+
+    const [urls, setUrls] = useState([])
+    const [productURLS, setProdURLS] = useState([])
+    const [productURLSCopy, setProdURLCopy] = useState([]) 
+    const [newUrls, setNewUrls] = useState([])
+
+    // HTML ELEMENTS LIST
     const [sizeInputs, setSizeInputs] = useState([]);
     const [paperInputs, setPaperInputs] = useState([]);
+    const [colorInputs, setColorInputs] = useState([]);
+    const [includeRow, setIncludedRows] = useState([true, true, true]);
     const [rowInputs, setRowInputs] = useState([]);
 
-    async function getURLS() {
+    //Adds a doc to the database
+    async function addToDatabase() {
         const promises = [];
 
-        images &&
-            images.map((image) => {
+        //Pushes images to storage with unique filename
+        images && images.map((image) => {
                 const uid = uuidv4();
                 const filename = "images/" + image.name + "_" + uid;
                 const storageRef = ref(storage, filename);
 
+                //Uploads Image with unique name
                 promises.push(
                     uploadBytesResumable(storageRef, image).then(
                         (uploadResult) => {
                             return getDownloadURL(uploadResult.ref);
-                        }
-                    )
-                );
-            });
+                    }
+                )
+            );
+        });
 
-        const urls = await Promise.all(promises);
+        //List of Firebase Urls for each newly uploaded image
+        const reformedURLS = await Promise.all(promises);
 
-        Array.prototype.forEach.call(
-            document.getElementById("product_sizes").elements,
-            (element) => {
-                if (element.value.length > 0) sizes.push(element.value);
-            }
-        );
+        const updatedUrls = productURLS.concat(reformedURLS);
+        var removedImages = productURLSCopy.filter((x) => !productURLS.includes(x));
+        console.log("Diff: ", removedImages)
 
-        Array.prototype.forEach.call(
-            document.getElementById("paper_types").elements,
-            (element) => {
-                if (element.value.length > 0) paperTypes.push(element.value);
-            }
-        );
-
-        var y = new Array();
-        Array.prototype.forEach.call(
-            document.getElementById("row_variations").elements,
-            (element) => {
-                y.push(element.value);
-
-                if (y.length == 3) {
-                    rows.push({
-                        size: y[0],
-                        quantity: y[1],
-                        price: y[2],
-                    });
-                    y = new Array();
-                }
-            }
-        );
-
+        // Delete images if any
         try {
-            await setDoc(doc(db, "data", prodName.toString()), {
-                product_name: prodName,
-                category: category,
+            var fileRef = ref(storage, removedImages);
+            if(fileRef){
+                deleteObject(fileRef).then(()=>{
+                    console.log("file deleted")
+                }).catch((error)=>{
+                    console.log(error)
+                })
+            }
+        } catch (error) {
+            console.log(error)
+        }
+        
+        const docRef = doc(db, "products", "Product 2")
+
+        // Adds product to database
+        try {
+            await updateDoc(docRef, {
+                name: prodName,
+                category: prodCateg,
                 featured: featured,
-                product_description: prodDesc,
-                sizes: sizes,
+                description: prodDesc,
+                product_sizes: sizes,
+                paper_colors: colors,
                 paper_types: paperTypes,
                 variations: rows,
-                image_urls: urls,
+                image_urls: updatedUrls,
             }).then(() => {
+                //Clear stored files and images in states
                 setImages([]);
-                setUrls([])
+                setUrls([]);
             });
         } catch (err) {
             console.log(err);
         }
+
+        //Update Categories
+        try {
+            await updateDoc(doc(db, "categories", prodCateg), {
+                products: arrayUnion(prodName.toString()),
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Deletes from database
+    async function deleteDocument(){
+        const docRef = doc(db, "products", prodName);
+        await deleteDoc(docRef).then(() => {
+            alert("Successfully Deleted Document")
+        }).catch((error) =>{
+            alert("Error Occurred: ", error)
+        });
     }
 
     //Add Image to images array
     function handleImageUpload(e) {
         setMessage("");
-        let file = e.target.files;
 
+        let file = e.target.files;
         for (let i = 0; i < file.length; i++) {
             const fileType = file[i]["type"];
             const validTypes = ["image/gif", "image/jpeg", "image/png"];
 
             if (validTypes.includes(fileType)) {
-                if(images.length == 0){
-                    setImages([file[i]])
-                    setUrls([URL.createObjectURL(file[i])])
-                }else{
-                    setImages((images) => [...images, file[i]]);
-                    setUrls((urls) => [...urls, URL.createObjectURL(file[i])]);
-                }
+                setImages((images) => [...images, file[i]]);
+                setNewUrls((newUrls) => [...newUrls, URL.createObjectURL(file[i])]);
             } else {
                 setMessage(
                     "Only Images of Type JPEG, PNG, and GIF are accepted"
@@ -123,152 +151,411 @@ function Edit_Product(props) {
         }
     }
 
-    function removeImage(i) {
-        let index = i;
+    //Remove selected image
+    function removeImage(index) {
 
-        setImages((images) => images.filter((img, i) => i !== index));
-        setUrls((urls) => urls.filter((imgurl, i) => i !== index));
-    }
+        let arrLen1 = productURLS.length
+        let arrLen2 = newUrls.length
+        
+        if(index < arrLen1 && arrLen1 > 0){
+            setProdURLS((productURLS) => productURLS.filter((img_url, i) => i !== index))
+            if(arrLen1 - 1 == 0)
+                setProdURLS([])
+        }
 
-    //Add another input for sizes
-    function add_size(props) {
-        var x = (
-            <li key={"size" + (props.index).toString()} className="flex">
-                <IconCircleX
-                    onClick={(e) => {
-                        let x = e.target.parentNode;
-                        x.nodeName === "LI"
-                            ? x.remove()
-                            : x.parentNode.remove();
-                    }}
-                    className="cursor-pointer"
-                />
-                <input
-                    type="text"
-                    className="w-full p-1 border border-black rounded-sm mt-[5px] mb-[10px]"
-                    defaultValue={props.val}
-                />
-            </li>
-        );
-        setSizeInputs(sizeInputs => [...sizeInputs, x]);
-    }
+        else if(index >= arrLen1 && arrLen1 > 0){
+            setNewUrls((newUrls) => newUrls.filter((img_url, i) => i !== (index - arrLen1)))
+            setImages((images) => images.filter((img, i) => i !== (index - arrLen1)));
+            if(arrLen2 - 1 == 0){
+                setNewUrls([])
+                setImages([])
+                document.getElementById("image_files").value = null;
+            }
+        }
 
-    //Add another input for paper types
-    function add_type(props) {
-        var x = (
-            <li key={"type" + (props.index).toString()} className="flex">
-                <IconCircleX
-                    onClick={(e) => {
-                        let x = e.target.parentNode;
-                        x.nodeName === "LI"
-                            ? x.remove()
-                            : x.parentNode.remove();
-                    }}
-                    className="cursor-pointer"
-                />
-                <input
-                    type="text"
-                    className="w-full p-1 border border-black rounded-sm mt-[5px] mb-[10px]"
-                    defaultValue={props.val}
-                />
-            </li>
-        );
-        setPaperInputs(paperInputs => [...paperInputs, x]);
-    }
-
-    //Add another row to variation rows
-    function add_row(props) {
-        var x = (
-            <li key={"row" + (props.index).toString()} className="flex w-full mb-[10px]">
-                <div className="flex w-1/3 justify-center">
-                    <input
-                        type="text"
-                        className="w-1/2 border border-black rounded-sm"
-                        defaultValue={props.val != null ? props.val.size : ""}
-                    />
-                </div>
-                <div className="flex w-1/3 justify-center">
-                    <input
-                        type="text"
-                        className="w-1/2 border border-black rounded-sm"
-                        defaultValue={props.val != null ? props.val.quantity : ""}
-                    />
-                </div>
-                <div className="flex w-1/3 justify-center">
-                    <input
-                        type="text"
-                        className="w-1/2 border border-black rounded-sm"
-                        defaultValue={props.val != null ? props.val.price : ""}
-                    />
-                </div>
-
-                <IconCircleX
-                    onClick={(e) => {
-                        let x = e.target.parentNode;
-                        x.nodeName === "LI"
-                            ? x.remove()
-                            : x.parentNode.remove();
-                    }}
-                    className="absolute cursor-pointer"
-                />
-            </li>
-        );
-
-        setRowInputs(rowInputs => [...rowInputs, x]);
-    }
-
-    async function getDocument(dbName, docName) {
-        const docRef = doc(db, dbName, docName);
-
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            return docSnap.data();
-        } else {
-            console.log("Did not find document");
+        else if(arrLen1 == 0){
+            setNewUrls((newUrls) => newUrls.filter((img_url, i) => i !== index))
+            if (arrLen2 - 1 == 0) {
+                setNewUrls([]);
+                setImages([]);
+                document.getElementById("image_files").value = null;
+            }
         }
     }
 
-    useEffect(() => {
-        loadData()
-    }, [])
+    //Icon component for Product Features/Attributes
+    const FeatureRemoveIcon = (
+        <div className="flex w-1/6 justify-center">
+            <IconCircleX
+                onClick={(e) => {
+                    let x = e.target.parentNode.parentNode;
+                    x.nodeName === "LI" ? x.remove() : x.parentNode.remove();
+                }}
+                className="cursor-pointer stroke-red-500"
+            />
+        </div>
+    );
 
-    let count = 0
-    async function loadData(){
-        getDocument("products", "Notes").then((data) => {
-            if (data != null) {
-                setUrls(data.image_urls);
-                setProductName(data.product_name);
-                setDescription(data.product_description);
-                setProdCateg(data.category);
-                setTypes(data.paper_types);
-                setSizes(data.sizes);
-                setRows(data.variations);
+    //Add Feature Button
+    function FeatureButton(buttonTitle, buttonFunc) {
+        return (
+            <div className="flex items-end mb-[50px]">
+                <div className="w-1/4 pr-[25px] mt-10" />
+                <div className="flex w-full">
+                    <div className="w-1/6" />
+                    <button
+                        onClick={buttonFunc}
+                        className="w-4/6 border p-1 border-black rounded-sm font-bold bg-gray-300 text-[16px] hover:brightness-90"
+                    >
+                        {buttonTitle}
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
-                if (count == 0) {
-                    for (let i = 1; i < data.sizes.length; i++) {
-                        add_size({ val: data.sizes[i], index: i });
+    // Stores values in features to respective arrays
+    function updateFeatureValues(feature) {
+        switch (feature) {
+            case 1: //Sizes
+                var x = [];
+                Array.prototype.forEach.call(
+                    document.getElementById("product_sizes").elements,
+                    (element) => {
+                        if (
+                            element.value.length > 0 &&
+                            element.type != "checkbox"
+                        ) {
+                            x.push(element.value);
+                        }
+                        if (element.type == "checkbox") {
+                            var [a, b, c] = includeRow;
+                            setIncludedRows([element.checked, b, c]);
+                        }
                     }
+                );
+                setSizes(x);
+                break;
 
-                    for (let j = 1; j < data.paper_types.length; j++) {
-                        add_type({ val: data.paper_types[j], index: j });
+            case 2: //Paper Types
+                var x = [];
+                Array.prototype.forEach.call(
+                    document.getElementById("paper_types").elements,
+                    (element) => {
+                        if (
+                            element.value.length > 0 &&
+                            element.type != "checkbox"
+                        )
+                            x.push(element.value);
+                        if (element.type == "checkbox") {
+                            var [a, b, c] = includeRow;
+                            setIncludedRows([a, element.checked, c]);
+                        }
                     }
+                );
+                setTypes(x);
+                break;
 
-                    for (let k = 1; k < data.variations.length; k++){
-                        add_row({val: data.variations[k], index: k})
-                        console.log(rows)
+            case 3: //Paper Colors
+                var x = [];
+                Array.prototype.forEach.call(
+                    document.getElementById("paper_colors").elements,
+                    (element) => {
+                        if (
+                            element.value.length > 0 &&
+                            element.type != "checkbox"
+                        ) {
+                            x.push(element.value);
+                        }
+                        if (element.type == "checkbox") {
+                            var [a, b, c] = includeRow;
+                            setIncludedRows([a, b, element.checked]);
+                        }
+                    }
+                );
+                setColors(x);
+                break;
+        }
+    }
+
+    // Feature HTML Element / Component
+    function FeatureComponent(title, feature) {
+        return (
+            <div className="flex w-full h-auto">
+                <p className=" w-1/4 text-[16px] text-right">{title}:</p>
+                <ul id="sizes" className="w-full align-middle">
+                    <li className="flex mb-1">
+                        <div className="flex justify-center w-1/6">
+                            <input
+                                type="checkbox"
+                                checked={
+                                    feature == 1
+                                        ? includeRow[0]
+                                        : feature == 2
+                                        ? includeRow[1]
+                                        : includeRow[2]
+                                }
+                                onChange={() => {
+                                    updateFeatureValues(feature);
+                                }}
+                                className="w-[20px]"
+                            />
+                        </div>
+                        <input
+                            type="text"
+                            className="w-4/6 p-1 border border-black rounded-sm"
+                            defaultValue={
+                                feature == 1
+                                    ? sizes[0]
+                                    : feature == 2
+                                    ? paperTypes[0]
+                                    : colors[0]
+                            }
+                            onChange={() => {
+                                updateFeatureValues(feature);
+                            }}
+                            required
+                        />
+                    </li>
+                    {
+                        feature == 1 ? sizeInputs :
+                        feature == 2 ? paperInputs :
+                        colorInputs
+                    }
+                </ul>
+            </div>
+        );
+    }
+
+    // Add new entry for feature
+    function add_entry(inputs, inputFunc, feature, val) {
+        var x = (
+            <li key={inputs.length + 1} className="flex mb-1">
+                {FeatureRemoveIcon}
+                <input
+                    type="text"
+                    className="w-4/6 p-1 border border-black rounded-sm"
+                    defaultValue={val ? val : ""}
+                    onChange={() => {
+                        updateFeatureValues(feature);
+                    }}
+                />
+            </li>
+        );
+        inputFunc((inputs) => [...inputs, x]);
+    }
+
+    function init_Features(){
+        sizes.map((val, index) => {
+            if (index != 0) add_entry(sizeInputs, setSizeInputs, 1, val);
+        });
+
+        paperTypes.map((val, index) => {
+            if (index != 0) add_entry(paperInputs, setPaperInputs, 2, val);
+        });
+
+        colors.map((val, index) => {
+            if (index != 0) add_entry(colorInputs, setColorInputs, 3, val);
+        });
+    }
+
+    function init_Variations(){
+        let temp = []
+        temp.push(rows[0] && rows[0].size ? true : false);
+        temp.push(rows[0] && rows[0].paper_type ? true : false);
+        temp.push(rows[0] && rows[0].color ? true : false);
+
+        for(let i = 1; i < rows.length; i++){
+            add_row(i)
+        }
+    }
+
+    // Gets data for variation and stores it to rows
+    function updateVariationsValue() {
+        Array.prototype.forEach.call(
+            document.getElementById("variations").children,
+            (child, index) => {
+                let x = child.children; //Each Div
+
+                var Obj = new Object();
+                for (let i = 0; i < x.length; i++) {
+                    let y = x[i].children;
+
+                    if (y[0].name == "ProdSize") Obj["size"] = y[0].value;
+
+                    if (y[0].name == "PaperType")
+                        Obj["paper_type"] = y[0].value;
+
+                    if (y[0].name == "PaperColor") Obj["color"] = y[0].value;
+
+                    if (y[0].name == "quantity") Obj["quantity"] = y[0].value;
+
+                    if (y[0].name == "price") {
+                        Obj["price"] = y[0].value;
+                        rows.push(structuredClone(Obj));
+                        Obj = {};
                     }
                 }
-
-                getDocument("categories", "category_list").then((categories) => {
-                    const values = Object.values(categories);
-                    setCategory(values);
-                });
-
-                count = 1
             }
-        })
+        );
     }
+
+    //Add another row to variations' rows
+    function add_row(index) {
+        var x = (
+            <li key={index ? index : rows.length + 1} className="flex w-full mb-[10px]">
+                {includeRow[0] ? (
+                    <div className="flex w-1/5 justify-center">
+                        <select
+                            name="ProdSize"
+                            className="w-1/2 border border-black rounded-sm"
+                            defaultValue={rows[index] ? rows[index].size : "DEFAULT"}
+                        >
+                            <option value="DEFAULT" disabled></option>
+                            {sizes.map((val, key) => {
+                                return (
+                                    <option key={key} value={val}>
+                                        {val}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
+                ) : (
+                    ""
+                )}
+
+                {includeRow[1] ? (
+                    <div className="flex w-1/5 justify-center">
+                        <select
+                            name="PaperType"
+                            className="w-1/2 border border-black rounded-sm"
+                            defaultValue={rows[index] ? rows[index].paper_type : "DEFAULT"}
+                        >
+                            <option value="DEFAULT" disabled></option>
+                            {paperTypes.map((val, key) => {
+                                return (
+                                    <option key={key} value={val}>
+                                        {val}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
+                ) : (
+                    ""
+                )}
+
+                {includeRow[2] ? (
+                    <div className="flex w-1/5 justify-center">
+                        <select
+                            name="PaperColor"
+                            className="w-1/2 border border-black rounded-sm"
+                            defaultValue={rows[index] ? rows[index].color : "DEFAULT"}
+                        >
+                            <option value="DEFAULT" disabled></option>
+                            {colors.map((val, key) => {
+                                return (
+                                    <option key={key} value={val}>
+                                        {val}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
+                ) : (
+                    ""
+                )}
+
+                <div className="flex w-1/5 justify-center">
+                    <input
+                        name="quantity"
+                        type="text"
+                        defaultValue={rows[index] ? rows[index].quantity : ""}
+                        className="w-1/2 border border-black rounded-sm"
+                    />
+                </div>
+
+                <div className="flex w-1/5 justify-center">
+                    <input
+                        name="price"
+                        type="text"
+                        defaultValue={rows[index] ? rows[index].price : ""}
+                        className="w-1/2 border border-black rounded-sm"
+                    />
+                </div>
+
+                <IconCircleX
+                    onClick={(e) => {
+                        let x = e.target.parentNode;
+                        x.nodeName === "LI"
+                            ? x.remove()
+                            : x.parentNode.remove();
+                    }}
+                    className="absolute cursor-pointer stroke-red-500"
+                />
+            </li>
+        );
+
+        setRowInputs((rowInputs) => [...rowInputs, x]);
+    }
+
+    // Gets all product categories
+    async function getCategories() {
+        const arr = [];
+        const querySnapshot = await getDocs(
+            query(collection(db, "categories"))
+        );
+        querySnapshot.forEach((doc) => {
+            arr.push(doc.id);
+        });
+        setCategory(arr);
+    }
+
+    // Get product details
+    async function getProduct(Product_Name){
+        const docRef = doc(db, "products", Product_Name);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            var data = docSnap.data()
+            setProductName(data.name)
+            setProdCateg(data.category)
+            setDescription(data.description)
+            setFeatured(data.featured)
+            setProdURLS(data.image_urls)
+            setProdURLCopy(data.image_urls);
+            setColors(data.paper_colors)
+            setTypes(data.paper_types)
+            setSizes(data.product_sizes)
+            setRows(data.variations)
+            return data
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    }
+
+    var count = 0
+    const isFirstRender = useRef(true);
+    // Runs when page is loaded
+    useEffect(() => {
+        if(isFirstRender.current == true){
+            getCategories()
+            getProduct("Product 2")
+
+            isFirstRender.current = false;
+            return
+        }
+        else{
+            if(rows.length > 1){
+                init_Features()
+                init_Variations()
+            }
+        }
+    }, [rows]);
+
+
 
     return (
         <>
@@ -276,7 +563,7 @@ function Edit_Product(props) {
             <Header_Live_Preview title="Edit Product" />
 
             {/* UPLOADING PRODUCT IMAGES */}
-            <div className="flex-col w-full h-auto bg-gray-100 pr-[40px] pt-[25px]">
+            <div className="flex-col w-full h-auto bg-gray-100 pr-[40px] pt-[25px] pl-[20px]">
                 <p className="w-full text-[12px] align-top text-center text-red-500 mb-[20px]">
                     {message}
                 </p>
@@ -291,7 +578,7 @@ function Edit_Product(props) {
                         className="flex w-full gap-5 overflow-auto"
                     >
                         <div className="flex flex-nowrap gap-2 overflow-auto">
-                            {urls.map((url, key) => {
+                            {(productURLS.concat(newUrls)).map((url, key) => {
                                 return (
                                     <div key={key + 1} className="relative">
                                         <IconCircleX
@@ -312,12 +599,13 @@ function Edit_Product(props) {
 
                         <div className="relative w-1/5 justify-center bg-gray-100 rounded-md border-2 border-black border-dotted cursor-pointer hover:brightness-90">
                             <input
+                                id="image_files"
                                 type="file"
                                 onChange={handleImageUpload}
                                 className="absolute h-full w-full bg-transparent opacity-0 z-10 cursor-pointer"
                                 multiple
-                                name="images[]"
                             />
+
                             <img
                                 src="/assets/add_image_icon.png"
                                 alt=""
@@ -341,7 +629,7 @@ function Edit_Product(props) {
                             type="text"
                             name="product_name"
                             className="w-full p-1 border border-black rounded-sm mt-[5px]"
-                            value={prodName}
+                            defaultValue={prodName}
                             onChange={(e) => {
                                 setProductName(e.target.value);
                             }}
@@ -359,8 +647,11 @@ function Edit_Product(props) {
                                 setProdCateg(e.target.value);
                             }}
                             className="w-full p-1 border border-black rounded-sm mt-[5px]"
-                            value={prodCateg}
+                            defaultValue={prodCateg}
                         >
+                            <option value="DEFAULT" disabled>
+                                --- Select Category ---
+                            </option>
                             {category.map((val, key) => {
                                 return (
                                     <option key={key} value={val}>
@@ -380,13 +671,12 @@ function Edit_Product(props) {
                             <input
                                 type="checkbox"
                                 name="featured"
-                                className="w-[20px] h-[20px] align-middle"
                                 checked={featured}
+                                className="w-[20px] h-[20px] align-middle"
                                 onChange={(e) => {
                                     setFeatured(e.target.checked);
                                 }}
                             />
-                            <p>{featured}</p>
                         </span>
                     </div>
 
@@ -398,123 +688,217 @@ function Edit_Product(props) {
                         <textarea
                             name="product_desc"
                             className="w-full h-[150px] p-1 border border-black rounded-sm mt-[5px]"
+                            defaultValue={prodDesc}
                             onChange={(e) => {
                                 setDescription(e.target.value);
                             }}
-                            value={prodDesc}
                         />
                     </div>
                 </form>
 
-                {/* DYNAMIC FORM PRODUCT SIZES */}
-                <form action="" id="product_sizes">
-                    <div className="flex w-full h-auto align-top">
-                        <p className="w-2/5 text-[20px] align-top text-right pr-[25px]">
-                            Product Sizes:
+                <div className="flex-col pt-5 mb-10">
+                    <p className="text-[20px] font-bold ml-10 mb-2">
+                        Product Features
+                    </p>
+                    <div className="flex">
+                        <p className="ml-10 w-1/4 text-right text-[12px] font-bold">
+                            Feature Name
                         </p>
-                        <ul id="sizes" className="w-full">
-                            <li>
-                                <input
-                                    type="text"
-                                    className="w-full p-1 border border-black rounded-sm mt-[5px] mb-[10px]"
-                                    value={sizes[0]}
-                                    required
-                                />
-                            </li>
-                            {sizeInputs}
-                        </ul>
-                    </div>
-                </form>
-
-                <div className="flex items-end mb-[50px]">
-                    <div className="w-2/5 pr-[25px]"></div>
-                    <button
-                        onClick={() => {
-                            add_size();
-                        }}
-                        className="w-full border p-1 border-black rounded-sm font-bold bg-cyan-100 text-[16px] hover:brightness-90"
-                    >
-                        ADD PRODUCT SIZE
-                    </button>
-                </div>
-
-                {/* DYNAMIC FORM PAPER TYPES */}
-                <form action="" id="paper_types">
-                    <div className="flex w-full h-auto align-top">
-                        <p className="w-2/5 text-[20px] align-top text-right pr-[25px]">
-                            Paper Types:
+                        <p className="ml-5 w-3/6 text-[12px] font-bold">
+                            Add to Variation
                         </p>
-                        <ul id="papers" className="w-full">
-                            <li>
-                                <input
-                                    type="text"
-                                    className="w-full p-1 border border-black rounded-sm mt-[5px] mb-[10px]"
-                                    value={paperTypes[0]}
-                                    required
-                                />
-                            </li>
-                            {paperInputs}
-                        </ul>
+                        <p className="w-full text-[12px] font-bold">
+                            Feature Values
+                        </p>
                     </div>
-                </form>
 
-                <div className="flex mb-[20px]">
-                    <div className="w-2/5 pr-[25px]"></div>
-                    <button
-                        onClick={() => {
-                            add_type();
-                        }}
-                        className="w-full border p-1 border-black rounded-sm font-bold bg-cyan-100 text-[16px] hover:brightness-90"
-                    >
-                        ADD PAPER TYPE
-                    </button>
+                    <div className="mx-auto bg-gray-700 w-11/12 h-[1px] mb-4" />
+                    {/* === ADD PRODUCT SIZES === */}
+                    <form action="" id="product_sizes">
+                        {FeatureComponent("Product Sizes", 1)}
+                    </form>
+                    {FeatureButton("ADD PRODUCT SIZE", () =>
+                        add_entry(sizeInputs, setSizeInputs, 1)
+                    )}
+
+                    {/* === ADD PAPER TYPES === */}
+                    <form action="" id="paper_types">
+                        {FeatureComponent("Paper Types", 2)}
+                    </form>
+                    {FeatureButton("ADD PAPER TYPE", () =>
+                        add_entry(paperInputs, setPaperInputs, 2)
+                    )}
+
+                    {/* === ADD PAPER COLOR ==== */}
+                    <form action="" id="paper_colors">
+                        {FeatureComponent("Paper Color", 3)}
+                    </form>
+                    {FeatureButton("ADD PAPER COLOR", () =>
+                        add_entry(colorInputs, setColorInputs, 3)
+                    )}
+
+                    <div className="mx-auto bg-black w-11/12 h-[2px] mb-4" />
                 </div>
 
                 {/* DYNAMIC FORM ROW VARIATIONS */}
                 <div className="flex mb-[10px] w-full h-auto">
                     <p
                         htmlFor="product_name"
-                        className="w-2/5 text-[20px] align-top text-right pr-[25px]"
+                        className="w-1/5 text-[20px] align-top text-right"
                     >
                         Variations:
                     </p>
 
-                    <div className="flex w-full">
-                        <p className="w-1/3 text-center">Product Size:</p>
-                        <p className="w-1/3 text-center">Quantity (pcs):</p>
-                        <p className="w-1/3 text-center">Price:</p>
+                    <div className="flex w-full ml-5">
+                        {includeRow[0] ? (
+                            <p className="w-1/5 text-center">Product Size:</p>
+                        ) : (
+                            ""
+                        )}
+                        {includeRow[1] ? (
+                            <p className="w-1/5 text-center">Paper Type:</p>
+                        ) : (
+                            ""
+                        )}
+                        {includeRow[2] ? (
+                            <p className="w-1/5 text-center">Paper Color:</p>
+                        ) : (
+                            ""
+                        )}
+                        <p className="w-1/5 text-center">Quantity (pcs):</p>
+                        <p className="w-1/5 text-center">Price:</p>
                     </div>
                 </div>
 
                 <form action="" id="row_variations">
                     <div className="flex w-full mb-[20px]">
-                        <div className="w-2/5 pr-[25px]"></div>
+                        <div className="w-1/5 pr-[25px]"></div>
                         <div className="w-full">
                             <ul id="variations">
-                                
-                                <li className="flex w-full mb-[10px]">
-                                    <div className="flex w-1/3 justify-center">
-                                        <input
-                                            type="text"
-                                            className="w-1/2 border border-black rounded-sm"
-                                            // value={rows == null ? 0 : rows[0].size}
-                                        />
-                                    </div>
-                                    <div className="flex w-1/3 justify-center">
-                                        <input
-                                            type="text"
-                                            className="w-1/2 border border-black rounded-sm"
-                                            // value={rows.length > 0 ? 0 : rows[0].quantity}
-                                        />
-                                    </div>
-                                    <div className="flex w-1/3 justify-center">
-                                        <input
-                                            type="text"
-                                            className="w-1/2 border border-black rounded-sm"
-                                            // value={rows.length > 0 ? 0 : rows[0].price}
-                                        />
-                                    </div>
-                                </li>
+                                {rows[0] && (
+                                    <li className="flex w-full mb-[10px]">
+                                        {includeRow[0] ? (
+                                            <div className="flex w-1/5 justify-center">
+                                                <select
+                                                    name="ProdSize"
+                                                    type=""
+                                                    className="w-1/2 border border-black rounded-sm"
+                                                    defaultValue={
+                                                        rows[0]
+                                                            ? rows[0].quantity
+                                                            : ""
+                                                    }
+                                                >
+                                                    <option
+                                                        value="DEFAULT"
+                                                        disabled
+                                                    ></option>
+                                                    {sizes.map((val, key) => {
+                                                        return (
+                                                            <option
+                                                                key={key}
+                                                                value={val}
+                                                            >
+                                                                {val}
+                                                            </option>
+                                                        );
+                                                    })}
+                                                </select>
+                                            </div>
+                                        ) : (
+                                            ""
+                                        )}
+
+                                        {includeRow[1] ? (
+                                            <div className="flex w-1/5 justify-center">
+                                                <select
+                                                    name="PaperType"
+                                                    className="w-1/2 border border-black rounded-sm"
+                                                    defaultValue={
+                                                        rows[0]
+                                                            ? rows[0].paper_type
+                                                            : "DEFAULT"
+                                                    }
+                                                >
+                                                    <option
+                                                        value="DEFAULT"
+                                                        disabled
+                                                    ></option>
+                                                    {paperTypes.map(
+                                                        (val, key) => {
+                                                            return (
+                                                                <option
+                                                                    key={key}
+                                                                    value={val}
+                                                                >
+                                                                    {val}
+                                                                </option>
+                                                            );
+                                                        }
+                                                    )}
+                                                </select>
+                                            </div>
+                                        ) : (
+                                            ""
+                                        )}
+
+                                        {includeRow[2] ? (
+                                            <div className="flex w-1/5 justify-center">
+                                                <select
+                                                    name="PaperColor"
+                                                    className="w-1/2 border border-black rounded-sm"
+                                                    defaultValue={
+                                                        rows[0]
+                                                            ? rows[0].color
+                                                            : "DEFAULT"
+                                                    }
+                                                >
+                                                    <option
+                                                        value="DEFAULT"
+                                                        disabled
+                                                    ></option>
+                                                    {colors.map((val, key) => {
+                                                        return (
+                                                            <option
+                                                                key={key}
+                                                                value={val}
+                                                            >
+                                                                {val}
+                                                            </option>
+                                                        );
+                                                    })}
+                                                </select>
+                                            </div>
+                                        ) : (
+                                            ""
+                                        )}
+
+                                        <div className="flex w-1/5 justify-center">
+                                            <input
+                                                name="quantity"
+                                                type="text"
+                                                defaultValue={
+                                                    rows[0]
+                                                        ? rows[0].quantity
+                                                        : ""
+                                                }
+                                                className="w-1/2 border border-black rounded-sm"
+                                            />
+                                        </div>
+
+                                        <div className="flex w-1/5 justify-center">
+                                            <input
+                                                name="price"
+                                                type="text"
+                                                defaultValue={
+                                                    rows[0] ? rows[0].price : ""
+                                                }
+                                                className="w-1/2 border border-black rounded-sm"
+                                            />
+                                        </div>
+                                    </li>
+                                )}
+
                                 {rowInputs}
                             </ul>
                         </div>
@@ -525,7 +909,7 @@ function Edit_Product(props) {
                     <div className="w-2/5 pr-[25px]"></div>
                     <button
                         onClick={(e) => {
-                            add_row( {index: rowInputs.length} );
+                            add_row();
                         }}
                         className="w-full border p-1 border-black rounded-sm font-bold bg-cyan-100 text-[16px] hover:brightness-90"
                     >
@@ -546,8 +930,10 @@ function Edit_Product(props) {
                     <button
                         className="font-bold text-[14px] border px-[20px] py-1 bg-green-500"
                         onClick={() => {
-                            getURLS().then(() => {
-                                window.location.reload(false);
+                            updateVariationsValue();
+                            addToDatabase().then(() => {
+                                //What to do after adding to database
+                                // window.location.reload(false);
                             });
                         }}
                     >
@@ -555,7 +941,10 @@ function Edit_Product(props) {
                     </button>
                     <button
                         className="font-bold text-[14px] border px-[20px] py-1 bg-red-500"
-                        onClick={() => {}}
+                        onClick={() => { 
+                            deleteDocument() 
+                            //Insert What to do after deleting
+                        }}
                     >
                         Delete
                     </button>
@@ -565,4 +954,4 @@ function Edit_Product(props) {
     );
 }
 
-export default Edit_Product;
+export default Add_Product;
