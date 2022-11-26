@@ -6,9 +6,11 @@ import NavBar from "../components/navbar/NavBar";
 import Footer from "../components/footer/Footer";
 import "../styles/globals.css";
 import { AuthContextProvider } from "../context/AuthContext";
+import { useRouter } from "next/router";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
+  const router = useRouter();
 
   return (
     <>
@@ -21,7 +23,6 @@ export default function App(props: AppProps) {
       </Head>
 
       <AuthContextProvider>
-        <NavBar />
         <MantineProvider
           withGlobalStyles
           withNormalizeCSS
@@ -30,9 +31,16 @@ export default function App(props: AppProps) {
             colorScheme: "light",
           }}
         >
-          <Component {...pageProps} />
+          {router.pathname.includes("/admin") ? (
+            <Component {...pageProps} />
+          ) : (
+            <>
+              <NavBar />
+              <Component {...pageProps} />
+              <Footer />
+            </>
+          )}
         </MantineProvider>
-        <Footer />
       </AuthContextProvider>
     </>
   );
