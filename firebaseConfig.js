@@ -13,11 +13,11 @@ const firebaseConfig = {
     storageBucket: "upscale-printing-solutions.appspot.com",
     messagingSenderId: "607895251568",
     appId: "1:607895251568:web:c9d7007078225de698a2b5",
-    // measurementId: "G-F87076YXG0",
+    measurementId: "G-F87076YXG0",
 };
 
 const app = initializeApp(firebaseConfig, "upscale printing solutions");
-export const storage = getStorage(app);
+export const storage = getStorage(app); //Can export 
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
