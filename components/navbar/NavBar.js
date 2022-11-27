@@ -115,7 +115,9 @@ export default function NavBar() {
   // TODO: Extract this into another component
   const links = categories
     .filter((category) => {
-      return category.hasOwnProperty("products");
+      return (
+        category.hasOwnProperty("products") && category.products.length !== 0
+      );
     })
     .map((category) => (
       <HoverCard
