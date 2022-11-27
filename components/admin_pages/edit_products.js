@@ -370,9 +370,12 @@ function Add_Product({ setPages, productName }) {
         temp.push(rows[0] && rows[0].paper_type ? true : false);
         temp.push(rows[0] && rows[0].color ? true : false);
 
-        for(let i = 1; i < rows.length; i++){
-            add_row(i)
+        if(rowInputs.length == 0){
+            for (let i = 1; i < rows.length; i++) {
+                add_row(i);
+            }
         }
+        
     }
 
     // Gets data for variation and stores it to rows
