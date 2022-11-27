@@ -88,7 +88,7 @@ function Add_Product({ setPages, productName }) {
             console.log(error)
         }
         
-        const docRef = doc(db, "products", "Product 2")
+        const docRef = doc(db, "products", prodName)
 
         // Adds product to database
         try {
