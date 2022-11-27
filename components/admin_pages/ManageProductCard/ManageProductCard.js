@@ -6,11 +6,13 @@ import EditProduct from "../edit_products";
 
 const ManageProductCard = ({
   setPages,
+  setProduct,
   data,
   allData,
   setItemData,
   categories,
 }) => {
+
   const [checked, setChecked] = useState(false);
 
   const handleDelete = () => {
@@ -70,6 +72,7 @@ const ManageProductCard = ({
       });
     }
   };
+
   return (
     <div className="w-full bg-[#f0efef] border border-black px-[25px] py-[20px] flex items-center justify-between mb-[40px]">
       <div className="flex items-center">
@@ -116,18 +119,21 @@ const ManageProductCard = ({
           <div className="flex items-center mt-[30px] space-x-[18px]">
             <button
               className="bg-[#d9d9d9] text-center text-black font-normal text-[12px] leading-[14px] py-[7px] px-[19px]"
-              onClick={() =>
-                setPages([
-                  {
-                    pageName: "Edit Product",
-                    html: (
-                      <EditProduct
-                        name={data.name}
-                        categories={data.categories}
-                      />
-                    ),
-                  },
-                ])
+              onClick={() => {
+                setProduct(data.name)
+                setPages(2)
+              }
+                // setPages([
+                //   {
+                //     pageName: "Edit Product",
+                //     html: (
+                //       <EditProduct
+                //         name={data.name}
+                //         categories={data.categories}
+                //       />
+                //     ),
+                //   },
+                // ])
               }
             >
               Edit

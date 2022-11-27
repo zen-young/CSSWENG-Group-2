@@ -2,11 +2,11 @@
 import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/router";
+import { auth } from "../../firebaseConfig"
 
 function Admin_Settings() {
 
     const Router = useRouter()
-    const auth = getAuth()
 
     const [currUser, setUser] = useState('')
     const [newEmail, setNewEmail] = useState('')

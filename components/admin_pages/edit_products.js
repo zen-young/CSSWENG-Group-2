@@ -17,7 +17,7 @@ import { uuidv4 } from "@firebase/util";
 import { useEffect } from "react";
 import Header_Live_Preview from "./Header_LivePreview";
 
-function Add_Product(props) {
+function Add_Product({ setPages, productName }) {
     const [message, setMessage] = useState("");
 
     // PRODUCT DATA
@@ -545,7 +545,7 @@ function Add_Product(props) {
             getCategories()
 
             // Product Parameter is to be changed later on
-            getProduct("Product 3")
+            getProduct(productName)
 
             isFirstRender.current = false;
             return
@@ -925,7 +925,7 @@ function Add_Product(props) {
                     <button
                         className="font-bold text-[14px] border px-[20px] py-1 bg-gray-300"
                         onClick={() => {
-                            window.location.reload(false);
+                            setPages(5)
                         }}
                     >
                         Discard Changes
@@ -936,7 +936,7 @@ function Add_Product(props) {
                             updateVariationsValue();
                             addToDatabase().then(() => {
                                 //What to do after adding to database
-                                // window.location.reload(false);
+                                // setPages(5)
                             });
                         }}
                     >

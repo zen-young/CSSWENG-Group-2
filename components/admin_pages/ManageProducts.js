@@ -10,10 +10,11 @@ import {
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebaseConfig";
+import Router, { useRouter } from "next/router";
 import AddCategoryModal from "../Modal/AddCategoryModal";
 import ManageProductCard from "./ManageProductCard/ManageProductCard";
 
-const ManageProducts = ({ setPages }) => {
+const ManageProducts = ({ setPages, setProduct }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [itemData, setItemData] = useState([]);
@@ -88,7 +89,10 @@ const ManageProducts = ({ setPages }) => {
         <p className="text-[26px] text-white ml-[25px] font-semibold">
           Products
         </p>
-        <button className="bg-[#f3f2f2] text-black font-normal text-[16px] text-center py-[10px] px-[18px] mr-[75px]">
+        <button 
+          className="bg-[#f3f2f2] text-black font-normal text-[16px] text-center py-[10px] px-[18px] mr-[75px]"
+          onClick={() => { setPages(1) }}
+        >
           + Add New
         </button>
       </div>
@@ -188,6 +192,7 @@ const ManageProducts = ({ setPages }) => {
                 setItemData={setItemData}
                 data={item}
                 setPages={setPages}
+                setProduct={setProduct}
                 categories={categories}
               />
             ))
@@ -200,6 +205,7 @@ const ManageProducts = ({ setPages }) => {
                   setItemData={setItemData}
                   data={item}
                   setPages={setPages}
+                  setProduct={setProduct}
                   categories={categories}
                 />
               ) : null
@@ -212,6 +218,7 @@ const ManageProducts = ({ setPages }) => {
                   setItemData={setItemData}
                   data={item}
                   setPages={setPages}
+                  setProduct={setProduct}
                   categories={categories}
                 />
               ) : null
