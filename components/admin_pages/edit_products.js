@@ -128,7 +128,7 @@ function Add_Product({ setPages, productName }) {
 
     // Deletes from database
     async function deleteDocument(){
-        const docRef = doc(db, "products", prodName);
+        const docRef = doc(db, "products", docId);
         await deleteDoc(docRef).then(() => {
             alert("Successfully Deleted Document")
         }).catch((error) =>{
