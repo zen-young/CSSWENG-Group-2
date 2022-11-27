@@ -109,9 +109,6 @@ export default function NavBar() {
     }
   }, []);
 
-  console.log(products);
-  console.log(categories);
-
   // TODO: Extract this into another component
   const links = categories
     .filter((category) => {
