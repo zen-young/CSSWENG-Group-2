@@ -86,34 +86,35 @@ export default function NavBar() {
 
   useEffect(() => {
     try {
-      // get products
       getDocs(collection(db, "products"))
         .then((res) => {
           const productList = [];
+          const categoryList = {};
           res.forEach((doc) => {
             const product = doc.data();
             if (
               product.hasOwnProperty("name") &&
               product.hasOwnProperty("image_urls") &&
               product.hasOwnProperty("product_id") &&
+              product.hasOwnProperty("category") &&
               product.image_urls.length > 0
             ) {
               productList.push(doc.data());
+
+              if (categoryList[product.category]) {
+                categoryList[product.category].push({
+                  name: product.name,
+                  id: product.product_id,
+                });
+              } else {
+                categoryList[product.category] = [
+                  { name: product.name, id: product.product_id },
+                ];
+              }
             }
           });
           setProducts(productList);
-        })
-        .catch((err) => console.error(err));
-
-      // FIXME: Refactor to use product_id in href
-      // get categories
-      getDocs(collection(db, "categories"))
-        .then((res) => {
-          const categoriesList = [];
-          res.forEach((doc) => {
-            categoriesList.push(doc.data());
-          });
-          setCategories(categoriesList);
+          setCategories(categoryList);
         })
         .catch((err) => console.error(err));
     } catch (err) {
@@ -139,28 +140,27 @@ export default function NavBar() {
     }
   };
 
-  // TODO: Extract this into another component
-  const links = categories
-    .filter((category) => {
-      return (
-        category.hasOwnProperty("products") && category.products.length !== 0
-      );
-    })
-    .map((category) => (
+  const links = [];
+  Object.keys(categories).forEach((key) => {
+    if (key === "") {
+      return;
+    }
+
+    links.push(
       <HoverCard
         width={400}
         position="right-start"
         shadow="md"
         withinPortal
         closeDelay={0}
-        key={category.name}
+        key={key}
       >
         <HoverCard.Target>
           <UnstyledButton className={classes.subLink}>
             <Group noWrap align="flex-start">
               <div>
                 <Text size="sm" weight={500}>
-                  {category.name}
+                  {key}
                 </Text>
               </div>
             </Group>
@@ -169,17 +169,18 @@ export default function NavBar() {
 
         <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
           <SimpleGrid cols={1} spacing={0}>
-            {category.products.map((item) => (
-              <a href={`/products/${item}`} key={item}>
+            {categories[key].map((item) => (
+              <a href={`/products/${item.id}`} key={item.name}>
                 <UnstyledButton className={classes.subLink}>
-                  {item}
+                  {item.name}
                 </UnstyledButton>
               </a>
             ))}
           </SimpleGrid>
         </HoverCard.Dropdown>
       </HoverCard>
-    ));
+    );
+  });
 
   return (
     <Box sx={classes.header}>
