@@ -936,7 +936,7 @@ function Add_Product({ setPages, productName }) {
                             updateVariationsValue();
                             addToDatabase().then(() => {
                                 //What to do after adding to database
-                                // setPages(5)
+                                setPages(5)
                             });
                         }}
                     >
@@ -945,7 +945,9 @@ function Add_Product({ setPages, productName }) {
                     <button
                         className="font-bold text-[14px] border px-[20px] py-1 bg-red-500"
                         onClick={() => { 
-                            deleteDocument() 
+                            deleteDocument().then(() => {
+                                setPages(5)
+                            })
                             //Insert What to do after deleting
                         }}
                     >
