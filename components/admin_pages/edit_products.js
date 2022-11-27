@@ -10,6 +10,7 @@ import {
     query,
     collection,
     getDocs,
+    where,
 } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytesResumable, deleteObject } from "firebase/storage";
 import { db, storage } from "../../firebaseConfig";
@@ -17,7 +18,7 @@ import { uuidv4 } from "@firebase/util";
 import { useEffect } from "react";
 import Header_Live_Preview from "./Header_LivePreview";
 
-function Add_Product(props) {
+function Edit_Product({ setPages, productName }) {
     const [message, setMessage] = useState("");
 
     // PRODUCT DATA
@@ -31,7 +32,7 @@ function Add_Product(props) {
     const [paperTypes, setTypes] = useState([]);
     const [rows, setRows] = useState([]);
     const [colors, setColors] = useState([]);
-    
+    const [docId, setDocId] = useState([])
 
 
 
@@ -72,23 +73,26 @@ function Add_Product(props) {
 
         const updatedUrls = productURLS.concat(reformedURLS);
         var removedImages = productURLSCopy.filter((x) => !productURLS.includes(x));
-        console.log("Diff: ", removedImages)
 
         // Delete images if any
         try {
-            var fileRef = ref(storage, removedImages);
-            if(fileRef){
-                deleteObject(fileRef).then(()=>{
-                    console.log("file deleted")
-                }).catch((error)=>{
-                    console.log(error)
-                })
+            if(removedImages.length > 0){    
+                var fileRef = ref(storage, removedImages);
+                if (fileRef) {
+                    deleteObject(fileRef)
+                        .then(() => {
+                            console.log("file deleted");
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                }
             }
         } catch (error) {
             console.log(error)
         }
         
-        const docRef = doc(db, "products", "Product 2")
+        const docRef = doc(db, "products", docId)
 
         // Adds product to database
         try {
@@ -123,7 +127,7 @@ function Add_Product(props) {
 
     // Deletes from database
     async function deleteDocument(){
-        const docRef = doc(db, "products", prodName);
+        const docRef = doc(db, "products", docId);
         await deleteDoc(docRef).then(() => {
             alert("Successfully Deleted Document")
         }).catch((error) =>{
@@ -347,53 +351,62 @@ function Add_Product(props) {
 
     function init_Features(){
         sizes.map((val, index) => {
-            if (index != 0) add_entry(sizeInputs, setSizeInputs, 1, val);
+            if (index != 0 && sizeInputs.length == 0) add_entry(sizeInputs, setSizeInputs, 1, val);
         });
 
         paperTypes.map((val, index) => {
-            if (index != 0) add_entry(paperInputs, setPaperInputs, 2, val);
+            if (index != 0 && paperInputs.length == 0) add_entry(paperInputs, setPaperInputs, 2, val);
         });
 
         colors.map((val, index) => {
-            if (index != 0) add_entry(colorInputs, setColorInputs, 3, val);
+            if (index != 0 && colorInputs.length == 0) add_entry(colorInputs, setColorInputs, 3, val);
         });
     }
 
     function init_Variations(){
-        let temp = []
-        temp.push(rows[0] && rows[0].size ? true : false);
-        temp.push(rows[0] && rows[0].paper_type ? true : false);
-        temp.push(rows[0] && rows[0].color ? true : false);
+        // let temp = []
+        // temp.push(rows[0] && rows[0].size ? true : false);
+        // temp.push(rows[0] && rows[0].paper_type ? true : false);
+        // temp.push(rows[0] && rows[0].color ? true : false);
 
-        for(let i = 1; i < rows.length; i++){
-            add_row(i)
+        if(rowInputs.length == 0){
+            for (let i = 1; i < rows.length; i++) {
+                add_row(i);
+            }
         }
+        
     }
 
     // Gets data for variation and stores it to rows
     function updateVariationsValue() {
+
         Array.prototype.forEach.call(
             document.getElementById("variations").children,
             (child, index) => {
                 let x = child.children; //Each Div
-
+                
                 var Obj = new Object();
-                for (let i = 0; i < x.length; i++) {
-                    let y = x[i].children;
 
-                    if (y[0].name == "ProdSize") Obj["size"] = y[0].value;
+                if( index >= rows.length ){
+                    for (let i = 0; i < x.length; i++) {
+                        let y = x[i].children;
 
-                    if (y[0].name == "PaperType")
-                        Obj["paper_type"] = y[0].value;
+                        if (y[0].name == "ProdSize") Obj["size"] = y[0].value;
 
-                    if (y[0].name == "PaperColor") Obj["color"] = y[0].value;
+                        if (y[0].name == "PaperType")
+                            Obj["paper_type"] = y[0].value;
 
-                    if (y[0].name == "quantity") Obj["quantity"] = y[0].value;
+                        if (y[0].name == "PaperColor")
+                            Obj["color"] = y[0].value;
 
-                    if (y[0].name == "price") {
-                        Obj["price"] = y[0].value;
-                        rows.push(structuredClone(Obj));
-                        Obj = {};
+                        if (y[0].name == "quantity")
+                            Obj["quantity"] = y[0].value;
+
+                        if (y[0].name == "price") {
+                            Obj["price"] = y[0].value;
+                            rows.push(structuredClone(Obj));
+                            Obj = {};
+                        }
                     }
                 }
             }
@@ -491,6 +504,7 @@ function Add_Product(props) {
                         x.nodeName === "LI"
                             ? x.remove()
                             : x.parentNode.remove();
+                        setRows((rows) => rows.filter((row, i) => i !== index))
                     }}
                     className="absolute cursor-pointer stroke-red-500"
                 />
@@ -514,27 +528,45 @@ function Add_Product(props) {
 
     // Get product details
     async function getProduct(Product_Name){
-        const docRef = doc(db, "products", Product_Name);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            var data = docSnap.data()
-            setProductName(data.name)
-            setProdCateg(data.category)
-            setDescription(data.description)
-            setFeatured(data.featured)
-            setProdURLS(data.image_urls)
+        var arr = []
+        const docQuery = await getDocs(
+            query(collection(db, "products"), where("name", "==", Product_Name))
+        );
+        docQuery.forEach((doc) => {
+            arr.push(doc)
+        })
+        
+        if(arr.length > 0){
+            var data = arr[0].data()
+            setDocId(arr[0].id)
+            setProductName(data.name);
+            setProdCateg(data.category);
+            setDescription(data.description);
+            setFeatured(data.featured);
+            setProdURLS(data.image_urls);
             setProdURLCopy(data.image_urls);
-            setColors(data.paper_colors)
-            setTypes(data.paper_types)
-            setSizes(data.product_sizes)
-            setRows(data.variations)
-            return data
-        } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!")
-            alert("Document Does Not Exist")
+            setColors(data.paper_colors);
+            setTypes(data.paper_types);
+            setSizes(data.product_sizes);
+            setRows(data.variations);
+            return data;
+        }else{
+            console.log("No such document!");
+            alert("Document Does Not Exist");
         }
+
+        // const docRef = doc(db, "products", Product_Name);
+        // const docSnap = await getDoc(docRef);
+
+        // if (docSnap.exists()) {
+        //     var data = docSnap.data()
+            
+        //     return data
+        // } else {
+        //     // doc.data() will be undefined in this case
+        //     console.log("No such document!")
+        //     alert("Document Does Not Exist")
+        // }
     }
 
     var count = 0
@@ -545,18 +577,18 @@ function Add_Product(props) {
             getCategories()
 
             // Product Parameter is to be changed later on
-            getProduct("Product 3")
+            getProduct(productName)
 
             isFirstRender.current = false;
             return
         }
         else{
-            if(rows.length > 1){
-                init_Features()
+            init_Features();
+            if(rows.length > 0){
                 init_Variations()
             }
         }
-    }, [rows]);
+    }, [rows, sizes, colors, paperTypes]);
 
 
 
@@ -784,12 +816,9 @@ function Add_Product(props) {
                                             <div className="flex w-1/5 justify-center">
                                                 <select
                                                     name="ProdSize"
-                                                    type=""
                                                     className="w-1/2 border border-black rounded-sm"
                                                     defaultValue={
-                                                        rows[0]
-                                                            ? rows[0].quantity
-                                                            : ""
+                                                        rows[0].product_sizes ? rows[0].product_sizes : "DEFAULT"
                                                     }
                                                 >
                                                     <option
@@ -818,9 +847,7 @@ function Add_Product(props) {
                                                     name="PaperType"
                                                     className="w-1/2 border border-black rounded-sm"
                                                     defaultValue={
-                                                        rows[0]
-                                                            ? rows[0].paper_type
-                                                            : "DEFAULT"
+                                                        rows[0].paper_type ? rows[0].paper_type : "DEFAULT"
                                                     }
                                                 >
                                                     <option
@@ -851,9 +878,7 @@ function Add_Product(props) {
                                                     name="PaperColor"
                                                     className="w-1/2 border border-black rounded-sm"
                                                     defaultValue={
-                                                        rows[0]
-                                                            ? rows[0].color
-                                                            : "DEFAULT"
+                                                        rows[0].color ? rows[0].color : "DEFAULT"
                                                     }
                                                 >
                                                     <option
@@ -881,9 +906,7 @@ function Add_Product(props) {
                                                 name="quantity"
                                                 type="text"
                                                 defaultValue={
-                                                    rows[0]
-                                                        ? rows[0].quantity
-                                                        : ""
+                                                    rows[0].quantity ? rows[0].quantity : ""
                                                 }
                                                 className="w-1/2 border border-black rounded-sm"
                                             />
@@ -894,7 +917,7 @@ function Add_Product(props) {
                                                 name="price"
                                                 type="text"
                                                 defaultValue={
-                                                    rows[0] ? rows[0].price : ""
+                                                    rows[0].price ? rows[0].price : ""
                                                 }
                                                 className="w-1/2 border border-black rounded-sm"
                                             />
@@ -925,7 +948,7 @@ function Add_Product(props) {
                     <button
                         className="font-bold text-[14px] border px-[20px] py-1 bg-gray-300"
                         onClick={() => {
-                            window.location.reload(false);
+                            setPages(5)
                         }}
                     >
                         Discard Changes
@@ -936,7 +959,7 @@ function Add_Product(props) {
                             updateVariationsValue();
                             addToDatabase().then(() => {
                                 //What to do after adding to database
-                                // window.location.reload(false);
+                                setPages(5)
                             });
                         }}
                     >
@@ -945,7 +968,9 @@ function Add_Product(props) {
                     <button
                         className="font-bold text-[14px] border px-[20px] py-1 bg-red-500"
                         onClick={() => { 
-                            deleteDocument() 
+                            deleteDocument().then(() => {
+                                setPages(5)
+                            })
                             //Insert What to do after deleting
                         }}
                     >
@@ -957,4 +982,4 @@ function Add_Product(props) {
     );
 }
 
-export default Add_Product;
+export default Edit_Product;
