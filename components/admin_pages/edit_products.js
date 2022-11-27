@@ -18,7 +18,7 @@ import { uuidv4 } from "@firebase/util";
 import { useEffect } from "react";
 import Header_Live_Preview from "./Header_LivePreview";
 
-function Add_Product({ setPages, productName }) {
+function Edit_Product({ setPages, productName }) {
     const [message, setMessage] = useState("");
 
     // PRODUCT DATA
@@ -108,7 +108,6 @@ function Add_Product({ setPages, productName }) {
                 image_urls: updatedUrls,
             }).then(() => {
                 //Clear stored files and images in states
-                console.log("SIZES: ", sizes)
                 setImages([]);
                 setUrls([]);
             });
@@ -365,10 +364,10 @@ function Add_Product({ setPages, productName }) {
     }
 
     function init_Variations(){
-        let temp = []
-        temp.push(rows[0] && rows[0].size ? true : false);
-        temp.push(rows[0] && rows[0].paper_type ? true : false);
-        temp.push(rows[0] && rows[0].color ? true : false);
+        // let temp = []
+        // temp.push(rows[0] && rows[0].size ? true : false);
+        // temp.push(rows[0] && rows[0].paper_type ? true : false);
+        // temp.push(rows[0] && rows[0].color ? true : false);
 
         if(rowInputs.length == 0){
             for (let i = 1; i < rows.length; i++) {
@@ -380,28 +379,34 @@ function Add_Product({ setPages, productName }) {
 
     // Gets data for variation and stores it to rows
     function updateVariationsValue() {
+
         Array.prototype.forEach.call(
             document.getElementById("variations").children,
             (child, index) => {
                 let x = child.children; //Each Div
-
+                
                 var Obj = new Object();
-                for (let i = 0; i < x.length; i++) {
-                    let y = x[i].children;
 
-                    if (y[0].name == "ProdSize") Obj["size"] = y[0].value;
+                if( index >= rows.length ){
+                    for (let i = 0; i < x.length; i++) {
+                        let y = x[i].children;
 
-                    if (y[0].name == "PaperType")
-                        Obj["paper_type"] = y[0].value;
+                        if (y[0].name == "ProdSize") Obj["size"] = y[0].value;
 
-                    if (y[0].name == "PaperColor") Obj["color"] = y[0].value;
+                        if (y[0].name == "PaperType")
+                            Obj["paper_type"] = y[0].value;
 
-                    if (y[0].name == "quantity") Obj["quantity"] = y[0].value;
+                        if (y[0].name == "PaperColor")
+                            Obj["color"] = y[0].value;
 
-                    if (y[0].name == "price") {
-                        Obj["price"] = y[0].value;
-                        rows.push(structuredClone(Obj));
-                        Obj = {};
+                        if (y[0].name == "quantity")
+                            Obj["quantity"] = y[0].value;
+
+                        if (y[0].name == "price") {
+                            Obj["price"] = y[0].value;
+                            rows.push(structuredClone(Obj));
+                            Obj = {};
+                        }
                     }
                 }
             }
@@ -499,6 +504,7 @@ function Add_Product({ setPages, productName }) {
                         x.nodeName === "LI"
                             ? x.remove()
                             : x.parentNode.remove();
+                        setRows((rows) => rows.filter((row, i) => i !== index))
                     }}
                     className="absolute cursor-pointer stroke-red-500"
                 />
@@ -578,7 +584,7 @@ function Add_Product({ setPages, productName }) {
         }
         else{
             init_Features();
-            if(rows.length > 1){
+            if(rows.length > 0){
                 init_Variations()
             }
         }
@@ -976,4 +982,4 @@ function Add_Product({ setPages, productName }) {
     );
 }
 
-export default Add_Product;
+export default Edit_Product;
