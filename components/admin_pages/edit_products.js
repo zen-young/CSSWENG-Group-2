@@ -32,7 +32,7 @@ function Add_Product({ setPages, productName }) {
     const [paperTypes, setTypes] = useState([]);
     const [rows, setRows] = useState([]);
     const [colors, setColors] = useState([]);
-    
+    const [docId, setDocId] = useState([])
 
 
 
@@ -92,7 +92,7 @@ function Add_Product({ setPages, productName }) {
             console.log(error)
         }
         
-        const docRef = doc(db, "products", prodName)
+        const docRef = doc(db, "products", docId)
 
         // Adds product to database
         try {
@@ -529,6 +529,7 @@ function Add_Product({ setPages, productName }) {
         
         if(arr.length > 0){
             var data = arr[0].data()
+            setDocId(arr[0].id)
             setProductName(data.name);
             setProdCateg(data.category);
             setDescription(data.description);
