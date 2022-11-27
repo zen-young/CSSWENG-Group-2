@@ -16,6 +16,7 @@ import {
 } from "@mantine/core";
 import { IconFileText, IconSearch } from "@tabler/icons";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -80,6 +81,8 @@ export default function NavBar() {
   const { classes, theme } = useStyles();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [search, setSearch] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     try {
@@ -88,12 +91,21 @@ export default function NavBar() {
         .then((res) => {
           const productList = [];
           res.forEach((doc) => {
-            productList.push(doc.data().name);
+            const product = doc.data();
+            if (
+              product.hasOwnProperty("name") &&
+              product.hasOwnProperty("image_urls") &&
+              product.hasOwnProperty("product_id") &&
+              product.image_urls.length > 0
+            ) {
+              productList.push(doc.data());
+            }
           });
           setProducts(productList);
         })
         .catch((err) => console.error(err));
 
+      // FIXME: Refactor to use product_id in href
       // get categories
       getDocs(collection(db, "categories"))
         .then((res) => {
@@ -108,6 +120,24 @@ export default function NavBar() {
       console.error(err);
     }
   }, []);
+
+  const handleKeypress = (e) => {
+    if (e.key === "Enter") {
+      const searchResult = products.filter((product) => {
+        return product.name.toLowerCase().match(search.toLowerCase());
+      });
+
+      console.log(e, searchResult);
+
+      if (searchResult.length < 1) {
+        return;
+      } else if (searchResult[0].name.length === search.length) {
+        router.push(`/products/${searchResult[0].product_id}`);
+      } else {
+        setSearch(searchResult[0].name);
+      }
+    }
+  };
 
   // TODO: Extract this into another component
   const links = categories
@@ -205,7 +235,14 @@ export default function NavBar() {
               transitionDuration={80}
               transitionTimingFunction="ease"
               shadow="md"
-              data={products}
+              data={products.map((product) => {
+                return product.name;
+              })}
+              onKeyDown={handleKeypress}
+              onChange={(e) => {
+                setSearch(e);
+              }}
+              value={search}
             />
 
             <a href="#" className={classes.link}>
