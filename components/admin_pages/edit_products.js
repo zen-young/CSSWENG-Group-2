@@ -35,7 +35,6 @@ function Edit_Product({ setPages, productName }) {
     const [docId, setDocId] = useState([])
 
 
-
     const [urls, setUrls] = useState([])
     const [productURLS, setProdURLS] = useState([])
     const [productURLSCopy, setProdURLCopy] = useState([]) 
@@ -93,7 +92,7 @@ function Edit_Product({ setPages, productName }) {
         }
         
         const docRef = doc(db, "products", docId)
-
+        const newRows = updateVariationsValue()
         // Adds product to database
         try {
             await updateDoc(docRef, {
@@ -104,7 +103,7 @@ function Edit_Product({ setPages, productName }) {
                 product_sizes: sizes,
                 paper_colors: colors,
                 paper_types: paperTypes,
-                variations: rows,
+                variations: newRows,
                 image_urls: updatedUrls,
             }).then(() => {
                 //Clear stored files and images in states
@@ -379,7 +378,7 @@ function Edit_Product({ setPages, productName }) {
 
     // Gets data for variation and stores it to rows
     function updateVariationsValue() {
-
+        var variations = []
         Array.prototype.forEach.call(
             document.getElementById("variations").children,
             (child, index) => {
@@ -387,30 +386,29 @@ function Edit_Product({ setPages, productName }) {
                 
                 var Obj = new Object();
 
-                if( index >= rows.length ){
-                    for (let i = 0; i < x.length; i++) {
-                        let y = x[i].children;
+                for (let i = 0; i < x.length; i++) {
+                    let y = x[i].children;
 
-                        if (y[0].name == "ProdSize") Obj["size"] = y[0].value;
+                    if (y[0].name == "ProdSize") Obj["size"] = y[0].value;
 
-                        if (y[0].name == "PaperType")
-                            Obj["paper_type"] = y[0].value;
+                    if (y[0].name == "PaperType")
+                        Obj["paper_type"] = y[0].value;
 
-                        if (y[0].name == "PaperColor")
-                            Obj["color"] = y[0].value;
+                    if (y[0].name == "PaperColor")
+                        Obj["color"] = y[0].value;
 
-                        if (y[0].name == "quantity")
-                            Obj["quantity"] = y[0].value;
+                    if (y[0].name == "quantity")
+                        Obj["quantity"] = y[0].value;
 
-                        if (y[0].name == "price") {
-                            Obj["price"] = y[0].value;
-                            rows.push(structuredClone(Obj));
-                            Obj = {};
-                        }
+                    if (y[0].name == "price") {
+                        Obj["price"] = y[0].value;
+                        variations.push(structuredClone(Obj));
+                        Obj = {};
                     }
                 }
             }
         );
+        return variations;
     }
 
     //Add another row to variations' rows
@@ -956,7 +954,6 @@ function Edit_Product({ setPages, productName }) {
                     <button
                         className="font-bold text-[14px] border px-[20px] py-1 bg-green-500"
                         onClick={() => {
-                            updateVariationsValue();
                             addToDatabase().then(() => {
                                 //What to do after adding to database
                                 setPages(5)
