@@ -5,7 +5,7 @@ import { db } from "../../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const products = await getDocs(collection(db, "products"));
   const productList = [];
   products.forEach((doc) => {
@@ -23,7 +23,6 @@ export async function getStaticProps(context) {
     props: {
       products: productList,
     },
-    revalidate: 10,
   };
 }
 
