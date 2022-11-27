@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { IconCircleX } from "@tabler/icons";
-import { setDoc, doc, getDoc, updateDoc, arrayUnion, query, collection, getDocs } from "firebase/firestore";
+import { setDoc, doc, getDoc, updateDoc, arrayUnion, query, collection, getDocs, addDoc } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { db, storage } from "../../firebaseConfig";
 import { uuidv4 } from "@firebase/util";
@@ -55,7 +55,7 @@ function Add_Product({setPages}) {
 
         //Adds product to database
         try {
-            await setDoc(doc(db, "products", prodName.toString()), {
+            await addDoc(collection(db, "products"), {
                 name: prodName,
                 category: prodCateg,
                 featured: featured,
@@ -65,10 +65,13 @@ function Add_Product({setPages}) {
                 paper_types: paperTypes,
                 variations: rows,
                 image_urls: urls,
-            }).then(() => {
+            }).then((docRef) => {
                 //Clear stored files and images in states
                 setImages([]);
                 setUrls([]);
+                updateDoc(doc(db, "products", docRef.id), {
+                    product_id: docRef.id
+                })
             });
         } catch (err) {
             console.log(err);

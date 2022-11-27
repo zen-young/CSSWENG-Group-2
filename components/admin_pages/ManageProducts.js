@@ -80,9 +80,9 @@ const ManageProducts = ({ setPages, setProduct }) => {
       })
     );
   };
-  console.log(itemData);
-  console.log(categories);
-  console.log(selectedCategory);
+  // console.log(itemData);
+  // console.log(categories);
+  // console.log(selectedCategory);
   return (
     <>
       <div className="flex bg-[#282828] w-full h-[100px] items-center justify-between">

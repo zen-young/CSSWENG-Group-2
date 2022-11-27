@@ -10,6 +10,7 @@ import {
     query,
     collection,
     getDocs,
+    where,
 } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytesResumable, deleteObject } from "firebase/storage";
 import { db, storage } from "../../firebaseConfig";
@@ -72,17 +73,20 @@ function Add_Product({ setPages, productName }) {
 
         const updatedUrls = productURLS.concat(reformedURLS);
         var removedImages = productURLSCopy.filter((x) => !productURLS.includes(x));
-        console.log("Diff: ", removedImages)
 
         // Delete images if any
         try {
-            var fileRef = ref(storage, removedImages);
-            if(fileRef){
-                deleteObject(fileRef).then(()=>{
-                    console.log("file deleted")
-                }).catch((error)=>{
-                    console.log(error)
-                })
+            if(removedImages.length > 0){    
+                var fileRef = ref(storage, removedImages);
+                if (fileRef) {
+                    deleteObject(fileRef)
+                        .then(() => {
+                            console.log("file deleted");
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                }
             }
         } catch (error) {
             console.log(error)
@@ -104,6 +108,7 @@ function Add_Product({ setPages, productName }) {
                 image_urls: updatedUrls,
             }).then(() => {
                 //Clear stored files and images in states
+                console.log("SIZES: ", sizes)
                 setImages([]);
                 setUrls([]);
             });
@@ -514,27 +519,44 @@ function Add_Product({ setPages, productName }) {
 
     // Get product details
     async function getProduct(Product_Name){
-        const docRef = doc(db, "products", Product_Name);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            var data = docSnap.data()
-            setProductName(data.name)
-            setProdCateg(data.category)
-            setDescription(data.description)
-            setFeatured(data.featured)
-            setProdURLS(data.image_urls)
+        var arr = []
+        const docQuery = await getDocs(
+            query(collection(db, "products"), where("name", "==", Product_Name))
+        );
+        docQuery.forEach((doc) => {
+            arr.push(doc)
+        })
+        
+        if(arr.length > 0){
+            var data = arr[0].data()
+            setProductName(data.name);
+            setProdCateg(data.category);
+            setDescription(data.description);
+            setFeatured(data.featured);
+            setProdURLS(data.image_urls);
             setProdURLCopy(data.image_urls);
-            setColors(data.paper_colors)
-            setTypes(data.paper_types)
-            setSizes(data.product_sizes)
-            setRows(data.variations)
-            return data
-        } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!")
-            alert("Document Does Not Exist")
+            setColors(data.paper_colors);
+            setTypes(data.paper_types);
+            setSizes(data.product_sizes);
+            setRows(data.variations);
+            return data;
+        }else{
+            console.log("No such document!");
+            alert("Document Does Not Exist");
         }
+
+        // const docRef = doc(db, "products", Product_Name);
+        // const docSnap = await getDoc(docRef);
+
+        // if (docSnap.exists()) {
+        //     var data = docSnap.data()
+            
+        //     return data
+        // } else {
+        //     // doc.data() will be undefined in this case
+        //     console.log("No such document!")
+        //     alert("Document Does Not Exist")
+        // }
     }
 
     var count = 0
@@ -551,12 +573,12 @@ function Add_Product({ setPages, productName }) {
             return
         }
         else{
+            init_Features();
             if(rows.length > 1){
-                init_Features()
                 init_Variations()
             }
         }
-    }, [rows]);
+    }, [rows, sizes, colors, paperTypes]);
 
 
 
@@ -784,12 +806,9 @@ function Add_Product({ setPages, productName }) {
                                             <div className="flex w-1/5 justify-center">
                                                 <select
                                                     name="ProdSize"
-                                                    type=""
                                                     className="w-1/2 border border-black rounded-sm"
                                                     defaultValue={
-                                                        rows[0]
-                                                            ? rows[0].quantity
-                                                            : ""
+                                                        rows[0].product_sizes ? rows[0].product_sizes : "DEFAULT"
                                                     }
                                                 >
                                                     <option
@@ -818,9 +837,7 @@ function Add_Product({ setPages, productName }) {
                                                     name="PaperType"
                                                     className="w-1/2 border border-black rounded-sm"
                                                     defaultValue={
-                                                        rows[0]
-                                                            ? rows[0].paper_type
-                                                            : "DEFAULT"
+                                                        rows[0].paper_type ? rows[0].paper_type : "DEFAULT"
                                                     }
                                                 >
                                                     <option
@@ -851,9 +868,7 @@ function Add_Product({ setPages, productName }) {
                                                     name="PaperColor"
                                                     className="w-1/2 border border-black rounded-sm"
                                                     defaultValue={
-                                                        rows[0]
-                                                            ? rows[0].color
-                                                            : "DEFAULT"
+                                                        rows[0].color ? rows[0].color : "DEFAULT"
                                                     }
                                                 >
                                                     <option
@@ -881,9 +896,7 @@ function Add_Product({ setPages, productName }) {
                                                 name="quantity"
                                                 type="text"
                                                 defaultValue={
-                                                    rows[0]
-                                                        ? rows[0].quantity
-                                                        : ""
+                                                    rows[0].quantity ? rows[0].quantity : ""
                                                 }
                                                 className="w-1/2 border border-black rounded-sm"
                                             />
@@ -894,7 +907,7 @@ function Add_Product({ setPages, productName }) {
                                                 name="price"
                                                 type="text"
                                                 defaultValue={
-                                                    rows[0] ? rows[0].price : ""
+                                                    rows[0].price ? rows[0].price : ""
                                                 }
                                                 className="w-1/2 border border-black rounded-sm"
                                             />
