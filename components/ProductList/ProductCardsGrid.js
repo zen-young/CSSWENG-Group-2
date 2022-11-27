@@ -30,7 +30,7 @@ export default function ProductCardsGrid({ productList }) {
 
   const cards = productList.map((product) => (
     <Card
-      key={product.title}
+      key={product.name}
       p="0"
       component="a"
       href={`/products/${product.name}`}
