@@ -33,7 +33,7 @@ export default function ProductCardsGrid({ productList }) {
       key={product.name}
       p="0"
       component="a"
-      href={`/products/${product.name}`}
+      href={`/products/${product.product_id}`}
       className={classes.card}
       style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
     >

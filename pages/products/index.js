@@ -13,6 +13,7 @@ export async function getServerSideProps(context) {
     if (
       product.hasOwnProperty("name") &&
       product.hasOwnProperty("image_urls") &&
+      product.hasOwnProperty("product_id") &&
       product.image_urls.length > 0
     ) {
       productList.push(doc.data());

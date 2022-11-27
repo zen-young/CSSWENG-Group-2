@@ -41,7 +41,7 @@ function Featured_Products({ products }) {
             return (
               <Card
                 component="a"
-                href={`/products/${product.name}`}
+                href={`/products/${product.product_id}`}
                 shadow={"rgba(0, 0, 0, 0.24) 0px 5px 3px"}
                 p="lg"
                 withBorder
