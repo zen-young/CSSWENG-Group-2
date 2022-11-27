@@ -9,6 +9,7 @@ import Add_Product from "./add_products";
 import Edit_Product from "./edit_products";
 import Company_Info from "./company_info";
 import Contact_Info from "./contact_info";
+import ManageProducts from "./ManageProducts";
 
 function Admin_Panel() {
   const { user, logout } = useAuth();
@@ -26,6 +27,7 @@ function Admin_Panel() {
   pages.push({ pageName: "Edit Product", html: <Edit_Product /> });
   pages.push({ pageName: "Edit Product", html: <Company_Info /> });
   pages.push({ pageName: "Edit Product", html: <Contact_Info /> });
+  pages.push({ pageName: "Manage Products", html: <ManageProducts /> });
 
   const handleLogout = () => {
     logout();
@@ -44,8 +46,10 @@ function Admin_Panel() {
           <Image src={"/assets/pencil_icon.png"} width={33} height={33} />
           <p
             onClick={() => {
-              setCurrPage("Products");
-            }}
+              setCurrPage("Manage Products");
+              setIndex(3);
+              }
+            }
             className={`${
               currPage == "Products" ? "underline" : ""
             } hover:cursor-pointer font-semibold text-[24px] ml-[10px]`}
@@ -143,7 +147,7 @@ function Admin_Panel() {
                     index 1 = add products page
                     index 2 = edit/delete products page
                 */}
-        {pages[2].html}
+        {pages[5].html}
       </div>
     </div>
   );

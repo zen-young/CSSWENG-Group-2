@@ -2,7 +2,7 @@ import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 import { db } from "../../../firebaseConfig";
-import EditProduct from "../EditProduct";
+import EditProduct from "../edit_products";
 
 const ManageProductCard = ({
   setPages,

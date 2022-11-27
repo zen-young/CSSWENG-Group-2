@@ -156,7 +156,7 @@ const ManageProducts = ({ setPages }) => {
             } text-[14px] leading-[20px] text-black mr-[15px] hover:cursor-pointer`}
             onClick={() => setSelected("unrecog")}
           >
-            Unrecognized
+            Uncategorized
           </span>
           {categories?.map((category) => (
             <span
