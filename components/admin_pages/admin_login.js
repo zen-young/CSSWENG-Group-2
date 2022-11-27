@@ -28,8 +28,8 @@ function Admin_Login() {
   };
 
   return (
-    <div className="bg-black w-full h-auto px-[200px]">
-      <div className="flex-col py-[100px] bg-gray-100">
+    <div className="bg-black w-full h-screen px-[200px]">
+      <div className="flex-col py-[100px] bg-gray-100 h-full">
         <h1 className="font-bold text-[40px] text-center mb-[25px]">
           Admin Login
         </h1>
