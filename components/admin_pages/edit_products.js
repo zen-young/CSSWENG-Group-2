@@ -352,15 +352,15 @@ function Add_Product({ setPages, productName }) {
 
     function init_Features(){
         sizes.map((val, index) => {
-            if (index != 0) add_entry(sizeInputs, setSizeInputs, 1, val);
+            if (index != 0 && sizeInputs.length == 0) add_entry(sizeInputs, setSizeInputs, 1, val);
         });
 
         paperTypes.map((val, index) => {
-            if (index != 0) add_entry(paperInputs, setPaperInputs, 2, val);
+            if (index != 0 && paperInputs.length == 0) add_entry(paperInputs, setPaperInputs, 2, val);
         });
 
         colors.map((val, index) => {
-            if (index != 0) add_entry(colorInputs, setColorInputs, 3, val);
+            if (index != 0 && colorInputs.length == 0) add_entry(colorInputs, setColorInputs, 3, val);
         });
     }
 
