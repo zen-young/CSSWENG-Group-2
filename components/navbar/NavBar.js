@@ -113,40 +113,44 @@ export default function NavBar() {
   console.log(categories);
 
   // TODO: Extract this into another component
-  const links = categories.map((category) => (
-    <HoverCard
-      width={400}
-      position="right-start"
-      shadow="md"
-      withinPortal
-      closeDelay={0}
-      key={category.name}
-    >
-      <HoverCard.Target>
-        <UnstyledButton className={classes.subLink}>
-          <Group noWrap align="flex-start">
-            <div>
-              <Text size="sm" weight={500}>
-                {category.name}
-              </Text>
-            </div>
-          </Group>
-        </UnstyledButton>
-      </HoverCard.Target>
+  const links = categories
+    .filter((category) => {
+      return category.hasOwnProperty("products");
+    })
+    .map((category) => (
+      <HoverCard
+        width={400}
+        position="right-start"
+        shadow="md"
+        withinPortal
+        closeDelay={0}
+        key={category.name}
+      >
+        <HoverCard.Target>
+          <UnstyledButton className={classes.subLink}>
+            <Group noWrap align="flex-start">
+              <div>
+                <Text size="sm" weight={500}>
+                  {category.name}
+                </Text>
+              </div>
+            </Group>
+          </UnstyledButton>
+        </HoverCard.Target>
 
-      <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
-        <SimpleGrid cols={1} spacing={0}>
-          {category.products.map((item) => (
-            <a href={`/products/${item}`} key={item}>
-              <UnstyledButton className={classes.subLink}>
-                {item}
-              </UnstyledButton>
-            </a>
-          ))}
-        </SimpleGrid>
-      </HoverCard.Dropdown>
-    </HoverCard>
-  ));
+        <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
+          <SimpleGrid cols={1} spacing={0}>
+            {category.products.map((item) => (
+              <a href={`/products/${item}`} key={item}>
+                <UnstyledButton className={classes.subLink}>
+                  {item}
+                </UnstyledButton>
+              </a>
+            ))}
+          </SimpleGrid>
+        </HoverCard.Dropdown>
+      </HoverCard>
+    ));
 
   return (
     <Box sx={classes.header}>
