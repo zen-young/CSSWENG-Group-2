@@ -92,7 +92,7 @@ function Edit_Product({ setPages, productName }) {
         }
         
         const docRef = doc(db, "products", docId)
-        const newRows = updateVariationsValue()
+        // const newRows = updateVariationsValue()
         // Adds product to database
         try {
             await updateDoc(docRef, {
@@ -100,10 +100,10 @@ function Edit_Product({ setPages, productName }) {
                 category: prodCateg,
                 featured: featured,
                 description: prodDesc,
-                product_sizes: sizes,
-                paper_colors: colors,
-                paper_types: paperTypes,
-                variations: newRows,
+                product_sizes: updateFeatureValues()[0],
+                paper_types: updateFeatureValues()[1],
+                paper_colors: updateFeatureValues()[2],
+                variations: updateVariationsValue(),
                 image_urls: updatedUrls,
             }).then(() => {
                 //Clear stored files and images in states
@@ -192,7 +192,8 @@ function Edit_Product({ setPages, productName }) {
             <IconCircleX
                 onClick={(e) => {
                     let x = e.target.parentNode.parentNode;
-                    x.nodeName === "LI" ? x.remove() : x.parentNode.remove();
+                    let x_par = x.parentNode
+                    x.nodeName === "LI" ? x.remove() : x_par.remove();  
                 }}
                 className="cursor-pointer stroke-red-500"
             />
@@ -218,67 +219,63 @@ function Edit_Product({ setPages, productName }) {
     }
 
     // Stores values in features to respective arrays
-    function updateFeatureValues(feature) {
-        switch (feature) {
-            case 1: //Sizes
-                var x = [];
-                Array.prototype.forEach.call(
-                    document.getElementById("product_sizes").elements,
-                    (element) => {
-                        if (
-                            element.value.length > 0 &&
-                            element.type != "checkbox"
-                        ) {
-                            x.push(element.value);
-                        }
-                        if (element.type == "checkbox") {
-                            var [a, b, c] = includeRow;
-                            setIncludedRows([element.checked, b, c]);
-                        }
-                    }
-                );
-                setSizes(x);
-                break;
+    function updateFeatureValues() {
+        var arr = []
 
-            case 2: //Paper Types
-                var x = [];
-                Array.prototype.forEach.call(
-                    document.getElementById("paper_types").elements,
-                    (element) => {
-                        if (
-                            element.value.length > 0 &&
-                            element.type != "checkbox"
-                        )
-                            x.push(element.value);
-                        if (element.type == "checkbox") {
-                            var [a, b, c] = includeRow;
-                            setIncludedRows([a, element.checked, c]);
-                        }
-                    }
-                );
-                setTypes(x);
-                break;
+        var x = [];
+        Array.prototype.forEach.call(
+            document.getElementById("product_sizes").elements,
+            (element) => {
+                if (
+                    element.value.length > 0 &&
+                    element.type != "checkbox"
+                ) {
+                    x.push(element.value);
+                }
+                if (element.type == "checkbox") {
+                    var [a, b, c] = includeRow;
+                    setIncludedRows([element.checked, b, c]);
+                }
+            }
+        );
+        arr.push(x);
+        setSizes(x);
 
-            case 3: //Paper Colors
-                var x = [];
-                Array.prototype.forEach.call(
-                    document.getElementById("paper_colors").elements,
-                    (element) => {
-                        if (
-                            element.value.length > 0 &&
-                            element.type != "checkbox"
-                        ) {
-                            x.push(element.value);
-                        }
-                        if (element.type == "checkbox") {
-                            var [a, b, c] = includeRow;
-                            setIncludedRows([a, b, element.checked]);
-                        }
-                    }
-                );
-                setColors(x);
-                break;
-        }
+        var y = [];
+        Array.prototype.forEach.call(
+            document.getElementById("paper_types").elements,
+            (element) => {
+                if (element.value.length > 0 && element.type != "checkbox")
+                    y.push(element.value);
+                if (element.type == "checkbox") {
+                    var [a, b, c] = includeRow;
+                    setIncludedRows([a, element.checked, c]);
+                }
+            }
+        );
+        arr.push(y);
+        setTypes(y);
+
+        var z = [];
+        Array.prototype.forEach.call(
+            document.getElementById("paper_colors").elements,
+            (element) => {
+                if (
+                    element.value.length > 0 &&
+                    element.type != "checkbox"
+                ) {
+                    z.push(element.value);
+                }
+                if (element.type == "checkbox") {
+                    var [a, b, c] = includeRow;
+                    setIncludedRows([a, b, element.checked]);
+                }
+            }
+        );
+        arr.push(z)
+        setColors(z);
+
+        return arr;
     }
 
     // Feature HTML Element / Component
@@ -299,7 +296,7 @@ function Edit_Product({ setPages, productName }) {
                                         : includeRow[2]
                                 }
                                 onChange={() => {
-                                    updateFeatureValues(feature);
+                                    updateFeatureValues();
                                 }}
                                 className="w-[20px]"
                             />
@@ -315,7 +312,7 @@ function Edit_Product({ setPages, productName }) {
                                     : colors[0]
                             }
                             onChange={() => {
-                                updateFeatureValues(feature);
+                                updateFeatureValues();
                             }}
                             required
                         />
@@ -340,7 +337,7 @@ function Edit_Product({ setPages, productName }) {
                     className="w-4/6 p-1 border border-black rounded-sm"
                     defaultValue={val ? val : ""}
                     onChange={() => {
-                        updateFeatureValues(feature);
+                        updateFeatureValues();
                     }}
                 />
             </li>
@@ -363,17 +360,13 @@ function Edit_Product({ setPages, productName }) {
     }
 
     function init_Variations(){
-        // let temp = []
-        // temp.push(rows[0] && rows[0].size ? true : false);
-        // temp.push(rows[0] && rows[0].paper_type ? true : false);
-        // temp.push(rows[0] && rows[0].color ? true : false);
-
-        if(rowInputs.length == 0){
-            for (let i = 1; i < rows.length; i++) {
-                add_row(i);
+        if(rows.length > 0){
+            if (rowInputs.length == 0) {
+                for (let i = 1; i < rows.length; i++) {
+                    add_row(i);
+                }
             }
-        }
-        
+        }   
     }
 
     // Gets data for variation and stores it to rows
@@ -409,6 +402,13 @@ function Edit_Product({ setPages, productName }) {
             }
         );
         return variations;
+    }
+
+    function getFeatureValues(){
+        var feats = []
+        Array.prototype.forEach.call(document.getElementById("product_sizes"), (size, index) => {
+
+        });
     }
 
     //Add another row to variations' rows
@@ -552,19 +552,6 @@ function Edit_Product({ setPages, productName }) {
             console.log("No such document!");
             alert("Document Does Not Exist");
         }
-
-        // const docRef = doc(db, "products", Product_Name);
-        // const docSnap = await getDoc(docRef);
-
-        // if (docSnap.exists()) {
-        //     var data = docSnap.data()
-            
-        //     return data
-        // } else {
-        //     // doc.data() will be undefined in this case
-        //     console.log("No such document!")
-        //     alert("Document Does Not Exist")
-        // }
     }
 
     var count = 0
@@ -573,8 +560,6 @@ function Edit_Product({ setPages, productName }) {
     useEffect(() => {
         if(isFirstRender.current == true){
             getCategories()
-
-            // Product Parameter is to be changed later on
             getProduct(productName)
 
             isFirstRender.current = false;
@@ -582,9 +567,7 @@ function Edit_Product({ setPages, productName }) {
         }
         else{
             init_Features();
-            if(rows.length > 0){
-                init_Variations()
-            }
+            init_Variations()
         }
     }, [rows, sizes, colors, paperTypes]);
 
