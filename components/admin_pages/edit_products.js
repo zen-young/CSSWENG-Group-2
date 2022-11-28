@@ -404,13 +404,6 @@ function Edit_Product({ setPages, productName }) {
         return variations;
     }
 
-    function getFeatureValues(){
-        var feats = []
-        Array.prototype.forEach.call(document.getElementById("product_sizes"), (size, index) => {
-
-        });
-    }
-
     //Add another row to variations' rows
     function add_row(index) {
         var x = (
@@ -420,9 +413,9 @@ function Edit_Product({ setPages, productName }) {
                         <select
                             name="ProdSize"
                             className="w-1/2 border border-black rounded-sm"
-                            defaultValue={rows[index] ? rows[index].size : "DEFAULT"}
+                            defaultValue={rows[index] ? rows[index].size : ""}
                         >
-                            <option value="DEFAULT" disabled></option>
+                            <option value="" disabled></option>
                             {sizes.map((val, key) => {
                                 return (
                                     <option key={key} value={val}>
@@ -441,9 +434,9 @@ function Edit_Product({ setPages, productName }) {
                         <select
                             name="PaperType"
                             className="w-1/2 border border-black rounded-sm"
-                            defaultValue={rows[index] ? rows[index].paper_type : "DEFAULT"}
+                            defaultValue={rows[index] ? rows[index].paper_type : ""}
                         >
-                            <option value="DEFAULT" disabled></option>
+                            <option value="" disabled></option>
                             {paperTypes.map((val, key) => {
                                 return (
                                     <option key={key} value={val}>
@@ -462,9 +455,9 @@ function Edit_Product({ setPages, productName }) {
                         <select
                             name="PaperColor"
                             className="w-1/2 border border-black rounded-sm"
-                            defaultValue={rows[index] ? rows[index].color : "DEFAULT"}
+                            defaultValue={rows[index] ? rows[index].color : ""}
                         >
-                            <option value="DEFAULT" disabled></option>
+                            <option value="" disabled></option>
                             {colors.map((val, key) => {
                                 return (
                                     <option key={key} value={val}>
@@ -665,7 +658,7 @@ function Edit_Product({ setPages, productName }) {
                             className="w-full p-1 border border-black rounded-sm mt-[5px]"
                             defaultValue={prodCateg}
                         >
-                            <option value="DEFAULT" disabled>
+                            <option value="" disabled>
                                 --- Select Category ---
                             </option>
                             {category.map((val, key) => {
@@ -799,11 +792,11 @@ function Edit_Product({ setPages, productName }) {
                                                     name="ProdSize"
                                                     className="w-1/2 border border-black rounded-sm"
                                                     defaultValue={
-                                                        rows[0].product_sizes ? rows[0].product_sizes : "DEFAULT"
+                                                        rows[0].product_sizes ? rows[0].product_sizes : ""
                                                     }
                                                 >
                                                     <option
-                                                        value="DEFAULT"
+                                                        value=""
                                                         disabled
                                                     ></option>
                                                     {sizes.map((val, key) => {
@@ -828,11 +821,11 @@ function Edit_Product({ setPages, productName }) {
                                                     name="PaperType"
                                                     className="w-1/2 border border-black rounded-sm"
                                                     defaultValue={
-                                                        rows[0].paper_type ? rows[0].paper_type : "DEFAULT"
+                                                        rows[0].paper_type ? rows[0].paper_type : ""
                                                     }
                                                 >
                                                     <option
-                                                        value="DEFAULT"
+                                                        value=""
                                                         disabled
                                                     ></option>
                                                     {paperTypes.map(
@@ -859,11 +852,11 @@ function Edit_Product({ setPages, productName }) {
                                                     name="PaperColor"
                                                     className="w-1/2 border border-black rounded-sm"
                                                     defaultValue={
-                                                        rows[0].color ? rows[0].color : "DEFAULT"
+                                                        rows[0].color ? rows[0].color : ""
                                                     }
                                                 >
                                                     <option
-                                                        value="DEFAULT"
+                                                        value=""
                                                         disabled
                                                     ></option>
                                                     {colors.map((val, key) => {
