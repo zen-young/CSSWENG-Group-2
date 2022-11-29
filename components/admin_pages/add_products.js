@@ -292,9 +292,9 @@ function Add_Product({setPages}) {
                             <select
                                 name="ProdSize"
                                 className="w-1/2 border border-black rounded-sm"
-                                defaultValue={'DEFAULT'}
+                                defaultValue=""
                             >
-                            <option value='DEFAULT' disabled></option>
+                            <option value="" disabled></option>
                             {sizes.map((val, key) => {
                                 return (
                                     <option key={key} value={val}>
@@ -313,9 +313,9 @@ function Add_Product({setPages}) {
                             <select
                                 name="PaperType"
                                 className="w-1/2 border border-black rounded-sm"
-                                defaultValue={'DEFAULT'}
+                                defaultValue=""
                             >
-                            <option value='DEFAULT' disabled></option>
+                            <option value="" disabled></option>
                             {paperTypes.map((val, key) => {
                                 return (
                                     <option key={key} value={val}>
@@ -334,9 +334,9 @@ function Add_Product({setPages}) {
                             <select
                                 name="PaperColor"
                                 className="w-1/2 border border-black rounded-sm"
-                                defaultValue={'DEFAULT'}
+                                defaultValue=""
                             >
-                            <option value='DEFAULT' disabled></option>
+                            <option value="" disabled></option>
                             {colors.map((val, key) => {
                                 return (
                                     <option key={key} value={val}>
@@ -478,9 +478,9 @@ function Add_Product({setPages}) {
                             name="category"
                             onChange={(e) => { setProdCateg(e.target.value) }}
                             className="w-full p-1 border border-black rounded-sm mt-[5px]"
-                            defaultValue={'DEFAULT'}
+                            defaultValue=""
                         >
-                            <option value='DEFAULT' disabled>
+                            <option value="" disabled>
                                 --- Select Category ---
                             </option>
                             {category.map((val, key) => {
@@ -592,9 +592,9 @@ function Add_Product({setPages}) {
                                                     name="ProdSize"
                                                     type=""
                                                     className="w-1/2 border border-black rounded-sm"
-                                                    defaultValue={'DEFAULT'}
+                                                    defaultValue=""
                                                 >
-                                                <option value='DEFAULT' disabled></option>
+                                                <option value="" disabled></option>
                                                 {sizes.map((val, key) => {
                                                     return (
                                                         <option key={key} value={val}>
@@ -613,9 +613,9 @@ function Add_Product({setPages}) {
                                                 <select
                                                     name="PaperType"
                                                     className="w-1/2 border border-black rounded-sm"
-                                                    defaultValue={'DEFAULT'}
+                                                    defaultValue=""
                                                 >
-                                                <option value='DEFAULT' disabled></option>
+                                                <option value="" disabled></option>
                                                 {paperTypes.map((val, key) => {
                                                     return (
                                                         <option key={key} value={val}>
@@ -634,9 +634,9 @@ function Add_Product({setPages}) {
                                                     <select
                                                         name="PaperColor"
                                                         className="w-1/2 border border-black rounded-sm"
-                                                        defaultValue={'DEFAULT'}
+                                                        defaultValue=""
                                                     >
-                                                    <option value='DEFAULT' disabled></option>
+                                                    <option value="" disabled></option>
                                                     {colors.map((val, key) => {
                                                         return (
                                                             <option key={key} value={val}>

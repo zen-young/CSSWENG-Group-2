@@ -34,8 +34,6 @@ function Edit_Product({ setPages, productName }) {
     const [colors, setColors] = useState([]);
     const [docId, setDocId] = useState([])
 
-
-    const [urls, setUrls] = useState([])
     const [productURLS, setProdURLS] = useState([])
     const [productURLSCopy, setProdURLCopy] = useState([]) 
     const [newUrls, setNewUrls] = useState([])
@@ -46,6 +44,8 @@ function Edit_Product({ setPages, productName }) {
     const [colorInputs, setColorInputs] = useState([]);
     const [includeRow, setIncludedRows] = useState([true, true, true]);
     const [rowInputs, setRowInputs] = useState([]);
+
+    const [warningHidden, setWarningHidden] = useState(true);
 
     //Adds a doc to the database
     async function addToDatabase() {
@@ -565,15 +565,42 @@ function Edit_Product({ setPages, productName }) {
     }, [rows, sizes, colors, paperTypes]);
 
 
-
     return (
         <>
             {/* TITLE OF PAGE AND LIVE PREVIEW BUTTON */}
             <Header_Live_Preview title="Edit Product" />
 
-            {/* UPLOADING PRODUCT IMAGES */}
-            <div className="flex-col w-full h-auto bg-gray-100 pr-[40px] pt-[25px] pl-[20px]">
-                <p className="w-full text-[12px] align-top text-center text-red-500 mb-[20px]">
+            {/* UPLOADING PRODUCT IMAGES pl-[20px] pt-[25px]*/}
+            <div className="relative flex-col w-full h-auto bg-gray-100 pr-[40px] ">
+                <div className={`absolute w-full h-full z-10 bg-black bg-opacity-80 ${warningHidden ? "hidden" : ""}`} id="delete_warning">
+                    <div className="absolute top-1/2 left-1/4 w-[400px] h-auto my-auto mx-auto bg-white opacity-100 px-2 py-2 rounded-md">
+                        <div className="flex-col text-center">
+                            <img className="w-[50px] mx-auto mb-[20px]" src="/assets/warning_icon.png" alt="" />
+                            <p>Please Confirm Delete</p>
+                            <p>You are about to delete Product: <span className="font-bold">{prodName}</span></p>
+                            <p>Do you really want to delete this product?</p>
+                            <div className="flex gap-5 justify-center mt-[20px]">
+                                <button 
+                                    className="w-1/4 bg-gray-300 rounded-md p-2 hover:brightness-90"
+                                    onClick={ () => {
+                                        setWarningHidden(true)}
+                                    }
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    className="w-1/4 bg-red-500 rounded-md hover:brightness-90 text-white"
+                                    onClick={ () => {
+                                        deleteDocument().then(() => {setPages(5)})} 
+                                    }
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p className="w-full text-[12px] align-top text-center text-red-500 mb-[20px] mt-[40px]">
                     {message}
                 </p>
 
@@ -587,7 +614,7 @@ function Edit_Product({ setPages, productName }) {
                         className="flex w-full gap-5 overflow-auto"
                     >
                         <div className="flex flex-nowrap gap-2 overflow-auto">
-                            {(productURLS.concat(newUrls)).map((url, key) => {
+                            {productURLS.concat(newUrls).map((url, key) => {
                                 return (
                                     <div key={key + 1} className="relative">
                                         <IconCircleX
@@ -792,7 +819,10 @@ function Edit_Product({ setPages, productName }) {
                                                     name="ProdSize"
                                                     className="w-1/2 border border-black rounded-sm"
                                                     defaultValue={
-                                                        rows[0].product_sizes ? rows[0].product_sizes : ""
+                                                        rows[0].product_sizes
+                                                            ? rows[0]
+                                                                  .product_sizes
+                                                            : ""
                                                     }
                                                 >
                                                     <option
@@ -821,7 +851,9 @@ function Edit_Product({ setPages, productName }) {
                                                     name="PaperType"
                                                     className="w-1/2 border border-black rounded-sm"
                                                     defaultValue={
-                                                        rows[0].paper_type ? rows[0].paper_type : ""
+                                                        rows[0].paper_type
+                                                            ? rows[0].paper_type
+                                                            : ""
                                                     }
                                                 >
                                                     <option
@@ -852,7 +884,9 @@ function Edit_Product({ setPages, productName }) {
                                                     name="PaperColor"
                                                     className="w-1/2 border border-black rounded-sm"
                                                     defaultValue={
-                                                        rows[0].color ? rows[0].color : ""
+                                                        rows[0].color
+                                                            ? rows[0].color
+                                                            : ""
                                                     }
                                                 >
                                                     <option
@@ -880,7 +914,9 @@ function Edit_Product({ setPages, productName }) {
                                                 name="quantity"
                                                 type="text"
                                                 defaultValue={
-                                                    rows[0].quantity ? rows[0].quantity : ""
+                                                    rows[0].quantity
+                                                        ? rows[0].quantity
+                                                        : ""
                                                 }
                                                 className="w-1/2 border border-black rounded-sm"
                                             />
@@ -891,7 +927,9 @@ function Edit_Product({ setPages, productName }) {
                                                 name="price"
                                                 type="text"
                                                 defaultValue={
-                                                    rows[0].price ? rows[0].price : ""
+                                                    rows[0].price
+                                                        ? rows[0].price
+                                                        : ""
                                                 }
                                                 className="w-1/2 border border-black rounded-sm"
                                             />
@@ -922,7 +960,7 @@ function Edit_Product({ setPages, productName }) {
                     <button
                         className="font-bold text-[14px] border px-[20px] py-1 bg-gray-300"
                         onClick={() => {
-                            setPages(5)
+                            setPages(5);
                         }}
                     >
                         Discard Changes
@@ -932,7 +970,7 @@ function Edit_Product({ setPages, productName }) {
                         onClick={() => {
                             addToDatabase().then(() => {
                                 //What to do after adding to database
-                                setPages(5)
+                                setPages(5);
                             });
                         }}
                     >
@@ -940,11 +978,8 @@ function Edit_Product({ setPages, productName }) {
                     </button>
                     <button
                         className="font-bold text-[14px] border px-[20px] py-1 bg-red-500"
-                        onClick={() => { 
-                            deleteDocument().then(() => {
-                                setPages(5)
-                            })
-                            //Insert What to do after deleting
+                        onClick={() => {
+                            setWarningHidden(false)
                         }}
                     >
                         Delete
