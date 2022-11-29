@@ -571,9 +571,11 @@ function Edit_Product({ setPages, productName }) {
             <Header_Live_Preview title="Edit Product" />
 
             {/* UPLOADING PRODUCT IMAGES pl-[20px] pt-[25px]*/}
-            <div className="relative flex-col w-full h-auto bg-gray-100 pr-[40px] ">
+            <div className="relative flex flex-col w-full h-full bg-gray-100 pr-[40px] ">
+                
+                {/* Confirm Delete */}
                 <div className={`absolute w-full h-full z-10 bg-black bg-opacity-80 ${warningHidden ? "hidden" : ""}`} id="delete_warning">
-                    <div className="absolute top-1/2 left-1/4 w-[400px] h-auto my-auto mx-auto bg-white opacity-100 px-2 py-2 rounded-md">
+                    <div className="absolute top-1/3 left-1/4 w-1/2 h-auto my-auto mx-auto bg-white opacity-100 px-2 py-2 rounded-md">
                         <div className="flex-col text-center">
                             <img className="w-[50px] mx-auto mb-[20px]" src="/assets/warning_icon.png" alt="" />
                             <p>Please Confirm Delete</p>
@@ -600,6 +602,7 @@ function Edit_Product({ setPages, productName }) {
                         </div>
                     </div>
                 </div>
+
                 <p className="w-full text-[12px] align-top text-center text-red-500 mb-[20px] mt-[40px]">
                     {message}
                 </p>

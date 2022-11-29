@@ -142,7 +142,7 @@ function Admin_Panel() {
       </div>
 
       {/* Pages Container */}
-      <div className="w-2/3 h-auto bg-gray-100">
+      <div className="w-2/3 h-full min-h-screen bg-gray-100">
         {/* 
                     CHANGE INDEX TO VIEW PAGE FROM PAGES ARRAY
                     index 0 = admin settings
