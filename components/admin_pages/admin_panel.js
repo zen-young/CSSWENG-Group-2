@@ -36,7 +36,7 @@ function Admin_Panel() {
   };
 
   return (
-    <div className="flex px-[150px] w-full h-full shadow-lg bg-gray-200">
+    <div className="flex px-[150px] w-full h-full min-h-screen shadow-lg bg-gray-200">
       <div className="text-white w-[350px] h-auto bg-[#282828] pl-[20px] pt-[25px] pb-[100px]">
         <div className="flex mb-[25px] items-center">
           <Image src={"/assets/user_icon.png"} width={60} height={60} />
