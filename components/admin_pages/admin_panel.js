@@ -30,11 +30,6 @@ function Admin_Panel() {
   pages.push({ pageName: "Edit Product", html: <Contact_Info /> });
   pages.push({ pageName: "Manage Products", html: <ManageProducts setPages={setIndex} setProduct={setCurrProduct}/> });
 
-  const handleLogout = () => {
-    logout();
-    router.push("/admin/login");
-  };
-
   return (
     <div className="flex px-[150px] w-full h-full min-h-screen shadow-lg bg-gray-200">
       <div className="text-white w-[350px] h-auto bg-[#282828] pl-[20px] pt-[25px] pb-[100px]">
@@ -134,7 +129,7 @@ function Admin_Panel() {
           <Image src={"/assets/logout_icon.png"} width={33} height={33} />
           <p
             className="hover:cursor-pointer hover:underline font-semibold text-[24px] ml-[10px]"
-            onClick={() => handleLogout()}
+            onClick={() => {logout()}}
           >
             Logout
           </p>

@@ -21,7 +21,7 @@ function Admin_Login() {
     try {
       setMessage("Logging in...");
       await login(email, password);
-      router.push("/admin/settings");
+      // router.push("/admin/settings");
     } catch (err) {
       console.error(err);
       setMessage("Incorrect Email or Password");
