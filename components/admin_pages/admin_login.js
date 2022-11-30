@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "../../context/AuthContext";
+import Link from "next/link";
 
 function Admin_Login() {
   const [message, setMessage] = useState("");
@@ -81,6 +82,8 @@ function Admin_Login() {
           >
             Login
           </button>
+
+          <div className="flex justify-center text-center mt-5 text-violet-500 font-bold hover:brightness-110"><Link href="/">Back to Home Page</Link></div>
         </div>
       </div>
     </div>
