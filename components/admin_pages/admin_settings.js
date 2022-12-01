@@ -19,23 +19,12 @@ function Admin_Settings() {
     const [currEmail, setCurrEmail] = useState('')
 
     useEffect(() => {
-        if(newPass.length > 0 && newPass != repPass){
-            setMessage("New Password and Repeated Password must be the same")
-        }
-        else{
-            setMessage("")
-        }
-    })
-
-    // useEffect(() => {
-    //     onAuthStateChanged(auth, (user) => {
-    //         if (user) {
-    //             setUser(user);
-    //         }else{
-    //             Router.push("/admin/login");
-    //         }
-    //     });
-    // }, [])
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setUser(user);
+            }
+        });
+    }, [])
 
 
     return (
@@ -91,6 +80,7 @@ function Admin_Settings() {
                                         updateEmail(cred.user, newEmail).then(() => {
                                             updatePassword(cred.user, newPass).then(() => {
                                                 alert("Change Success!")
+                                                window.location.reload(false)
                                             }).catch((err) => {
                                                 alert("Error Occurred, Wrong Email / Password")
                                             })
@@ -127,10 +117,6 @@ function Admin_Settings() {
                             className="w-full rounded-sm border border-black block mb-[25px] p-3"
                             onChange={(e) => {
                                 setNewPass(e.target.value);
-                                if (newPass != repPass)
-                                    setMessage(
-                                        "Repeated Password is not the same."
-                                    );
                             }}
                         />
 
@@ -150,7 +136,12 @@ function Admin_Settings() {
                             disabled={repPass != newPass && newPass.length < 5}
                             className="px-[20px] py-[10px] bg-green-400 rounded-md text-[20px] text-black font-bold hover:brightness-90"
                             onClick={() => {
-                                setHidden(false);
+                                if (newPass != repPass)
+                                    setMessage("Repeated Password is not the same.");
+                                else if (newPass.length < 8)
+                                    setMessage("New Password must atleast be 8 characters")
+                                else
+                                    setHidden(false);
                             }}
                         >
                             Save Changes

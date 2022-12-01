@@ -696,7 +696,7 @@ function Edit_Product({ setPages, productName }) {
                                 setProdCateg(e.target.value);
                             }}
                             className="w-full p-1 border border-black rounded-sm mt-[5px]"
-                            defaultValue={prodCateg}
+                            value={prodCateg}
                         >
                             <option value="" disabled>
                                 --- Select Category ---
