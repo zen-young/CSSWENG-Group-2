@@ -77,7 +77,14 @@ function Admin_Settings() {
                                 onClick={() => {
                                     var credetial = EmailAuthProvider.credential(currEmail, currPass)
                                     reauthenticateWithCredential(currUser, credetial).then((cred) => {
-                                        updateEmail(cred.user, newEmail).then(() => {
+
+                                        var email
+                                        if(newEmail.length == 0)
+                                            email = currEmail
+                                        else
+                                            email = newEmail
+
+                                        updateEmail(cred.user, email).then(() => {
                                             updatePassword(cred.user, newPass).then(() => {
                                                 alert("Change Success!")
                                                 window.location.reload(false)
@@ -104,6 +111,17 @@ function Admin_Settings() {
                             className="w-full rounded-sm border border-black block mb-[25px] p-3"
                             value={currUser.email}
                             readOnly
+                        />
+
+                        <p className="block text-[20px] font-bold mb-[10px]">
+                            New Email
+                        </p>
+                        <input
+                            type={"email"}
+                            className="w-full rounded-sm border border-black block mb-[25px] p-3"
+                            onChange={(e) => {
+                                setNewEmail(e.target.value)
+                            }}
                         />
 
                         <p className="w-full text-[12px] align-top text-center text-red-500">
