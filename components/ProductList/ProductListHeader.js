@@ -1,27 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { db } from "../../firebaseConfig";
-import { collection, getDocs, query } from "firebase/firestore";
-import H_Divider from '../homepage/H_Divider';
-import { 
-  Select,
-} from "@mantine/core";
+import React from "react";
+import H_Divider from "../homepage/H_Divider";
+import { Select } from "@mantine/core";
 
-export default function ProductListHeader() {
-  const [categories, setCategories] = useState([]);
-
-  async function getCategories(){
-    const arr = ["All"]
-    const querySnapshot = await getDocs(query(collection(db, "categories")));
-    querySnapshot.forEach((doc) => {
-        arr.push(doc.id)
-    });
-    setCategories(arr)
-  }
-
-  useEffect(() => {
-    getCategories()
-  }, [])
-
+export default function ProductListHeader({
+  categories,
+  filter,
+  handleFilter,
+}) {
   return (
     <>
       <header className="mt-9 mb-1">
@@ -32,30 +17,29 @@ export default function ProductListHeader() {
             </h1>
           </div>
 
-          {/* <div className="my-auto flex">
-            <h2 className="mr-[5px] my-auto mt-[6px] min-w-[140px]">Select Category:</h2>
-            //TODO: Filter Products Based on Category
+          <div className="my-auto flex">
+            <h2 className="mr-[5px] my-auto mt-[6px] min-w-[140px]">
+              Select Category:
+            </h2>
             <Select
-              defaultValue = "All"
-              data = {categories}
-              rightSection={<i className="fa fa-caret-down"/>}
+              value={filter}
+              onChange={handleFilter}
+              data={categories}
+              rightSection={<i className="fa fa-caret-down" />}
               styles={(theme) => ({
                 item: {
-                  '&[data-selected]': {
-                    '&, &:hover': {
+                  "&[data-selected]": {
+                    "&, &:hover": {
                       backgroundColor: theme.colors.gray[4],
-                      color: theme.colors.dark[9]
+                      color: theme.colors.dark[9],
                     },
                   },
-        
-                  '&[data-hovered]': {},
+
+                  "&[data-hovered]": {},
                 },
               })}
-            >
-
-            </Select>
-          </div> */}
-
+            ></Select>
+          </div>
         </div>
         <H_Divider />
       </header>
