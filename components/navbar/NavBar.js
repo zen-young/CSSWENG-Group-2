@@ -13,8 +13,9 @@ import {
   Center,
   Box,
   Autocomplete,
+  Divider,
 } from "@mantine/core";
-import { IconFileText, IconSearch } from "@tabler/icons";
+import { IconShoppingCart, IconSearch } from "@tabler/icons";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
@@ -26,9 +27,9 @@ const useStyles = createStyles((theme) => ({
     paddingLeft: theme.spacing.md,
     paddingRight: theme.spacing.md,
     textDecoration: "none",
-    color: theme.colorScheme === "dark" ? theme.white : theme.black,
+    color: theme.colorScheme === "dark" ? theme.white : "#1f2937",
     fontWeight: 500,
-    fontSize: theme.fontSizes.sm,
+    fontSize: theme.fontSizes.md,
 
     [theme.fn.smallerThan("sm")]: {
       height: 42,
@@ -42,6 +43,7 @@ const useStyles = createStyles((theme) => ({
         theme.colorScheme === "dark"
           ? theme.colors.dark[6]
           : theme.colors.gray[0],
+      textDecoration: "underline",
     }),
   },
 
@@ -152,14 +154,14 @@ export default function NavBar() {
         position="right-start"
         shadow="md"
         withinPortal
-        closeDelay={0}
+        closeDelay={20}
         key={key}
       >
         <HoverCard.Target>
           <UnstyledButton className={classes.subLink}>
             <Group noWrap align="flex-start">
               <div>
-                <Text size="sm" weight={500}>
+                <Text weight={500}>
                   {key}
                 </Text>
               </div>
@@ -190,13 +192,13 @@ export default function NavBar() {
             <Anchor href="/">
               <Image
                 src="/../public/assets/Company Logo.png"
-                width="251px"
-                height="70px"
+                width="252px"
+                height="80px"
                 alt="company logo"
               />
             </Anchor>
             <Group
-              sx={{ height: "60px", borderLeft: "1px solid #000000" }}
+              sx={{ height: "60px", borderLeft: "1px solid #292929" }}
               spacing={0}
             >
               <HoverCard width={200} position="bottom" shadow="md" withinPortal>
@@ -204,16 +206,11 @@ export default function NavBar() {
                   <a href="/products" className={classes.link}>
                     <Center inline>
                       <Box component="span" mr={5}>
-                        <Text size="md" underline="true" weight="bold">
+                        <Text size="md" weight="bold">
                           PRODUCTS
                         </Text>
                       </Box>
-                      <Image
-                        src="/../public/assets/material-symbols_arrow-drop-down-rounded.png"
-                        width="33"
-                        height="33"
-                        alt="down arrow"
-                      />
+                      <i class="fa fa-caret-down" />
                     </Center>
                   </a>
                 </HoverCard.Target>
@@ -221,6 +218,12 @@ export default function NavBar() {
                 <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
                   <SimpleGrid cols={1} spacing={0}>
                     {links}
+                    <Divider mb={10}/>
+                    <a href="/products">
+                      <UnstyledButton className={classes.subLink} width= {400} >
+                        View All Products
+                      </UnstyledButton>
+                    </a>
                   </SimpleGrid>
                 </HoverCard.Dropdown>
               </HoverCard>
@@ -246,12 +249,17 @@ export default function NavBar() {
               value={search}
             />
 
+            {/* TODO: Add Cart Link */}
             <a href="#" className={classes.link}>
               <Center inline>
-                <IconFileText size="46px" color={theme.fn.primaryColor()} />
-                <Box component="span" mr={5}>
+                <IconShoppingCart size="46px" color="#292929" />
+                <Box component="span" mx={15}>
                   <Text size="md" weight="bold">
-                    ORDER NOW!
+                    Your Cart:
+                  </Text>
+                  {/* TODO: Number of Items in Cart */}
+                  <Text size="md">
+                    __ items
                   </Text>
                 </Box>
               </Center>

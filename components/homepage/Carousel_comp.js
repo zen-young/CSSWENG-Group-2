@@ -1,7 +1,8 @@
-import React from 'react';
+import {React, useRef} from 'react';
 
 import { Carousel } from "@mantine/carousel";
 import { createStyles } from '@mantine/core';
+import Autoplay from 'embla-carousel-autoplay';
 
 import Image from 'next/image';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons';
@@ -32,6 +33,11 @@ const useStyles = createStyles((_theme, _params, getRef) => ({
 }));
 
 function Carousel_comp() {
+
+    const options = {
+        delay: 8000, 
+    }
+    const autoplay = useRef(Autoplay(options));
 
     const images = [
         "/assets/sample_1.jpg",
@@ -75,6 +81,10 @@ function Carousel_comp() {
                 loop
 
                 classNames={classes}
+
+                plugins={[autoplay.current]}
+                onMouseEnter={autoplay.current.stop}
+                onMouseLeave={autoplay.current.reset}
             >
                 {slideList}
             </Carousel>

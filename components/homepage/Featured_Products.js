@@ -10,8 +10,27 @@ import {
   createStyles,
 } from "@mantine/core";
 
+const useStyles = createStyles((theme) => ({
+  card: {
+    transition: "transform 150ms ease, box-shadow 150ms ease",
+
+    "&:hover": {
+      transform: "scale(1.05)",
+    },
+  },
+
+  title: {
+    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+    fontWeight: 700,
+    fontSize: 24,
+    textAlign: "center",
+  },
+}));
+
 function Featured_Products({ products }) {
   const [currPage, setCurrPage] = useState(0);
+
+  const { classes } = useStyles();
 
   const chunkProductList = (arr, chunkSize) => {
     const chunkedArr = [];
@@ -45,7 +64,8 @@ function Featured_Products({ products }) {
                 shadow={"rgba(0, 0, 0, 0.24) 0px 5px 3px"}
                 p="lg"
                 withBorder
-                className="hover:scale-[1.05]"
+                className={classes.card}
+                
                 key={index}
               >
                 <Card.Section>
@@ -79,7 +99,7 @@ function Featured_Products({ products }) {
   for (let i = 0; i < numPages; i++) {
     paginationButtons.push(
       <button
-        className={`w-fit h-fit my-auto border-2 border-x-neutral-300 px-[7px] rounded-[5px] 
+        className={`w-fit h-fit my-auto border-2 border-x-neutral-300 px-[7px] rounded-[5px] pb-[3px]
                     ${currPage == i ? "bg-neutral-400" : "bg-white"}
                     ${i == numPages - 1 ? "mr-[30px]" : "mr-[10px]"}`}
         onClick={() => setCurrPage(i)}

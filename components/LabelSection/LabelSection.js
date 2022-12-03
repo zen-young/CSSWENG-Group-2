@@ -18,8 +18,9 @@ const LabelSection = ({ productName, sizes, quantities, prices }) => {
         <div className="w-full bg-white flex items-center border border-[#C1C1C1] p-2 mt-[7px]">
           <input
             value={sizes[selectedSize]}
-            className="ml-5 bg-inherit outline-none border-none grow text-[20px] font-normal tracking-wide"
+            className="ml-5 bg-inherit outline-none border-none grow text-[20px] tracking-wide"
             id="sizes-form"
+            disabled="true"
           />
           <Image
             src={ChevronDown}
@@ -30,7 +31,7 @@ const LabelSection = ({ productName, sizes, quantities, prices }) => {
         </div>
 
         {openSizeDropdown ? (
-          <div className="absolute border border-[#C1C1C1] w-full z-10 bg-white h-44 overflow-scroll">
+          <div className="absolute border border-[#C1C1C1] w-full z-10 bg-white h-auto overflow-auto">
             {sizes.map((size, index) => (
               <div
                 key={index}
@@ -40,8 +41,8 @@ const LabelSection = ({ productName, sizes, quantities, prices }) => {
                   setOpenSizeDropdown(false);
                 }}
               >
-                <span className="text-[20px] mt-3 ml-2">{size}</span>
-                <div className="border-b-[1px] border-b-black opacity-25 w-full" />
+                <span className="text-[20px] pt-3 pl-7">{size}</span>
+                <div className="border-b-[1px] border-b-black opacity-25 w-auto" />
               </div>
             ))}
           </div>
@@ -53,8 +54,9 @@ const LabelSection = ({ productName, sizes, quantities, prices }) => {
         <div className="w-full bg-white flex items-center border border-[#C1C1C1] p-2 mt-[7px]">
           <input
             value={quantities[selectedQuantity] + " Pieces"}
-            className="ml-5 bg-inherit outline-none border-none grow text-[20px] font-normal tracking-wide"
+            className="ml-5 bg-inherit outline-none border-none grow text-[20px] tracking-wide"
             id="quantity-form"
+            disabled="true"
           />
           <Image
             src={ChevronDown}
@@ -64,7 +66,7 @@ const LabelSection = ({ productName, sizes, quantities, prices }) => {
           />
         </div>
         {openQuantityDropdown ? (
-          <div className="absolute border border-[#C1C1C1] w-full z-2 bg-white h-44 overflow-scroll">
+          <div className="absolute border border-[#C1C1C1] w-full z-2 bg-white h-auto overflow-auto">
             {quantities.map((quantity, index) => (
               <div
                 key={index}
@@ -74,7 +76,7 @@ const LabelSection = ({ productName, sizes, quantities, prices }) => {
                   setOpenQuantityDropdown(false);
                 }}
               >
-                <span className="text-[20px] mt-3 ml-2">{quantity} Pieces</span>
+                <span className="text-[20px] mt-3 ml-2 pl-7">{quantity} Pieces</span>
                 <div className="border-b-[1px] border-b-black opacity-25 w-full" />
               </div>
             ))}
@@ -88,8 +90,9 @@ const LabelSection = ({ productName, sizes, quantities, prices }) => {
       </div>
 
       <div className="flex mt-[31px] items-center justify-center w-full">  
-        <button className="bg-black text-white px-6 py-2 text-[24px] font-bold uppercase rounded-md">
-          click here to order-ordering from
+        <button className="bg-black text-white px-12 py-3 text-[24px] w- font-bold uppercase rounded-md
+                          hover:bg-gray-600 hover:shadow-lg hover:transition duration-300">
+          ADD TO CART
         </button>
       </div>
 
