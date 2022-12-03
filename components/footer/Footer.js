@@ -6,8 +6,9 @@ import {
   Text,
   Center,
   Box,
+  Image,
 } from "@mantine/core";
-import { IconBrandFacebook, IconFileText } from "@tabler/icons";
+import { IconShoppingCart } from "@tabler/icons";
 
 const useStyles = createStyles((theme) => ({
   footer: {
@@ -43,7 +44,6 @@ const useStyles = createStyles((theme) => ({
   },
 
   backtotop: {
-    fontFamily: "Inter",
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: "20px",
@@ -82,9 +82,9 @@ export default function Footer() {
 
           <Anchor href="/order" className={classes.links}>
             <Center inline>
-              <IconFileText size="46px" color="#6f32be" />
+              <IconShoppingCart size="32px" />
               <Box component="span">
-                <Text>Ordering Form</Text>
+                <Text  ml={5}>Your Cart</Text>
               </Box>
             </Center>
           </Anchor>
@@ -94,9 +94,14 @@ export default function Footer() {
             className={classes.links}
           >
             <Center inline>
-              <IconBrandFacebook size="46px" color="#00abfb" />
+              <Image
+                  src="/assets/fb_logo.png"
+                  width="32px"
+                  height="32px"
+                  alt="Facebook logo"
+              />
               <Box component="span">
-                <Text>Facebook Page</Text>
+                <Text ml={10}>Facebook Page</Text>
               </Box>
             </Center>
           </Anchor>

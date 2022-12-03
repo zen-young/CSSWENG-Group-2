@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import Logo from "../../public/assets/about-us_logo.png";
+import Logo from "../../public/assets/about_logo.png";
 
 const AboutPage = () => {
   return (
@@ -38,10 +38,6 @@ const AboutPage = () => {
         service from printing to finishing.
       </span>
 
-      <div className="flex items-center justify-center text-[20px] font-bold text-center">
-        * more info the product owner wishes to add like videos, clients, reviews,
-        etc. *
-      </div>
     </div>
   );
 };

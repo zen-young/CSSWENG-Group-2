@@ -13,7 +13,7 @@ const useStyles = createStyles((theme) => ({
     transition: "transform 150ms ease, box-shadow 150ms ease",
 
     "&:hover": {
-      transform: "scale(1.01)",
+      transform: "scale(1.05)",
     },
   },
 
@@ -22,6 +22,10 @@ const useStyles = createStyles((theme) => ({
     fontWeight: 700,
     fontSize: 24,
     textAlign: "center",
+
+    "&:hover": {
+      textDecoration: "underline"
+    },
   },
 }));
 

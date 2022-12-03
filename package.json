@@ -17,6 +17,7 @@
     "@mantine/hooks": "^5.5.5",
     "@mantine/next": "^5.5.5",
     "@tabler/icons": "^1.104.0",
+    "embla-carousel-autoplay": "^7.0.5",
     "embla-carousel-react": "^7.0.3",
     "firebase": "^9.14.0",
     "next": "12.3.1",

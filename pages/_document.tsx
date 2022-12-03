@@ -9,8 +9,12 @@ export default class _Document extends Document {
   render() {
     return (
       <Html>
-        <Head />
-        <body>
+        <Head>
+          <link href="https://fonts.googleapis.com/css2?family=Poppins" rel="stylesheet" />
+          <link href="https://fonts.googleapis.com/css2?family=Merryweather" rel="stylesheet" />
+          <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+        </Head>
+        <body className='font-sans text-gray-800'>
           <Main />
           <NextScript />
         </body>

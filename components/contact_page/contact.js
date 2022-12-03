@@ -119,7 +119,7 @@ function Contact_Page() {
 
             <H_Divider />
 
-            <p className="text-center text-[32px] font-bold">FOLLOW US</p>
+            <p className="text-center text-[32px] font-bold">FOLLOW US!</p>
 
             <a href="" className="mt-[25px]"></a>
 
@@ -139,7 +139,7 @@ function Contact_Page() {
             <div className="flex justify-center items-center content-center">
                 <a
                     href="https://www.facebook.com/upscaleprintingsolutions"
-                    className="mx-auto text-center text-[24px] font-bold hover:underline"
+                    className="mx-auto pt-[10px] text-center text-[24px] font-bold hover:underline"
                 >
                     Upscale Printing Solutions
                 </a>
