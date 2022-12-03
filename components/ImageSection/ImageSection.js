@@ -1,29 +1,10 @@
 import React, { useState } from "react";
-import Image1 from "../../public/assets/image1.png";
-import Image2 from "../../public/assets/image2.png";
-import Image3 from "../../public/assets/image3.png";
-import Image4 from "../../public/assets/image4.png";
 import ChevronLeft from "../../public/assets/chevronLeft.svg";
 import ChevronRight from "../../public/assets/chevronRight.svg";
 import Image from "next/image";
 
 const ImageSection = ({ images, sizes, content, paperContent }) => {
-  // const [images, setImages] = useState([
-  //   {
-  //     src: Image1,
-  //   },
-  //   {
-  //     src: Image2,
-  //   },
-  //   {
-  //     src: Image3,
-  //   },
-  //   {
-  //     src: Image4,
-  //   },
-  // ]);
   const [selectedImage, setSelectedImage] = useState(0);
-  // const sizes = ["2.4x1.25", "2.4x2", "3.5x2"];
 
   const prevImage = () => {
     if (selectedImage === 0) {
@@ -98,9 +79,9 @@ const ImageSection = ({ images, sizes, content, paperContent }) => {
                 <span key={size} className="ml-2 text-[20px] font-normal">
                   {size}
                   {index === sizes.length - 2 ? (
-                    <span> or&nbsp;</span>
+                    <span> or</span>
                   ) : index === sizes.length - 1 ? null : (
-                    <span>,&nbsp;</span>
+                    <span>, </span>
                   )}
                 </span>
               ))}

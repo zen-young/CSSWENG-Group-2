@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useRouter } from "next/router";
+import React from "react";
 import ImageSection from "../../components/ImageSection/ImageSection";
 import LabelSection from "../../components/LabelSection/LabelSection";
 import { doc, getDoc } from "firebase/firestore";
@@ -31,6 +30,7 @@ export default function Product({ product }) {
           })}
           content={product.description}
           sizes={product.product_sizes}
+          paper={product.paper_types}
           paperContent={product.paper_types.join(", ")}
         />
       </div>
