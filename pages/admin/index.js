@@ -1,9 +1,18 @@
-
-import Admin_Panel from "../../components/admin_pages/admin_panel";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 function Admin() {
+
+    const router = useRouter()
+
+    useEffect(() => {
+        router.push("/admin/login")
+    })
+
     return ( 
-        <Admin_Panel />
+        <div className="w-full h-screen bg-black">
+
+        </div>
     );
 }
 

@@ -7,21 +7,21 @@ import ChevronLeft from "../../public/assets/chevronLeft.svg";
 import ChevronRight from "../../public/assets/chevronRight.svg";
 import Image from "next/image";
 
-const ImageSection = ({ sizes, content, paperContent }) => {
-  const [images, setImages] = useState([
-    {
-      src: Image1,
-    },
-    {
-      src: Image2,
-    },
-    {
-      src: Image3,
-    },
-    {
-      src: Image4,
-    },
-  ]);
+const ImageSection = ({ images, sizes, content, paperContent }) => {
+  // const [images, setImages] = useState([
+  //   {
+  //     src: Image1,
+  //   },
+  //   {
+  //     src: Image2,
+  //   },
+  //   {
+  //     src: Image3,
+  //   },
+  //   {
+  //     src: Image4,
+  //   },
+  // ]);
   const [selectedImage, setSelectedImage] = useState(0);
   // const sizes = ["2.4x1.25", "2.4x2", "3.5x2"];
 
