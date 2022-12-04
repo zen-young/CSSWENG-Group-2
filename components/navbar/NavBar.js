@@ -18,6 +18,7 @@ import {
 import { IconShoppingCart, IconSearch } from "@tabler/icons";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -85,6 +86,7 @@ export default function NavBar() {
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
   const router = useRouter();
+  const cart = useSelector((state) => state.cart);
 
   useEffect(() => {
     try {
@@ -161,9 +163,7 @@ export default function NavBar() {
           <UnstyledButton className={classes.subLink}>
             <Group noWrap align="flex-start">
               <div>
-                <Text weight={500}>
-                  {key}
-                </Text>
+                <Text weight={500}>{key}</Text>
               </div>
             </Group>
           </UnstyledButton>
@@ -218,9 +218,9 @@ export default function NavBar() {
                 <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
                   <SimpleGrid cols={1} spacing={0}>
                     {links}
-                    <Divider mb={10}/>
+                    <Divider mb={10} />
                     <a href="/products">
-                      <UnstyledButton className={classes.subLink} width= {400} >
+                      <UnstyledButton className={classes.subLink} width={400}>
                         View All Products
                       </UnstyledButton>
                     </a>
@@ -256,10 +256,7 @@ export default function NavBar() {
                   <Text size="md" weight="bold">
                     Your Cart:
                   </Text>
-                  {/* TODO: Number of Items in Cart */}
-                  <Text size="md">
-                    __ items
-                  </Text>
+                  <Text size="md">{cart.length} items</Text>
                 </Box>
               </Center>
             </a>
