@@ -80,7 +80,7 @@ export default function Footer() {
             </Center>
           </Anchor>
 
-          <Anchor href="/order" className={classes.links}>
+          <Anchor href="/cart" className={classes.links}>
             <Center inline>
               <IconShoppingCart size="32px" />
               <Box component="span">

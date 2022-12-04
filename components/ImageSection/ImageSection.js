@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ChevronLeft from "../../public/assets/chevronLeft.svg";
 import ChevronRight from "../../public/assets/chevronRight.svg";
 import Image from "next/image";
+import {Container} from "@mantine/core"
 
 const ImageSection = ({ images, sizes, content, paperContent }) => {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -23,14 +24,12 @@ const ImageSection = ({ images, sizes, content, paperContent }) => {
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-center">
-        <div width="640px" height="388px">
-          {/* TODO: Fix Aspect Ratio */}
+        <div className="w-full h-[500px] relative">
           <Image
             src={images[selectedImage].src}
-            width={400}
-            height={400}
-            fit="scale-down"
+            layout="fill"
             alt="selectedImage"
+            objectFit="contain"
           />
         </div>
       </div>

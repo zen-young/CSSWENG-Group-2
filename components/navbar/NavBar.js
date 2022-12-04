@@ -249,8 +249,7 @@ export default function NavBar() {
               value={search}
             />
 
-            {/* TODO: Add Cart Link */}
-            <a href="#" className={classes.link}>
+            <a href="/cart" className={classes.link}>
               <Center inline>
                 <IconShoppingCart size="46px" color="#292929" />
                 <Box component="span" mx={15}>
