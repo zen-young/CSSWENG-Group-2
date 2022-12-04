@@ -5,6 +5,8 @@ import {
     reauthenticateWithCredential,
     updateEmail,
     updatePassword,
+    verifyBeforeUpdateEmail,
+    signOut
 } from "firebase/auth";
 import { useRouter } from "next/router";
 import { auth } from "../../../firebaseConfig";
@@ -40,7 +42,7 @@ function Edit_Email() {
             <div className="relative w-full h-full h-min-screen">
                 <div className={`absolute w-full h-screen bg-black bg-opacity-90 ${hidden ? "hidden" : "" }`}>
                     <div className="absolute top-1/4 left-1/4 bg-white w-1/2 h-fit rounded-md p-5">
-                        <p className="text-red-500">{updateMessage}</p>
+                        <p className="text-red-500 mb-2 ">{updateMessage}</p>
                         <p className="text-[14px]">
                             To change credentials, please re-enter your current
                             <span className="text-red-500"> EMAIL</span> and
@@ -81,14 +83,24 @@ function Edit_Email() {
                                     var credetial = EmailAuthProvider.credential( currEmail, currPass );
                                     reauthenticateWithCredential(currUser,credetial)
                                         .then((cred) => {
-                                            setUpdateMessage("Updating Email...")
-                                            updateEmail(cred.user, newEmail).then(() => {
-                                                alert("Successfully updated email")
-                                                window.location.reload(false)
+                                            
+                                            verifyBeforeUpdateEmail(cred.user, newEmail).then(() => {
+                                                setUpdateMessage("A VERIFICATION NOTICE has been sent to your NEW EMAIL, do check your SPAM FOLDER")
+                                                setTimeout(() => {
+                                                    signOut(auth)
+                                                    window.location.reload(false)
+                                                }, 10000)
                                             }).catch((err) => {
                                                 console.log(err)
-                                                alert("An Error has occurred while attempting to change email")
+                                                alert("Error has occurred with the verification")
                                             })
+                                            // updateEmail(cred.user, newEmail).then(() => {
+                                            //     alert("Successfully updated email")
+                                            //     window.location.reload(false)
+                                            // }).catch((err) => {
+                                            //     console.log(err)
+                                            //     alert("An Error has occurred while attempting to change email")
+                                            // })
                                         })
                                         .catch((err) => {
                                             console.log(err)
