@@ -94,6 +94,9 @@ function Admin_Settings() {
                                         }).catch((err) => {
                                             alert("Error Occurred, Wrong Email / Password")
                                         })
+
+                                    }).catch((err) => {
+                                        console.log(err);
                                     })
                                 }}
                             >Confirm Changes</button>
