@@ -24,26 +24,28 @@ export default function App(props: AppProps) {
         />
       </Head>
 
-      <AuthContextProvider>
-        <MantineProvider
-          withGlobalStyles
-          withNormalizeCSS
-          theme={{
-            /** Put your mantine theme override here */
-            colorScheme: "light",
-          }}
-        >
-          {router.pathname.includes("/admin") ? (
-            <Component {...pageProps} />
-          ) : (
-            <Provider store={store}>
-              <NavBar />
+      <Provider store={store}>
+        <AuthContextProvider>
+          <MantineProvider
+            withGlobalStyles
+            withNormalizeCSS
+            theme={{
+              /** Put your mantine theme override here */
+              colorScheme: "light",
+            }}
+          >
+            {router.pathname.includes("/admin") ? (
               <Component {...pageProps} />
-              <Footer />
-            </Provider>
-          )}
-        </MantineProvider>
-      </AuthContextProvider>
+            ) : (
+              <>
+                <NavBar />
+                <Component {...pageProps} />
+                <Footer />
+              </>
+            )}
+          </MantineProvider>
+        </AuthContextProvider>
+      </Provider>
     </>
   );
 }
