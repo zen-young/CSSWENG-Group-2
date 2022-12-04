@@ -17,9 +17,9 @@ function Admin_Panel() {
   const [hidden, setHidden] = useState(true);
 
   //Default Page after logging in
-  const [currPage, setCurrPage] = useState("Admin Settings");
+  const [currPage, setCurrPage] = useState("Manage Products");
   const [currProduct, setCurrProduct] = useState("")
-  const [pageIndex, setIndex] = useState(0);
+  const [pageIndex, setIndex] = useState(5);
 
   //Insert needed Pages into array
   const pages = [];
