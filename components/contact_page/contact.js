@@ -14,7 +14,7 @@ function Contact_Page() {
                     Contact us on Viber for inquiries!
                 </p>
                 <p className="text-white text-[32px] font-bold">
-                    +63917-5101023
+                    +639175101023
                 </p>
             </div>
 
