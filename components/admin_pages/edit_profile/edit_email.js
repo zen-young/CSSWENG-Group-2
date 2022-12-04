@@ -1,22 +1,25 @@
-
 import { useEffect, useState } from "react";
-import { EmailAuthProvider, onAuthStateChanged, reauthenticateWithCredential, updateEmail, updatePassword } from "firebase/auth";
+import {
+    EmailAuthProvider,
+    onAuthStateChanged,
+    reauthenticateWithCredential,
+    updateEmail,
+    updatePassword,
+} from "firebase/auth";
 import { useRouter } from "next/router";
-import { auth } from "../../firebaseConfig"
+import { auth } from "../../../firebaseConfig";
 
-function Admin_Settings() {
+function Edit_Email() {
+    const Router = useRouter();
 
-    const Router = useRouter()
+    const [currUser, setUser] = useState("");
+    const [newEmail, setNewEmail] = useState("");
+    const [message, setMessage] = useState("");
+    const [updateMessage, setUpdateMessage] = useState("")
 
-    const [currUser, setUser] = useState('')
-    const [newEmail, setNewEmail] = useState('')
-    const [newPass, setNewPass] = useState('')
-    const [repPass, setRepeatPass] = useState('')
-    const [message, setMessage] = useState('')
-
-    const [hidden, setHidden] = useState(true)
-    const [currPass, setCurrPass] = useState('')
-    const [currEmail, setCurrEmail] = useState('')
+    const [hidden, setHidden] = useState(true);
+    const [currPass, setCurrPass] = useState("");
+    const [currEmail, setCurrEmail] = useState("");
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -24,22 +27,20 @@ function Admin_Settings() {
                 setUser(user);
             }
         });
-    }, [])
-
+    }, []);
 
     return (
         <>
             <div className="flex bg-[#282828] w-full h-[100px] items-center">
                 <p className="text-[26px] text-white ml-[25px] font-semibold">
-                    Admin Settings
+                    Edit Email
                 </p>
             </div>
 
             <div className="relative w-full h-full h-min-screen">
-                <div
-                    className={`absolute w-full h-screen bg-black bg-opacity-90 ${ hidden ? "hidden" : ""}`}
-                >
+                <div className={`absolute w-full h-screen bg-black bg-opacity-90 ${hidden ? "hidden" : "" }`}>
                     <div className="absolute top-1/4 left-1/4 bg-white w-1/2 h-fit rounded-md p-5">
+                        <p className="text-red-500">{updateMessage}</p>
                         <p className="text-[14px]">
                             To change credentials, please re-enter your current
                             <span className="text-red-500"> EMAIL</span> and
@@ -70,36 +71,32 @@ function Admin_Settings() {
                                 onClick={() => {
                                     setHidden(true);
                                 }}
-                            >Cancel</button>
+                            >
+                                Cancel
+                            </button>
 
                             <button
                                 className="border border-black p-2 rounded-md bg-green-400 text-white hover:brightness-90"
                                 onClick={() => {
-                                    var credetial = EmailAuthProvider.credential(currEmail, currPass)
-                                    reauthenticateWithCredential(currUser, credetial).then((cred) => {
-
-                                        var email
-                                        if(newEmail.length == 0)
-                                            email = currEmail
-                                        else
-                                            email = newEmail
-
-                                        updateEmail(cred.user, email).then(() => {
-                                            updatePassword(cred.user, newPass).then(() => {
-                                                alert("Change Success!")
+                                    var credetial = EmailAuthProvider.credential( currEmail, currPass );
+                                    reauthenticateWithCredential(currUser,credetial)
+                                        .then((cred) => {
+                                            setUpdateMessage("Updating Email...")
+                                            updateEmail(cred.user, newEmail).then(() => {
+                                                alert("Successfully updated email")
                                                 window.location.reload(false)
                                             }).catch((err) => {
-                                                alert("Error Occurred, Wrong Email / Password")
+                                                console.log(err)
+                                                alert("An Error has occurred while attempting to change email")
                                             })
-                                        }).catch((err) => {
-                                            alert("Error Occurred, Wrong Email / Password")
                                         })
-
-                                    }).catch((err) => {
-                                        console.log(err);
-                                    })
+                                        .catch((err) => {
+                                            console.log(err)
+                                        });
                                 }}
-                            >Confirm Changes</button>
+                            >
+                                Confirm Changes
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -116,6 +113,7 @@ function Admin_Settings() {
                             readOnly
                         />
 
+                        <p className="text-red-500">{message}</p>
                         <p className="block text-[20px] font-bold mb-[10px]">
                             New Email
                         </p>
@@ -123,46 +121,18 @@ function Admin_Settings() {
                             type={"email"}
                             className="w-full rounded-sm border border-black block mb-[25px] p-3"
                             onChange={(e) => {
-                                setNewEmail(e.target.value)
-                            }}
-                        />
-
-                        <p className="w-full text-[12px] align-top text-center text-red-500">
-                            {message}
-                        </p>
-                        <p className="block text-[20px] font-bold mb-[10px]">
-                            Set New Password
-                        </p>
-                        <input
-                            type="password"
-                            className="w-full rounded-sm border border-black block mb-[25px] p-3"
-                            onChange={(e) => {
-                                setNewPass(e.target.value);
-                            }}
-                        />
-
-                        <p className="block text-[20px] font-bold mb-[10px]">
-                            Repeat New Password
-                        </p>
-                        <input
-                            type="password"
-                            className="w-full rounded-sm border border-black block mb-[25px] p-3"
-                            onChange={(e) => {
-                                setRepeatPass(e.target.value);
+                                setNewEmail(e.target.value);
                             }}
                         />
                     </form>
+
                     <div className="flex justify-end ">
                         <button
-                            disabled={repPass != newPass && newPass.length < 5}
                             className="px-[20px] py-[10px] bg-green-400 rounded-md text-[20px] text-black font-bold hover:brightness-90"
                             onClick={() => {
-                                if (newPass != repPass)
-                                    setMessage("Repeated Password is not the same.");
-                                else if (newPass.length < 8)
-                                    setMessage("New Password must atleast be 8 characters")
-                                else
-                                    setHidden(false);
+                                if (newEmail.length == 0)
+                                    setMessage("Please enter a new email first before saving changes");
+                                else setHidden(false);
                             }}
                         >
                             Save Changes
@@ -174,4 +144,4 @@ function Admin_Settings() {
     );
 }
 
-export default Admin_Settings;
+export default Edit_Email;
