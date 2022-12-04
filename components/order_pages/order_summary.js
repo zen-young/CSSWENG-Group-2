@@ -9,11 +9,12 @@ const OrderSummary = ({itemcount, totalprice, quotecount}) => {
             <span>₱{totalprice}</span>
           </div>
 
-          {/* TODO: If quotecount=0, do not display this */}
-          <div className="mt-[10px] text-xl flex justify-between">
-            <span className="pl-[20px]">Quotations ({quotecount} items)</span>
-            <span className="italic">PENDING</span>
-          </div>
+          {quotecount > 0 && 
+            <div className="mt-[10px] text-xl flex justify-between">
+              <span className="pl-[20px]">Quotations ({quotecount} items)</span>
+              <span className="italic">PENDING</span>
+            </div>
+          }
 
         </div>
       </>

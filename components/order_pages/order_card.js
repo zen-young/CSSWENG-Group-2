@@ -4,7 +4,7 @@ import {
     Image,
     Text,
   } from "@mantine/core";
-  import { IconPencil, IconTrash } from "@tabler/icons";
+import { IconPencil, IconTrash } from "@tabler/icons";
   
 
 // TODO: map orderlist to cards
@@ -28,7 +28,6 @@ export default function OrderCardsGrid() {
                     width={100}
                     height={100}
                     alt="product image"
-
                 />
             </div>
 
