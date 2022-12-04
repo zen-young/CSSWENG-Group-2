@@ -8,7 +8,7 @@ import "../styles/globals.css";
 import { AuthContextProvider } from "../context/AuthContext";
 import { useRouter } from "next/router";
 import { Provider } from "react-redux";
-import cartStore from "../redux/cart.store";
+import store from "../redux/store";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -36,7 +36,7 @@ export default function App(props: AppProps) {
           {router.pathname.includes("/admin") ? (
             <Component {...pageProps} />
           ) : (
-            <Provider store={cartStore}>
+            <Provider store={store}>
               <NavBar />
               <Component {...pageProps} />
               <Footer />
