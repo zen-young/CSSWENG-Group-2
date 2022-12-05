@@ -1,16 +1,16 @@
 import { AppProps } from "next/app";
 import Head from "next/head";
 import { MantineProvider } from "@mantine/core";
-import "../styles/globals.css";
-import NavBar from "../components/navbar/NavBar";
-import Footer from "../components/footer/Footer";
-import "../styles/globals.css";
-import { AuthContextProvider } from "../context/AuthContext";
 import { useRouter } from "next/router";
 import { Provider } from "react-redux";
-import store from "../redux/store";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
+import { AuthContextProvider } from "../context/AuthContext";
+import store from "../redux/store";
+import NavBar from "../components/navbar/NavBar";
+import Footer from "../components/footer/Footer";
+import Loading from "../components/Loading/loading";
+import "../styles/globals.css";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -40,7 +40,7 @@ export default function App(props: AppProps) {
             <Component {...pageProps} />
           ) : (
             <Provider store={store}>
-              <PersistGate loading={null} persistor={persistor}>
+              <PersistGate loading={<Loading />} persistor={persistor}>
                 <NavBar />
                 <Component {...pageProps} />
                 <Footer />
