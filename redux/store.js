@@ -4,7 +4,7 @@ import { persistReducer } from "redux-persist";
 import thunk from "redux-thunk";
 import { cartReducer } from "./cart.slice";
 
-const persistConfig = { key: "state", storage };
+const persistConfig = { key: "state", storage, timeout: 2000 };
 const reducers = combineReducers({ cart: cartReducer });
 const persistedReducer = persistReducer(persistConfig, reducers);
 
