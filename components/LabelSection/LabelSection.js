@@ -12,9 +12,23 @@ const LabelSection = ({ product, addToCart }) => {
 
   useEffect(() => {
     const variationList = product.variations.map((variation, index) => {
+      let label = "";
+      if (variation.size) {
+        label += `${variation.size}, `;
+      }
+      if (variation.color) {
+        label += `${variation.color}, `;
+      }
+      if (variation.paper_type) {
+        label += `${variation.paper_type}, `;
+      }
+      if (variation.quantity) {
+        label += `${variation.quantity} pcs.`;
+      }
+
       return {
         value: index,
-        label: `${variation.size}, ${variation.color}, ${variation.paper_type}, ${variation.quantity} pcs.`,
+        label: label,
       };
     });
     variationList.push({ value: -1, label: "Custom" });
