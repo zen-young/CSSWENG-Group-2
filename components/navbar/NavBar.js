@@ -158,15 +158,9 @@ export default function NavBar() {
         key={key}
       >
         <HoverCard.Target>
-          <UnstyledButton className={classes.subLink}>
-            <Group noWrap align="flex-start">
-              <div>
-                <Text weight={500}>
-                  {key}
-                </Text>
-              </div>
-            </Group>
-          </UnstyledButton>
+          <a href={`/products?category=${key}`}>
+            <UnstyledButton className={classes.subLink}>{key}</UnstyledButton>
+          </a>
         </HoverCard.Target>
 
         <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
@@ -218,9 +212,9 @@ export default function NavBar() {
                 <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
                   <SimpleGrid cols={1} spacing={0}>
                     {links}
-                    <Divider mb={10}/>
+                    <Divider mb={10} />
                     <a href="/products">
-                      <UnstyledButton className={classes.subLink} width= {400} >
+                      <UnstyledButton className={classes.subLink} width={400}>
                         View All Products
                       </UnstyledButton>
                     </a>
@@ -258,9 +252,7 @@ export default function NavBar() {
                     Your Cart:
                   </Text>
                   {/* TODO: Number of Items in Cart */}
-                  <Text size="md">
-                    __ items
-                  </Text>
+                  <Text size="md">__ items</Text>
                 </Box>
               </Center>
             </a>

@@ -3,7 +3,7 @@ import ProductCardsGrid from "../../components/ProductList/ProductCardsGrid";
 import ProductListHeader from "../../components/ProductList/ProductListHeader";
 import { db } from "../../firebaseConfig";
 import { collection, getDocs, query } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export async function getServerSideProps(context) {
   const productList = [];
@@ -27,17 +27,24 @@ export async function getServerSideProps(context) {
     }
   });
 
+  const category = context.query.category || "All";
+
   return {
     props: {
       products: productList,
       categories: categoryList,
+      category: category,
     },
   };
 }
 
-export default function ProductList({ products, categories }) {
+export default function ProductList({ products, categories, category }) {
   const [productList, setProductList] = useState(products);
-  const [filter, setFilter] = useState("All");
+  const [filter, setFilter] = useState(category);
+
+  useEffect(() => {
+    handleFilter(category);
+  }, []);
 
   const handleFilter = (value) => {
     setFilter(value);
