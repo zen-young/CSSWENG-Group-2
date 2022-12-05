@@ -76,13 +76,21 @@ const LabelSection = ({ product, addToCart }) => {
         ) : null}
       </div>
 
-      <div className="mt-[33px] flex items-center space-x-4">
-        <span className="text-[32px] font-normal">Total: </span>
-        <span className="text-[32px] font-bold">
-          {variation < 0
-            ? "PENDING"
-            : `₱${product.variations[variation].price}`}
-        </span>
+      <div className="mt-[33px]">
+        {variation === -1 ? (
+          <span className="italic text-[#FF0000] text-[20px]">
+            Note: Custom Orders Need to Wait for a Quotation
+          </span>
+        ) : null}
+
+        <div className=" flex items-center space-x-4">
+          <span className="text-[32px] font-normal">Total: </span>
+          <span className="text-[32px] font-bold">
+            {variation < 0
+              ? "PENDING"
+              : `₱${product.variations[variation].price}`}
+          </span>
+        </div>
       </div>
 
       <div className="flex mt-[31px] items-center justify-center w-full">
