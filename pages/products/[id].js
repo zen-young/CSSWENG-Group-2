@@ -25,8 +25,8 @@ export async function getServerSideProps(context) {
 export default function Product({ product }) {
   const dispatch = useDispatch();
 
-  const handleAddToCart = () => {
-    dispatch(addToCart(product));
+  const handleAddToCart = (object) => {
+    dispatch(addToCart(object));
   };
 
   return (
