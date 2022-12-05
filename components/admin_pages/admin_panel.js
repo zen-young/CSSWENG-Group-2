@@ -6,8 +6,9 @@ import { useAuth } from "../../context/AuthContext";
 
 import Add_Product from "./add_products";
 import Edit_Product from "./edit_products";
-import Company_Info from "./company_info";
-import Contact_Info from "./contact_info";
+import Company_Info from "./manage_website/company_info";
+import Contact_Info from "./manage_website/contact_info";
+import Order_Page from "./manage_website/order_page";
 import ManageProducts from "./ManageProducts";
 import Edit_Email from "./edit_profile/edit_email";
 import Edit_Password from "./edit_profile/edit_password";
@@ -21,15 +22,24 @@ function Admin_Panel() {
   //Default Page after logging in
   const [currPage, setCurrPage] = useState("Manage Products");
   const [currProduct, setCurrProduct] = useState("")
-  const [pageIndex, setIndex] = useState(4);
+  const [pageIndex, setIndex] = useState(0);
 
   //Insert needed Pages into array
   const pages = [];
+
+  // MANAGE PRODUCTS
+  pages.push({ pageName: "Manage Products", html: <ManageProducts setPages={setIndex} setProduct={setCurrProduct}/> });
   pages.push({ pagename: "Add Product", html: <Add_Product setPages={setIndex} /> });
   pages.push({ pageName: "Edit Product", html: <Edit_Product setPages={setIndex} productName={currProduct}/> });
-  pages.push({ pageName: "Edit Product", html: <Company_Info /> });
-  pages.push({ pageName: "Edit Product", html: <Contact_Info /> });
-  pages.push({ pageName: "Manage Products", html: <ManageProducts setPages={setIndex} setProduct={setCurrProduct}/> });
+
+  // MANAGE WEBSITE
+  pages.push({ pageName: "Home Page", html: <></> });
+  pages.push({ pageName: "Order Page", html: <Order_Page /> });
+  pages.push({ pageName: "Company Information", html: <Company_Info /> });
+  pages.push({ pageName: "Contact Information", html: <Contact_Info /> });
+  pages.push({ pageName: "View Website", html: <></> });
+
+  // ADMIN SETTINGS
   pages.push({ pageName: "Edit Email", html: <Edit_Email /> });
   pages.push({ pageName: "Edit Password", html: <Edit_Password /> });
 
@@ -46,7 +56,7 @@ function Admin_Panel() {
           <p
             onClick={() => {
               setCurrPage("Manage Products");
-              setIndex(4);
+              setIndex(0);
               }
             }
             className={`${
@@ -75,39 +85,50 @@ function Admin_Panel() {
         <div className={`${hiddenWeb ? "hidden" : "visible"} mb-[20px] pl-[75px]`}>
           <p
             className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
-            onClick={() => {}}
+            onClick={() => {
+              setCurrPage("Home Page")
+              setIndex(3)
+            }}
           >
             Home Page
           </p>
 
           <p
-            className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
-            onClick={() => {}}
+            className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${currPage == "Order Page" ? "underline" : ""}`}
+            onClick={() => {
+              setCurrPage("Order Page");
+              setIndex(4);
+            }}
           >
             Order Page
           </p>
 
           <p
-            className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
+            className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${currPage == "Company Information" ? "underline" : ""}`}
             onClick={() => {
-              setIndex(2);
+              setCurrPage("Company Information")
+              setIndex(5);
             }}
           >
             Company Information
           </p>
 
           <p
-            className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
+            className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${currPage == "Contact Information" ? "underline" : ""}`}
             onClick={() => {
-              setIndex(3);
+              setCurrPage("Contact Information")
+              setIndex(6);
             }}
           >
             Contact Information
           </p>
 
           <p
-            className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
-            onClick={() => {}}
+            className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${currPage == "View Website" ? "underline" : ""}`}
+            onClick={() => {
+              setCurrPage("View Website")
+              setIndex(7)
+            }}
           >
             View Website
           </p>
@@ -130,18 +151,20 @@ function Admin_Panel() {
 
         <div className={`${hiddenAdmin ? "hidden" : "visible"} mb-[20px] pl-[75px]`}>
           <p
-            className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
+            className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${currPage == "Edit Email" ? "underline" : ""}`}
             onClick={() => {
-              setIndex(5)
+              setCurrPage("Edit Email")
+              setIndex(8)
             }}
           >
             Change Email
           </p>
 
           <p
-            className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
+            className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${currPage == "Edit Password" ? "underline" : ""}`}
             onClick={() => {
-              setIndex(6)
+              setCurrPage("Edit Password")
+              setIndex(9)
             }}
           >
             Change Password
@@ -161,12 +184,6 @@ function Admin_Panel() {
 
       {/* Pages Container */}
       <div className="w-2/3 h-full min-h-screen bg-gray-100">
-        {/* 
-                    CHANGE INDEX TO VIEW PAGE FROM PAGES ARRAY
-                    index 0 = admin settings
-                    index 1 = add products page
-                    index 2 = edit/delete products page
-                */}
         { pages[pageIndex].html }
       </div>
     </div>
