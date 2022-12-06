@@ -181,8 +181,7 @@ export default function Checkout() {
           </form>
         </div>
         <div className="basis-1/2 p-8">
-          {/* TODO: Retrieve values from db */}
-          <OrderDetails orderList={null} hasEditCart={true} />
+          <OrderDetails />
         </div>
       </div>
 
