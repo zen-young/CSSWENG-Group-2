@@ -7,7 +7,6 @@ import OrderCards from "../order_pages/order_card";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart } from "../../redux/cart.slice";
-import { useRouter } from "next/router";
 
 export default function Cart() {
   const cart = useSelector((state) => state.cart);
@@ -15,7 +14,6 @@ export default function Cart() {
   const [selectedCards, setSelectedCards] = useState([]);
   const checkBoxRefs = useRef([]);
   const dispatch = useDispatch();
-  const router = useRouter();
 
   const handleDelete = (e) => {
     e.preventDefault();
@@ -38,16 +36,14 @@ export default function Cart() {
         );
         return prev.splice(selected, 1);
       });
+      console.log(selectedCards);
       return;
     }
     setSelectedCards((prev) => [...prev, card]);
+    console.log(selectedCards);
   };
 
   const handleDeleteSelected = () => {
-    if (selectedCards.length > 0) {
-      router.reload();
-    }
-
     selectedCards.map((item) => {
       dispatch(removeFromCart(item));
     });
@@ -58,11 +54,16 @@ export default function Cart() {
       checkBoxRefs.current.map((checkBoxRef) => {
         checkBoxRef.checked = true;
       });
+      cart.map((item) => {
+        setSelectedCards((prev) => [...prev, item]);
+      });
     } else {
       checkBoxRefs.current.map((checkBoxRef) => {
         checkBoxRef.checked = false;
       });
+      setSelectedCards([]);
     }
+    console.log(selectedCards);
   };
 
   return (
