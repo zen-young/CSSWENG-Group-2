@@ -5,9 +5,11 @@ import H_Divider from "../homepage/H_Divider";
 import OrderSummary from "../order_pages/order_summary";
 import OrderCards from "../order_pages/order_card";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
 export default function Cart() {
-  const [hasItems, setHasItems] = useState(true);
+  const cart = useSelector((state) => state.cart);
+  const hasItems = cart.length > 0;
 
   return (
     <>
@@ -24,7 +26,6 @@ export default function Cart() {
       </header>
 
       <div className="flex flex-col-reverse sm:flex-row w-full min-h-[440px] px-[120px] py-2">
-        {/* TODO: If there are items, show ordered items. Else show msg that cart is empty */}
         {hasItems ? (
           <>
             <div className="basis-2/3 px-8">
@@ -51,8 +52,7 @@ export default function Cart() {
             </div>
 
             <div className="basis-1/3 px-8">
-              {/* TODO: Retrieve values from db */}
-              <OrderSummary itemcount={2} totalprice={400} quotecount={1} />
+              <OrderSummary cart={cart} />
 
               <Link href="/cart/checkout">
                 <Anchor>
