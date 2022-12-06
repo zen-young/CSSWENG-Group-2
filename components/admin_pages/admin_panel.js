@@ -9,7 +9,7 @@ import Add_Product from "./add_products";
 import Edit_Product from "./edit_products";
 import Company_Info from "./company_info";
 import Contact_Info from "./contact_info";
-import ManageProducts from "./ManageProducts";
+import ManageProducts from "./ManageProducts/ManageProducts";
 
 function Admin_Panel() {
   const { user, logout } = useAuth();
@@ -18,17 +18,26 @@ function Admin_Panel() {
 
   //Default Page after logging in
   const [currPage, setCurrPage] = useState("Manage Products");
-  const [currProduct, setCurrProduct] = useState("")
+  const [currProduct, setCurrProduct] = useState("");
   const [pageIndex, setIndex] = useState(5);
 
   //Insert needed Pages into array
   const pages = [];
   pages.push({ pageName: "Admin Settings", html: <Admin_Settings /> });
-  pages.push({ pagename: "Add Product", html: <Add_Product setPages={setIndex} /> });
-  pages.push({ pageName: "Edit Product", html: <Edit_Product setPages={setIndex} productName={currProduct}/> });
+  pages.push({
+    pagename: "Add Product",
+    html: <Add_Product setPages={setIndex} />,
+  });
+  pages.push({
+    pageName: "Edit Product",
+    html: <Edit_Product setPages={setIndex} productName={currProduct} />,
+  });
   pages.push({ pageName: "Edit Product", html: <Company_Info /> });
   pages.push({ pageName: "Edit Product", html: <Contact_Info /> });
-  pages.push({ pageName: "Manage Products", html: <ManageProducts setPages={setIndex} setProduct={setCurrProduct}/> });
+  pages.push({
+    pageName: "Manage Products",
+    html: <ManageProducts setPages={setIndex} setProduct={setCurrProduct} />,
+  });
 
   return (
     <div className="flex px-[150px] w-full h-full min-h-screen shadow-lg bg-gray-200">
@@ -44,8 +53,7 @@ function Admin_Panel() {
             onClick={() => {
               setCurrPage("Manage Products");
               setIndex(5);
-              }
-            }
+            }}
             className={`${
               currPage == "Manage Products" ? "underline" : ""
             } hover:cursor-pointer font-semibold text-[24px] ml-[10px]`}
@@ -118,7 +126,7 @@ function Admin_Panel() {
             } hover:cursor-pointer font-semibold text-[24px] ml-[10px]`}
             onClick={() => {
               setIndex(0);
-              setCurrPage("Admin Settings")
+              setCurrPage("Admin Settings");
             }}
           >
             Admin Settings
@@ -129,7 +137,9 @@ function Admin_Panel() {
           <Image src={"/assets/logout_icon.png"} width={33} height={33} />
           <p
             className="hover:cursor-pointer hover:underline font-semibold text-[24px] ml-[10px]"
-            onClick={() => {logout()}}
+            onClick={() => {
+              logout();
+            }}
           >
             Logout
           </p>
@@ -144,7 +154,7 @@ function Admin_Panel() {
                     index 1 = add products page
                     index 2 = edit/delete products page
                 */}
-        { pages[pageIndex].html }
+        {pages[pageIndex].html}
       </div>
     </div>
   );

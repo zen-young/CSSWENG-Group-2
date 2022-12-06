@@ -2,17 +2,17 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDoc,
   getDocs,
   onSnapshot,
   updateDoc,
 } from "firebase/firestore";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { db } from "../../firebaseConfig";
-import Router, { useRouter } from "next/router";
-import AddCategoryModal from "../Modal/AddCategoryModal";
+import { db } from "../../../firebaseConfig";
+import AddCategoryModal from "../../Modal/AddCategoryModal";
 import ManageProductCard from "./ManageProductCard/ManageProductCard";
+import ManageProductHeader from "./ManageProductHeader";
+import ManageCategoryTabs from "./ManageCategoryTabs";
 
 const ManageProducts = ({ setPages, setProduct }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -80,22 +80,9 @@ const ManageProducts = ({ setPages, setProduct }) => {
       })
     );
   };
-  // console.log(itemData);
-  // console.log(categories);
-  // console.log(selectedCategory);
   return (
     <>
-      <div className="flex bg-[#282828] w-full h-[100px] items-center justify-between">
-        <p className="text-[26px] text-white ml-[25px] font-semibold">
-          Products
-        </p>
-        <button 
-          className="bg-[#f3f2f2] text-black font-normal text-[16px] text-center py-[10px] px-[18px] mr-[75px]"
-          onClick={() => { setPages(1) }}
-        >
-          + Add New
-        </button>
-      </div>
+      <ManageProductHeader setPages={setPages} />
 
       <div className="flex flex-col w-full pt-[47px] pl-[57px] pr-[75px]">
         <div className="flex items-center space-x-[20px]">
@@ -145,43 +132,14 @@ const ManageProducts = ({ setPages, setProduct }) => {
           </button>
         </div>
 
-        <div className="flex items-center mt-[32px]">
-          <span
-            className={`${
-              selected === "viewAll" ? "font-bold" : "font-normal"
-            } text-[14px] leading-[20px] text-black mr-[15px] hover:cursor-pointer`}
-            onClick={() => setSelected("viewAll")}
-          >
-            View all
-          </span>
-          <span
-            className={`${
-              selected === "unrecog" ? "font-bold" : "font-normal"
-            } text-[14px] leading-[20px] text-black mr-[15px] hover:cursor-pointer`}
-            onClick={() => setSelected("unrecog")}
-          >
-            Uncategorized
-          </span>
-          {categories?.map((category) => (
-            <span
-              className={`${
-                selected === category.name ? "font-bold" : "font-normal"
-              } text-[14px] leading-[20px] text-black mr-[15px] hover:cursor-pointer`}
-              onClick={() => setSelected(category.name)}
-              key={category.id}
-            >
-              {category.name}
-            </span>
-          ))}
-          <span
-            className={`${
-              selected === "add" ? "font-bold" : "font-normal"
-            } text-[14px] leading-[20px] text-black mr-[15px] hover:cursor-pointer`}
-            onClick={() => setOpenAddModal(true)}
-          >
-            + Add category
-          </span>
-        </div>
+        <ManageCategoryTabs
+          selected={selected}
+          setSelected={setSelected}
+          setOpenAddModal={setOpenAddModal}
+          categories={categories}
+          setItemData={setItemData}
+        />
+
         <div className="mt-[9px] mb-[25px] w-full border-b border-b-black" />
 
         {selected === "viewAll"
