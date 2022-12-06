@@ -13,10 +13,11 @@ import { IconShoppingCart } from "@tabler/icons";
 const useStyles = createStyles((theme) => ({
   footer: {
     background: "#292929",
-    marginTop: 120,
+    marginTop: 80,
     borderTop: `1px solid ${
       theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[2]
     }`,
+    width: "100%",
   },
 
   inner: {
@@ -80,14 +81,14 @@ export default function Footer() {
             </Center>
           </Anchor>
 
-          <Anchor href="/cart" className={classes.links}>
+          {/* <Anchor href="/cart" className={classes.links}>
             <Center inline>
               <IconShoppingCart size="32px" />
               <Box component="span">
                 <Text  ml={5}>Your Cart</Text>
               </Box>
             </Center>
-          </Anchor>
+          </Anchor> */}
 
           <Anchor
             href="https://www.facebook.com/upscaleprintingsolutions"

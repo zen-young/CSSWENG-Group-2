@@ -42,6 +42,7 @@ export default function App(props: AppProps) {
             <Provider store={store}>
               <PersistGate loading={<Loading />} persistor={persistor}>
                 <NavBar />
+                <div className="h-[92px]" /> {/*h-[headerHeight] */}
                 <Component {...pageProps} />
                 <Footer />
               </PersistGate>

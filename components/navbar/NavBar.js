@@ -77,6 +77,10 @@ const useStyles = createStyles((theme) => ({
     boxShadow: "0px 4px 5px rgba(0, 0, 0, 0.25)",
     borderBottom: "1px solid rgba(0, 0, 0, 0.3)",
     background: "#FFFFFF",
+    // top: 0,
+    // width: "100%",
+    // position: "fixed",
+    // zIndex: 50,
   },
 }));
 
@@ -185,8 +189,8 @@ export default function NavBar() {
   });
 
   return (
-    <Box sx={classes.header}>
-      <Header height={92} px="md">
+    <Box>
+      <Header height={92} px="md" fixed={true} sx={classes.header}>
         <Group noWrap position="apart" sx={{ height: "100%" }}>
           <Group position="left">
             <Anchor href="/">

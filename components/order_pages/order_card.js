@@ -17,7 +17,7 @@ export default function OrderCardsGrid() {
     cards.push(
         <div className="w-full order p-2 px-6 border-solid border-2 border-current rounded-md flex justify-around">
             <Checkbox
-                className="font-bold my-auto"
+                className="font-bold my-auto pr-2"
                 color="gray"
                 size="md"
             />
@@ -31,7 +31,7 @@ export default function OrderCardsGrid() {
                 />
             </div>
 
-            <div className="my-auto w-2/5">
+            <div className="my-auto w-2/5 px-2">
                 <Text className="font-bold text-3xl">
                     [Product Name]
                 </Text>
@@ -44,23 +44,27 @@ export default function OrderCardsGrid() {
             </div>
 
             
-            <div className="text-2xl font-bold h-full pr-6 border-r border-gray-400 flex items-center">
+            <div className="text-2xl font-bold h-full pr-5 border-r border-gray-400 flex items-center">
                 ₱[Price]
             </div>
 
-            <button className="py-1 font-bold rounded-md h-6 my-auto text-lg
-                              hover:underline hover:transition duration-300 flex items-center"
-                    id="edit-item"
-            >
-              <IconPencil /><span className="pt-0.5">&nbsp;Edit</span>
-            </button>
+            <div className="flex items-center ml-2 w-fit">
+                <button className="py-1 font-bold rounded-md h-6 text-lg pr-3
+                                hover:underline hover:transition duration-300 flex items-center"
+                        id="edit-item"
+                >
+                    <IconPencil />
+                    <span className="pt-0.5">&nbsp;Edit</span>
+                </button>
 
-            <button className="text-red-600 py-1 font-bold rounded-md h-6 my-auto text-lg
-                              hover:underline hover:transition duration-300 flex items-center"
-                    id="delete-item"
-            >
-              <IconTrash /><span className="pt-0.5">&nbsp;Delete</span>
-            </button>
+                <button className="text-red-600 py-1 font-bold rounded-md h-6 text-lg
+                                hover:underline hover:transition duration-300 flex items-center"
+                        id="delete-item"
+                >
+                    <IconTrash />
+                    <span className="pt-0.5">&nbsp;Delete</span>
+                </button>
+            </div>
 
         </div>
     )
