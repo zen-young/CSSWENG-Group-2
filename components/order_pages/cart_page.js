@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useRef } from "react";
 import { IconShoppingCart, IconTrash } from "@tabler/icons";
 import { Center, Box, Checkbox, Anchor, SimpleGrid } from "@mantine/core";
 import H_Divider from "../homepage/H_Divider";
@@ -13,6 +13,7 @@ export default function Cart() {
   const cart = useSelector((state) => state.cart);
   const hasItems = cart.length > 0;
   const [selectedCards, setSelectedCards] = useState([]);
+  const checkBoxRefs = useRef([]);
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -53,7 +54,15 @@ export default function Cart() {
   };
 
   const handleSelectAll = (e) => {
-    console.log(e.currentTarget.checked);
+    if (e.currentTarget.checked) {
+      checkBoxRefs.current.map((checkBoxRef) => {
+        checkBoxRef.checked = true;
+      });
+    } else {
+      checkBoxRefs.current.map((checkBoxRef) => {
+        checkBoxRef.checked = false;
+      });
+    }
   };
 
   return (
@@ -97,6 +106,7 @@ export default function Cart() {
               <SimpleGrid cols={1} py="xl">
                 {cart.map((item, index) => (
                   <OrderCards
+                    checkBoxRefs={checkBoxRefs}
                     key={index}
                     index={index}
                     item={item}

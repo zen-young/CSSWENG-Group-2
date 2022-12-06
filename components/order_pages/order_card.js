@@ -3,6 +3,7 @@ import { IconPencil, IconTrash } from "@tabler/icons";
 import Link from "next/link";
 
 export default function OrderCardsGrid({
+  checkBoxRefs,
   item,
   index,
   handleSelect,
@@ -26,6 +27,9 @@ export default function OrderCardsGrid({
     <>
       <div className="w-full order p-2 px-6 border-solid border-2 border-current rounded-md flex justify-around">
         <Checkbox
+          ref={(element) => {
+            checkBoxRefs.current[index] = element;
+          }}
           onChange={(e) => {
             handleSelect(e, index);
           }}
