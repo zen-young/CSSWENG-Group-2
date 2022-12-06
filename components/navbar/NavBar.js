@@ -79,7 +79,7 @@ const useStyles = createStyles((theme) => ({
     // top: 0,
     // width: "100%",
     // position: "fixed",
-    // zIndex: 50,
+    zIndex: 50,
   },
 }));
 

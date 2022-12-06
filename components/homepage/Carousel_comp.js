@@ -40,24 +40,21 @@ function Carousel_comp() {
     const autoplay = useRef(Autoplay(options));
 
     const images = [
-        "/assets/sample_1.jpg",
-        "/assets/sample_2.jpg",
-        "/assets/sample_3.jpg",
+        "/assets/promo_1.png",
+        "/assets/promo_2.png",
+        "/assets/promo_3.png",
     ];
 
     let slideList = images.map((item, index) => {
         let x = "Product " + index;
         return (
             <Carousel.Slide key={index}>
-                <a href='/'>
-                    <Image
-                        alt={x}
-                        src={item}
-                        layout="fill"
-                        objectFit="cover"
-                    />
-                </a>
-                
+                <Image
+                    alt={x}
+                    src={item}
+                    layout="fill"
+                    objectFit="cover"
+                />
             </Carousel.Slide>
         );
     });
