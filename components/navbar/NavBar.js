@@ -195,7 +195,7 @@ export default function NavBar() {
           <Group position="left">
             <Anchor href="/">
               <Image
-                src="/../public/assets/Company Logo.png"
+                src="/assets/Company Logo.png"
                 width="252px"
                 height="80px"
                 alt="company logo"
