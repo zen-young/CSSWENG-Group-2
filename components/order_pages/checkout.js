@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Center, Box, Anchor, Divider } from "@mantine/core";
 import OrderDetails from "../order_pages/order_details";
-import Link from "next/link";
 
 export default function Checkout() {
   const [isSelected, setIsSelected] = useState("Self Pickup");
@@ -19,7 +18,12 @@ export default function Checkout() {
           </div>
           <Divider mb={10} />
 
-          <form action="" id="order_form" className="w-full mt-[20px]">
+          <form
+            action="/cart/confirm"
+            id="order_form"
+            className="w-full mt-[20px]"
+            method="get"
+          >
             {/* FULL NAME*/}
             <div className="flex mb-[20px] w-full h-auto items-center">
               <p className="w-2/5 text-[20px] align-top text-right pr-[25px] font-bold">
@@ -31,14 +35,14 @@ export default function Checkout() {
                   name="last_name"
                   placeholder="Last Name"
                   className="p-2 border border-black rounded-sm mt-[5px] ml-4 w-2/5"
-                  // onChange={(e) => { setLastName(e.target.value) }}
+                  required
                 />
                 <input
                   type="text"
                   name="first_name"
                   placeholder="First Name"
                   className="p-2 border border-black rounded-sm mt-[5px] w-2/5"
-                  // onChange={(e) => { setFirstName(e.target.value) }}
+                  required
                 />
               </div>
             </div>
@@ -50,12 +54,12 @@ export default function Checkout() {
               </p>
               <div className="w-4/5 flex">
                 <input
-                  type="number"
+                  type="tel"
                   inputmode="tel"
                   name="phone_no"
                   placeholder="XXXXXXXXXX"
                   className="p-2 border border-black rounded-sm mt-[5px] mx-4 w-2/5"
-                  // onChange={(e) => { setPhoneNumber(e.target.value) }}
+                  required
                 />
               </div>
             </div>
@@ -72,7 +76,7 @@ export default function Checkout() {
                   name="email"
                   placeholder="sample@email.com"
                   className="p-2 border border-black rounded-sm mt-[5px] ml-4 w-full"
-                  // onChange={(e) => { setEmail(e.target.value) }}
+                  required
                 />
               </div>
             </div>
@@ -87,11 +91,11 @@ export default function Checkout() {
                   name="delivery"
                   id="delivery"
                   onChange={(e) => {
-                    // setDelivery(e.target.value)
                     setIsSelected(e.target.value);
                   }}
                   className="p-2 border border-black rounded-sm mt-[5px] ml-4 w-full"
                   defaultValue="Self Pickup"
+                  required
                 >
                   <option value="Self Pickup">Self Pickup</option>
                   <option value="Same-Day Delivery">Same-Day Delivery</option>
@@ -113,7 +117,7 @@ export default function Checkout() {
                       name="address"
                       placeholder="House No, Building, Street, Subdivision, Barangay"
                       className="p-2 border border-black rounded-sm mt-[5px] ml-4 w-full"
-                      // onChange={(e) => { setAddress(e.target.value) }}
+                      required
                     />
                   </div>
                 </div>
@@ -129,14 +133,14 @@ export default function Checkout() {
                       name="city"
                       placeholder="City/Municipality"
                       className="p-2 border border-black rounded-sm mt-[5px] ml-4 w-2/5"
-                      // onChange={(e) => { setCity(e.target.value) }}
+                      required
                     />
                     <input
                       type="text"
                       name="province"
                       placeholder="Province"
                       className="p-2 border border-black rounded-sm mt-[5px] w-2/5"
-                      // onChange={(e) => { setProvince(e.target.value) }}
+                      required
                     />
                   </div>
                 </div>
@@ -153,7 +157,7 @@ export default function Checkout() {
                       name="zip_code"
                       placeholder="Zip Code"
                       className="p-2 border border-black rounded-sm mt-[5px] mx-4 w-2/5"
-                      // onChange={(e) => { setZipCode(e.target.value) }}
+                      required
                     />
                   </div>
                 </div>
@@ -168,9 +172,9 @@ export default function Checkout() {
               <div className="w-4/5 flex">
                 <select
                   name="payment"
-                  // onChange={(e) => { setDelivery(e.target.value) }}
                   className="p-2 border border-black rounded-sm mt-[5px] ml-4 w-full"
                   defaultValue="Cash on Delivery"
+                  required
                 >
                   <option value="Cash on Delivery">Cash on Delivery</option>
                   <option value="Cheque">Cheque</option>
@@ -185,19 +189,20 @@ export default function Checkout() {
         </div>
       </div>
 
-      {/* TODO: Button is disabled until all visible fields are filled out and valid */}
       <div className="flex justify-center hover:no-underline w-full">
-        <Link href="/cart/confirm">
-          <Anchor className="flex justify-center hover:no-underline w-5/8">
-            <button
-              className="bg-black text-white px-12 py-3 mt-[20px] text-[24px] w-full font-bold uppercase rounded-md
+        <Anchor
+          href="/cart/confirm"
+          className="flex justify-center hover:no-underline w-5/8"
+        >
+          <button
+            form="order_form"
+            className="bg-black text-white px-12 py-3 mt-[20px] text-[24px] w-full font-bold uppercase rounded-md
                             hover:bg-gray-600 hover:shadow-lg hover:transition duration-300"
-              id="proceed"
-            >
-              Confirm Order
-            </button>
-          </Anchor>
-        </Link>
+            id="proceed"
+          >
+            Confirm Order
+          </button>
+        </Anchor>
       </div>
     </>
   );
