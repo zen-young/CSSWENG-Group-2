@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Center, Box, Anchor, Divider } from "@mantine/core";
+import { Center, Box, Divider } from "@mantine/core";
 import OrderDetails from "../order_pages/order_details";
 
 export default function Checkout() {
@@ -190,10 +190,7 @@ export default function Checkout() {
       </div>
 
       <div className="flex justify-center hover:no-underline w-full">
-        <Anchor
-          href="/cart/confirm"
-          className="flex justify-center hover:no-underline w-5/8"
-        >
+        <div className="flex justify-center hover:no-underline w-5/8">
           <button
             form="order_form"
             className="bg-black text-white px-12 py-3 mt-[20px] text-[24px] w-full font-bold uppercase rounded-md
@@ -202,7 +199,7 @@ export default function Checkout() {
           >
             Confirm Order
           </button>
-        </Anchor>
+        </div>
       </div>
     </>
   );
