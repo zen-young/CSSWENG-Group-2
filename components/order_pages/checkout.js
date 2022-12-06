@@ -14,7 +14,7 @@ export default function Checkout() {
   return (
     <>
 
-      <div className="flex flex-col-reverse sm:flex-row w-full px-[120px] py-2">
+      <div className="flex flex-col-reverse sm:flex-row w-full px-[120px] py-2 min-h-[500px]">
         
         <div className="basis-1/2 p-8">
 

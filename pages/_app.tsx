@@ -36,6 +36,7 @@ export default function App(props: AppProps) {
           ) : (
             <>
               <NavBar />
+              <div className="h-[92px]" /> {/*h-[headerHeight] */}
               <Component {...pageProps} />
               <Footer />
             </>

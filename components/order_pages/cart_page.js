@@ -31,7 +31,7 @@ export default function Cart() {
       </header>
 
 
-      <div className="flex flex-col-reverse sm:flex-row w-full min-h-[400px] px-[120px] py-2">
+      <div className="flex flex-col-reverse sm:flex-row w-full min-h-[440px] px-[120px] py-2">
         
           {/* TODO: If there are items, show ordered items. Else show msg that cart is empty */}
           { hasItems ?
@@ -45,7 +45,7 @@ export default function Cart() {
                       size="md"
                   />
 
-                  <button className="text-red-600 px-8 py-1 font-bold rounded-md
+                  <button className="text-red-600 px-4 py-1 font-bold rounded-md
                                     hover:underline flex items-center"
                           id="delete-all-items"
                   >
