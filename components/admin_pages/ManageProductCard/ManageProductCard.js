@@ -121,7 +121,7 @@ const ManageProductCard = ({
               className="bg-[#d9d9d9] text-center text-black font-normal text-[12px] leading-[14px] py-[7px] px-[19px]"
               onClick={() => {
                 setProduct(data.name)
-                setPages(1)
+                setPages(2)
               }
                 // setPages([
                 //   {

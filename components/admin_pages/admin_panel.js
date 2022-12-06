@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import { useAuth } from "../../context/AuthContext";
 
 import Add_Product from "./add_products";
@@ -127,7 +127,8 @@ function Admin_Panel() {
             className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${currPage == "View Website" ? "underline" : ""}`}
             onClick={() => {
               setCurrPage("View Website")
-              setIndex(7)
+              // setIndex(7)
+              Router.push("/")
             }}
           >
             View Website

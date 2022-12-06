@@ -89,7 +89,7 @@ const ManageProducts = ({ setPages, setProduct }) => {
         </p>
         <button 
           className="bg-[#f3f2f2] text-black font-normal text-[16px] text-center py-[10px] px-[18px] mr-[75px]"
-          onClick={() => { setPages(0) }}
+          onClick={() => { setPages(1) }}
         >
           + Add New
         </button>

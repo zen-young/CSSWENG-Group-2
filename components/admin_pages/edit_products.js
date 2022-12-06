@@ -87,6 +87,8 @@ function Edit_Product({ setPages, productName }) {
                         .catch((error) => {
                             console.log(error);
                         });
+
+                        
                 }
             }
         } catch (error) {

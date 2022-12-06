@@ -3,6 +3,7 @@ import Header_Live_Preview from "../Header_LivePreview";
 import { db } from "../../../firebaseConfig";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import Quill_Editor from "./quill";
 
 function Order_Page() {
 
@@ -58,12 +59,14 @@ function Order_Page() {
                     </span>
                 </p>
                 <textarea name="" id="" cols="" rows="10" 
-                    className="w-full p-5 border border-black rounded-md mb-32" 
+                    className="w-full p-5 border border-black rounded-md mb-10" 
                     value={additional}
                     onChange={(e) => {setAdd(e.target.value)}}
                 />
 
-                <div className="flex justify-end">
+                <Quill_Editor />
+
+                <div className="flex justify-end mt-32">
                     <button 
                         className="text-[20px] font-bold bg-green-500 py-2 px-5 rounded-md place-self-end self-end"
                         onClick={() => {saveChanges()}}
@@ -71,6 +74,9 @@ function Order_Page() {
                         Save Changes
                     </button>
                 </div>
+
+                
+                
             </div>
         </>
     );
