@@ -6,7 +6,6 @@ export default function OrderCardsGrid({
   checkBoxRefs,
   item,
   index,
-  handleSelect,
   handleDelete,
 }) {
   let label = "";
@@ -29,9 +28,6 @@ export default function OrderCardsGrid({
         <Checkbox
           ref={(element) => {
             checkBoxRefs.current[index] = element;
-          }}
-          onChange={(e) => {
-            handleSelect(e, index);
           }}
           className="font-bold my-auto pr-2"
           color="gray"

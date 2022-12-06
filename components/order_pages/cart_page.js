@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { IconShoppingCart, IconTrash } from "@tabler/icons";
 import { Center, Box, Checkbox, Anchor, SimpleGrid } from "@mantine/core";
 import H_Divider from "../homepage/H_Divider";
@@ -11,59 +11,43 @@ import { removeFromCart } from "../../redux/cart.slice";
 export default function Cart() {
   const cart = useSelector((state) => state.cart);
   const hasItems = cart.length > 0;
-  const [selectedCards, setSelectedCards] = useState([]);
   const checkBoxRefs = useRef([]);
   const dispatch = useDispatch();
+
+  const removeUnusedRefs = () => {
+    checkBoxRefs["current"] = checkBoxRefs.current.filter((ref) => ref);
+  };
 
   const handleDelete = (e) => {
     e.preventDefault();
     const index = e.currentTarget.id.split("-")[2];
     dispatch(removeFromCart(cart[index]));
-  };
-
-  const handleSelect = (e, index) => {
-    const card = cart[index];
-    if (!e.currentTarget.checked) {
-      setSelectedCards((prev) => {
-        const selected = prev.findIndex(
-          (item) =>
-            item.product_id === card.product_id &&
-            item.color === card.color &&
-            item.paper_type === card.paper_type &&
-            item.price === card.price &&
-            item.quantity === card.quantity &&
-            item.size === card.size
-        );
-        return prev.splice(selected, 1);
-      });
-      console.log(selectedCards);
-      return;
-    }
-    setSelectedCards((prev) => [...prev, card]);
-    console.log(selectedCards);
+    removeUnusedRefs();
   };
 
   const handleDeleteSelected = () => {
-    selectedCards.map((item) => {
-      dispatch(removeFromCart(item));
-    });
+    checkBoxRefs.current
+      .filter((ref) => ref)
+      .map((ref, index) => {
+        if (ref.checked) {
+          ref.checked = false;
+          dispatch(removeFromCart(cart[index]));
+        }
+      });
+    removeUnusedRefs();
   };
 
   const handleSelectAll = (e) => {
+    removeUnusedRefs();
     if (e.currentTarget.checked) {
       checkBoxRefs.current.map((checkBoxRef) => {
         checkBoxRef.checked = true;
-      });
-      cart.map((item) => {
-        setSelectedCards((prev) => [...prev, item]);
       });
     } else {
       checkBoxRefs.current.map((checkBoxRef) => {
         checkBoxRef.checked = false;
       });
-      setSelectedCards([]);
     }
-    console.log(selectedCards);
   };
 
   return (
@@ -111,7 +95,6 @@ export default function Cart() {
                     key={index}
                     index={index}
                     item={item}
-                    handleSelect={handleSelect}
                     handleDelete={handleDelete}
                   />
                 ))}
