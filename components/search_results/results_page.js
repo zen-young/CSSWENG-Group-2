@@ -47,7 +47,7 @@ function Results_Page() {
         <div className="flex my-auto ml-[50px]">
           <IconSearch size={50} stroke={3.5} />
           <p className="h-fit my-auto ml-[20px] text-[24px] font-bold">
-            Search Results for "{text}"
+            Search Results for &quot;{text}&quot;
           </p>
         </div>
       </div>
@@ -68,7 +68,7 @@ function Results_Page() {
           <H_Divider />
         </div>
         <p className="text-[20px]">
-          Can't find what you're looking for? Contact us on Viber!
+          Can&apos;t find what you&apos;re looking for? Contact us on Viber!
         </p>
         <p className="text-[20px]">
           at <span className="font-bold">+63 917-510-1023</span>

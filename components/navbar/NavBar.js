@@ -19,6 +19,7 @@ import { IconShoppingCart, IconSearch } from "@tabler/icons";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
+import Link from "next/link";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -207,7 +208,7 @@ export default function NavBar() {
             >
               <HoverCard width={200} position="bottom" shadow="md" withinPortal>
                 <HoverCard.Target>
-                  <a href="/products" className={classes.link}>
+                  <a className={classes.link}>
                     <Center inline>
                       <Box component="span" mr={5}>
                         <Text size="md" weight="bold">
@@ -223,11 +224,13 @@ export default function NavBar() {
                   <SimpleGrid cols={1} spacing={0}>
                     {links}
                     <Divider mb={10} />
-                    <a href="/products">
-                      <UnstyledButton className={classes.subLink} width={400}>
-                        View All Products
-                      </UnstyledButton>
-                    </a>
+                    <Link href="/products">
+                      <a>
+                        <UnstyledButton className={classes.subLink} width={400}>
+                          View All Products
+                        </UnstyledButton>
+                      </a>
+                    </Link>
                   </SimpleGrid>
                 </HoverCard.Dropdown>
               </HoverCard>
@@ -253,17 +256,19 @@ export default function NavBar() {
               value={search}
             />
 
-            <a href="/cart" className={classes.link}>
-              <Center inline>
-                <IconShoppingCart size="46px" color="#292929" />
-                <Box component="span" mx={15}>
-                  <Text size="md" weight="bold">
-                    Your Cart:
-                  </Text>
-                  <Text size="md">{cart.length} items</Text>
-                </Box>
-              </Center>
-            </a>
+            <Link href="/cart">
+              <a className={classes.link}>
+                <Center inline>
+                  <IconShoppingCart size="46px" color="#292929" />
+                  <Box component="span" mx={15}>
+                    <Text size="md" weight="bold">
+                      Your Cart:
+                    </Text>
+                    <Text size="md">{cart.length} items</Text>
+                  </Box>
+                </Center>
+              </a>
+            </Link>
           </Group>
         </Group>
       </Header>
