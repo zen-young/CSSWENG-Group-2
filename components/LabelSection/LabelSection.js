@@ -44,6 +44,7 @@ const LabelSection = ({ product, addToCart }) => {
       addToCart({
         product_id: product.product_id,
         name: product.name,
+        category: product.category,
         image_url: product.image_urls[0],
         ...product.variations[variation],
       });
@@ -59,6 +60,7 @@ const LabelSection = ({ product, addToCart }) => {
       addToCart({
         product_id: product.product_id,
         name: product.name,
+        category: product.category,
         image_url: product.image_urls[0],
         color: color,
         paper_type: paper,
