@@ -31,8 +31,12 @@ describe("Product Page", () => {
     };
   });
 
-  it("Displayed rice changes according to quantity, size and price combination", () => {
+  it("LabelSection renders with appropriate info according to passed data", () => {
     render(<LabelSection product={labelSectionData} />);
+
+    const prodName = screen.getByText(labelSectionData.name)
+
+    expect(prodName).toBeVisible()
 
     /*
     const name = screen.getByText("Notepads");
