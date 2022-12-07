@@ -522,7 +522,7 @@ function Edit_Product({ setPages, productName }) {
             query(collection(db, "categories"))
         );
         querySnapshot.forEach((doc) => {
-            arr.push(doc.id);
+            arr.push(doc.data().name);
         });
         setCategory(arr);
     }
