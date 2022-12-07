@@ -1,16 +1,21 @@
 import { AppProps } from "next/app";
 import Head from "next/head";
 import { MantineProvider } from "@mantine/core";
-import "../styles/globals.css";
+import { useRouter } from "next/router";
+import { Provider } from "react-redux";
+import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+import { AuthContextProvider } from "../context/AuthContext";
+import store from "../redux/store";
 import NavBar from "../components/navbar/NavBar";
 import Footer from "../components/footer/Footer";
+import Loading from "../components/Loading/loading";
 import "../styles/globals.css";
-import { AuthContextProvider } from "../context/AuthContext";
-import { useRouter } from "next/router";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
   const router = useRouter();
+  const persistor = persistStore(store);
 
   return (
     <>
@@ -34,11 +39,14 @@ export default function App(props: AppProps) {
           {router.pathname.includes("/admin") ? (
             <Component {...pageProps} />
           ) : (
-            <>
-              <NavBar />
-              <Component {...pageProps} />
-              <Footer />
-            </>
+            <Provider store={store}>
+              <PersistGate loading={<Loading />} persistor={persistor}>
+                <NavBar />
+                <div className="h-[92px]" /> {/*h-[headerHeight] */}
+                <Component {...pageProps} />
+                <Footer />
+              </PersistGate>
+            </Provider>
           )}
         </MantineProvider>
       </AuthContextProvider>
