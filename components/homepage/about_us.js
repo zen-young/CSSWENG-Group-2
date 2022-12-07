@@ -1,7 +1,10 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, Container, Box, BackgroundImage, Overlay, Image, Grid, createStyles, CSSObject, Group } from "@mantine/core"
 import H_Divider from './H_Divider';
+
+import { db } from '../../firebaseConfig'
+import { getDoc, doc } from 'firebase/firestore';
 
 const useStyles = createStyles((_theme) => ({
 
@@ -20,6 +23,37 @@ const useStyles = createStyles((_theme) => ({
 }))
 
 function About_Us() {
+
+    const [address, setAddress] = useState("")
+    const [contactNum, setContactNum] = useState("")
+    const [email, setEmail] = useState("")
+    const [serviceHRS, setServiceHRS] = useState("")
+    const [companyDesc, setDesc] = useState("")
+    const [logo, setLogo] = useState("")
+
+
+    function getData(){
+        getDoc(doc(db, "website_information", "contact_information")).then((res) => {
+            var data = res.data()
+            setAddress(data.company_address)
+            setContactNum(data.contact_number)
+            setEmail(data.email)
+            setServiceHRS(data.service_hours)
+
+            getDoc(doc(db, "website_information", "company_information")).then((newRes) => {
+                var newData = newRes.data()
+                setDesc(newData.company_description)
+                setLogo(newData.company_logo)
+            })
+        })
+    }
+
+    useEffect(() => {
+        getData()
+        if(companyDesc){
+            document.getElementById("company_description").innerHTML = companyDesc;
+        }
+    }, [companyDesc])
 
     const aboutText = (CSSObject = {
         lineHeight: 'normal',
@@ -76,7 +110,7 @@ function About_Us() {
                             <Grid.Col span={5}>
                                 <Image
                                     alt="Company Logo"
-                                    src="/assets/about_logo.png"
+                                    src={logo}
                                     width={270}
                                     layout="fill"
                                     fit="contain"
@@ -84,35 +118,7 @@ function About_Us() {
                             </Grid.Col>
 
                             <Grid.Col span={15}>
-                                <Text sx={aboutText}>
-                                    <span style={{ fontWeight: 650 }}>
-                                        Upscale Printing Solutions{" "}
-                                    </span>
-                                    is a modest enterprise that has been in the
-                                    industry for more than
-                                    <span style={{ fontWeight: 650 }}>
-                                        {" "}
-                                        10 years.
-                                    </span>{" "}
-                                    It started as a small letterpress servicing
-                                    businesses in the Metro East area. It
-                                    eventually evolved as a commercial printer
-                                    catering to different industries in and
-                                    outside Metro Manila.
-                                </Text>
-                                <br />
-                                <Text sx={aboutText}>
-                                    Upscale Printing Solutions takes pride in
-                                    being able to tap a wide spectrum of the
-                                    market to service their offset and digital
-                                    printing needs. With state of the art
-                                    equipment, facilities and expertise, it
-                                    provides a complete and cost effective
-                                    printing solutions to its clients. Upscale
-                                    Printing Solutions guarantees the highest
-                                    quality of service from printing to
-                                    finishing.
-                                </Text>
+                                <div className='text-white text-[22px]' id='company_description' />
                             </Grid.Col>
                         </Grid>
                     </Container>
@@ -138,21 +144,16 @@ function About_Us() {
 
                     <Grid.Col span={6}>
                         <Text sx={contactSubTitle}>Address</Text>
-                        <Text sx={contactText}>
-                            1056 Baltimore St., Brookside Hills Subdivision, San
-                            Isidro, Cainta, Rizal
-                        </Text>
+                        <Text sx={contactText}>{address}</Text>
 
                         <Text sx={contactSubTitle}>Service Hours</Text>
-                        <Text sx={contactText}>Mon-Fri: TBA</Text>
+                        <Text sx={contactText}>{serviceHRS}</Text>
 
                         <Text sx={contactSubTitle}>Contact No.</Text>
-                        <Text sx={contactText}>
-                            (+63) 917-5101023 / (+632) 8697-7968
-                        </Text>
+                        <Text sx={contactText}>{contactNum}</Text>
 
                         <Text sx={contactSubTitle}>E-mail Address</Text>
-                        <Text sx={contactText}>upscale.printing@gmail.com</Text>
+                        <Text sx={contactText}>{email}</Text>
                     </Grid.Col>
                 </Grid>
             </Container>
