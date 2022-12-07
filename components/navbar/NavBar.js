@@ -137,14 +137,12 @@ export default function NavBar() {
         return product.name.toLowerCase().match(search.toLowerCase());
       });
 
-      console.log(e, searchResult);
-
       if (searchResult.length < 1) {
-        return;
+        router.push(`/products?search=${search}`);
       } else if (searchResult[0].name.length === search.length) {
         router.push(`/products/${searchResult[0].product_id}`);
       } else {
-        setSearch(searchResult[0].name);
+        router.push(`/products?search=${search}`);
       }
     }
   };

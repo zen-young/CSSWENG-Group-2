@@ -6,15 +6,22 @@ export default function ProductListHeader({
   categories,
   filter,
   handleFilter,
+  search,
 }) {
   return (
     <>
       <header className="mt-9 mb-1">
         <div className="px-[120px] flex justify-between">
           <div className="font-bold w-fit">
-            <h1>
-              <i class="fa fa-list-ul" /> Products List
-            </h1>
+            {search === "" ? (
+              <h1>
+                <i class="fa fa-list-ul" /> Products List
+              </h1>
+            ) : (
+              <h1>
+                <i class="fa fa-search" /> {`Search results for "${search}"`}
+              </h1>
+            )}
           </div>
 
           <div className="my-auto flex">
