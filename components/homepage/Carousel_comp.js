@@ -40,11 +40,6 @@ function Carousel_comp() {
   const autoplay = useRef(Autoplay(options));
 
   const images = [
-    "/assets/sample_1.jpg",
-    "/assets/sample_2.jpg",
-    "/assets/sample_3.jpg",
-  ];
-  const images = [
     "/assets/promo_1.png",
     "/assets/promo_2.png",
     "/assets/promo_3.png",
