@@ -44,16 +44,17 @@ function Carousel_comp() {
     "/assets/sample_2.jpg",
     "/assets/sample_3.jpg",
   ];
+  const images = [
+    "/assets/promo_1.png",
+    "/assets/promo_2.png",
+    "/assets/promo_3.png",
+  ];
 
   let slideList = images.map((item, index) => {
     let x = "Product " + index;
     return (
       <Carousel.Slide key={index}>
-        <Link href="/">
-          <a>
-            <Image alt={x} src={item} layout="fill" objectFit="cover" />
-          </a>
-        </Link>
+        <Image alt={x} src={item} layout="fill" objectFit="cover" />
       </Carousel.Slide>
     );
   });
