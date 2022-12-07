@@ -16,15 +16,13 @@
     "@mantine/core": "^5.5.5",
     "@mantine/hooks": "^5.5.5",
     "@mantine/next": "^5.5.5",
+    "@mantine/rte": "^5.9.2",
     "@tabler/icons": "^1.104.0",
-    "draft-js": "^0.11.7",
     "embla-carousel-react": "^7.0.3",
     "firebase": "^9.14.0",
     "next": "12.3.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-draft-wysiwyg": "^1.15.0",
-    "react-quill": "^2.0.0"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

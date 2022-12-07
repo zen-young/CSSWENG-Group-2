@@ -1,21 +1,22 @@
 import Header_Live_Preview from "../Header_LivePreview";
-
 import { db } from "../../../firebaseConfig";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import Quill_Editor from "./quill";
+import { createElement, useEffect, useState } from "react";
+
+import RichTextEditor from "../Rich Text Editor/RichText";
 
 function Order_Page() {
 
     const [order, setOrder] = useState("")
-    const [additional, setAdd] = useState("")
+    const [add, setAdd] = useState("")
+    const [editorVal, setEditorVal] = useState()
 
     function saveChanges(){
         var docRef = doc(db, "website_information", "order_page")
 
         updateDoc(docRef, {
-            additional_information: "",
-            order_confirmation: ""
+            additional_information: editorVal,
+            order_confirmation: order
         }).then(() => {
             alert("Success")
             window.location.reload(false)
@@ -29,9 +30,10 @@ function Order_Page() {
         getDoc(docRef).then((res) =>{
             var data = res.data()
             setOrder(data.order_confirmation);
-            setAdd(data.additional_information);
+            setEditorVal(data.additional_information)
         })
     }
+
 
     useEffect(() => {
         getData()
@@ -58,14 +60,14 @@ function Order_Page() {
                         Any additional details the customer should send alongside the order form
                     </span>
                 </p>
-                <textarea name="" id="" cols="" rows="10" 
-                    className="w-full p-5 border border-black rounded-md mb-10" 
-                    value={additional}
-                    onChange={(e) => {setAdd(e.target.value)}}
+
+                <RichTextEditor 
+                    id='rte' 
+                    value={editorVal}
+                    onChange={setEditorVal}
+                    className="border border-black h-[300px] overflow-auto" 
                 />
-
-                <Quill_Editor />
-
+                {editorVal}
                 <div className="flex justify-end mt-32">
                     <button 
                         className="text-[20px] font-bold bg-green-500 py-2 px-5 rounded-md place-self-end self-end"
@@ -74,9 +76,6 @@ function Order_Page() {
                         Save Changes
                     </button>
                 </div>
-
-                
-                
             </div>
         </>
     );

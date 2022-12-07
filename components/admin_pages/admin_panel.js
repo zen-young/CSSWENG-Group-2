@@ -12,6 +12,7 @@ import Order_Page from "./manage_website/order_page";
 import ManageProducts from "./ManageProducts";
 import Edit_Email from "./edit_profile/edit_email";
 import Edit_Password from "./edit_profile/edit_password";
+import Home_Page from "./manage_website/home_page";
 
 function Admin_Panel() {
   const { user, logout } = useAuth();
@@ -33,7 +34,7 @@ function Admin_Panel() {
   pages.push({ pageName: "Edit Product", html: <Edit_Product setPages={setIndex} productName={currProduct}/> });
 
   // MANAGE WEBSITE
-  pages.push({ pageName: "Home Page", html: <></> });
+  pages.push({ pageName: "Home Page", html: <Home_Page /> });
   pages.push({ pageName: "Order Page", html: <Order_Page /> });
   pages.push({ pageName: "Company Information", html: <Company_Info /> });
   pages.push({ pageName: "Contact Information", html: <Contact_Info /> });
@@ -126,7 +127,7 @@ function Admin_Panel() {
           <p
             className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${currPage == "View Website" ? "underline" : ""}`}
             onClick={() => {
-              setCurrPage("View Website")
+              // setCurrPage("View Website")
               // setIndex(7)
               Router.push("/")
             }}

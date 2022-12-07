@@ -4,13 +4,16 @@ import Header_Live_Preview from '../Header_LivePreview';
 import { db, storage } from "../../../firebaseConfig";
 import { uuidv4 } from "@firebase/util";
 import { getDoc, doc, updateDoc} from 'firebase/firestore';
-import { getDownloadURL, uploadBytesResumable, ref } from 'firebase/storage';
+import { getDownloadURL, uploadBytesResumable, ref, deleteObject } from 'firebase/storage';
+
+import RichTextEditor from '../Rich Text Editor/RichText';
 
 function Company_Info() {
 
     const [company_name, setCompanyName] = useState("")
     const [company_desc, setCompanyDesc] = useState("")
     const [company_img_url, setImgUrl] = useState("")
+    const [company_img_urlCopy, setCopy] = useState("")
     const [img_file, setImgFile] = useState("")
     const [message, setMessage] = useState("")
 
@@ -23,6 +26,7 @@ function Company_Info() {
                 setCompanyName(data.company_name)
                 setCompanyDesc(data.company_description)
                 setImgUrl(data.company_logo)
+                setCopy(data.company_logo)
             }
         })
     }
@@ -35,19 +39,45 @@ function Company_Info() {
         const filename = "images/" + img_file.name + "_" + uid;
         const storageRef = ref(storage, filename);
 
-        uploadBytesResumable(storageRef, img_file).then((uploadResult) => {
-
-            getDownloadURL(uploadResult.ref).then((url) => {
-                updateDoc(docref, {
-                    company_name: company_name,
-                    company_description: company_desc,
-                    company_logo: url,
-                }).then(() => {
-                    alert("Success");
-                    window.location.reload(false)
-                });
+        if(company_img_url != company_img_urlCopy){
+            uploadBytesResumable(storageRef, img_file).then((uploadResult) => {
+                getDownloadURL(uploadResult.ref).then((url) => {
+                    updateDoc(docref, {
+                        company_name: company_name,
+                        company_description: company_desc,
+                        company_logo: url,
+                    }).then(() => {
+                        if(company_img_urlCopy != "")
+                            deleteObject(ref(storage, company_img_urlCopy)).then(() => {
+                                alert("Success");
+                                window.location.reload(false);
+                            }).catch((err) => {
+                                console.log(err)
+                            })
+                        else{
+                            alert("Success");
+                            window.location.reload(false);
+                        }
+                    }).catch((err) => {
+                        console.log(err)
+                    })
+                }).catch((err) => {
+                        console.log(err)
+                })
             })
-        })
+        }
+        else{
+            updateDoc(docref, {
+                company_name: company_name,
+                company_description: company_desc,
+                company_logo: company_img_url,
+            }).then(() => {
+                alert("Success");
+                window.location.reload(false);
+            }).catch((err) => {
+                console.log(err)
+            })
+        }
     }
 
     function handleImageUpload(e){
@@ -113,14 +143,13 @@ function Company_Info() {
                     </span>
                 </p>
 
-                <textarea
-                    rows={10}
-                    className="w-full p-4 rounded-md mb-[30px] border border-black whitespace-pre-wrap"
-                    defaultValue={company_desc}
-                    onChange={(e) => {
-                        setCompanyDesc(e.target.value)
-                    }}
+                <RichTextEditor 
+                    id='rte' 
+                    value={company_desc}
+                    onChange={setCompanyDesc}
+                    className="border border-black h-[300px] overflow-auto mb-20" 
                 />
+
                 <div className="flex justify-end">
                     <button 
                         className="text-[20px] font-bold bg-green-500 py-2 px-5 rounded-md place-self-end self-end"
