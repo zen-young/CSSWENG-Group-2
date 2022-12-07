@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import { Center, Box, Divider } from "@mantine/core";
 import OrderDetails from "../order_pages/order_details";
+import { useSelector } from "react-redux";
 
 export default function Checkout() {
+  const cart = useSelector((state) => state.cart);
   const [isSelected, setIsSelected] = useState("Self Pickup");
+
+  const handleSubmit = () => {
+    localStorage.setItem("cart_old", JSON.stringify(cart));
+  };
 
   return (
     <>
@@ -23,6 +29,7 @@ export default function Checkout() {
             id="order_form"
             className="w-full mt-[20px]"
             method="get"
+            onSubmit={handleSubmit}
           >
             {/* FULL NAME*/}
             <div className="flex mb-[20px] w-full h-auto items-center">
@@ -185,7 +192,7 @@ export default function Checkout() {
           </form>
         </div>
         <div className="basis-1/2 p-8">
-          <OrderDetails />
+          <OrderDetails cart={cart} />
         </div>
       </div>
 

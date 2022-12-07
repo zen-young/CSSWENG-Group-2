@@ -1,11 +1,9 @@
 import { Divider, Anchor, SimpleGrid } from "@mantine/core";
 import { IconShoppingCart } from "@tabler/icons";
-import { useSelector } from "react-redux";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-export default function OrderDetails() {
-  const cart = useSelector((state) => state.cart);
+export default function OrderDetails({ cart }) {
   const router = useRouter();
 
   const orders = cart.map((item) => {

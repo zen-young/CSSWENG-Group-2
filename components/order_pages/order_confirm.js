@@ -2,9 +2,15 @@ import React from "react";
 import { Center, Box, Divider } from "@mantine/core";
 import OrderDetails from "../order_pages/order_details";
 import H_Divider from "../homepage/H_Divider";
+import { useDispatch } from "react-redux";
+import { clearCart } from "../../redux/cart.slice";
 
 export default function OrderConfirm({ query }) {
+  const cart = JSON.parse(localStorage.getItem("cart_old"));
   const hasAddress = query.delivery !== "Self Pickup";
+  const dispatch = useDispatch();
+
+  dispatch(clearCart());
 
   return (
     <>
@@ -124,7 +130,7 @@ export default function OrderConfirm({ query }) {
           </form>
         </div>
         <div className="basis-1/2 p-8">
-          <OrderDetails />
+          <OrderDetails cart={cart} />
         </div>
       </div>
 
