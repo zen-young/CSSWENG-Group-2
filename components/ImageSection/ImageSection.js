@@ -7,21 +7,8 @@ import ChevronLeft from "../../public/assets/chevronLeft.svg";
 import ChevronRight from "../../public/assets/chevronRight.svg";
 import Image from "next/image";
 
-const ImageSection = ({ images, sizes, content, paperContent }) => {
-  // const [images, setImages] = useState([
-  //   {
-  //     src: Image1,
-  //   },
-  //   {
-  //     src: Image2,
-  //   },
-  //   {
-  //     src: Image3,
-  //   },
-  //   {
-  //     src: Image4,
-  //   },
-  // ]);
+const ImageSection = ({ images, sizes, content, paperContent, packaging }) => {
+
   const [selectedImage, setSelectedImage] = useState(0);
   // const sizes = ["2.4x1.25", "2.4x2", "3.5x2"];
 
@@ -111,6 +98,12 @@ const ImageSection = ({ images, sizes, content, paperContent }) => {
           <div className="flex">
             <span className="text-xl font-bold">Paper: </span>
             <span className="ml-2 text-[20px] font-normal">{paperContent}</span>
+          </div>
+        </div>
+        <div className="list-item ml-6 mt-2">
+          <div className="flex">
+            <span className="text-[20px] font-bold">Packaging: </span>
+            <span className="ml-2 text-[20px] font-normal">{packaging}</span>
           </div>
         </div>
       </div>

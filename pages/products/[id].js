@@ -32,6 +32,7 @@ export default function Product({ product }) {
           content={product.description}
           sizes={product.product_sizes}
           paperContent={product.paper_types.join(", ")}
+          packaging={product.packaging}
         />
       </div>
       <div className="basis-1/2 p-8">
