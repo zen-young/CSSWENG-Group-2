@@ -67,7 +67,6 @@ function Order_Page() {
                     onChange={setEditorVal}
                     className="border border-black h-[300px] overflow-auto" 
                 />
-                {editorVal}
                 <div className="flex justify-end mt-32">
                     <button 
                         className="text-[20px] font-bold bg-green-500 py-2 px-5 rounded-md place-self-end self-end"

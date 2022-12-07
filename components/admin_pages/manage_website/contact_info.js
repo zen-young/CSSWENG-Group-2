@@ -27,7 +27,6 @@ function Contact_Info() {
         getDoc(docRef).then((res) => {
             if (res.exists()) {
                 var data = res.data();
-                console.log(data)
                 setHeader(data.header);
                 setContactNum(data.contact_number);
                 setEmail(data.email);
@@ -144,7 +143,8 @@ function Contact_Info() {
                     <input
                         type="text"
                         className="w-full px-2 border border-black rounded-md my-auto "
-                        defaultValue={fb_link}
+                        value={fb_link}
+                        onChange={(e) => {setFb(e.target.value)}}
                     />
                 </div>
 
@@ -165,7 +165,8 @@ function Contact_Info() {
                     <input
                         type="text"
                         className="w-full px-2 border border-black rounded-md my-auto "
-                        defaultValue={twit_link}
+                        value={twit_link}
+                        onChange={(e) => {setTwit(e.target.value)}}
                     />
                 </div>
 
@@ -186,7 +187,8 @@ function Contact_Info() {
                     <input
                         type="text"
                         className="w-full px-2 border border-black rounded-md my-auto "
-                        defaultValue={insta_link}
+                        value={insta_link}
+                        onChange={(e) => {setInsta(e.target.value)}}
                     />
                 </div>
 
