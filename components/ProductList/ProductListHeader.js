@@ -25,27 +25,31 @@ export default function ProductListHeader({
           </div>
 
           <div className="my-auto flex">
-            <h2 className="mr-[5px] my-auto mt-[6px] min-w-[140px]">
-              Select Category:
-            </h2>
-            <Select
-              value={filter}
-              onChange={handleFilter}
-              data={categories}
-              rightSection={<i className="fa fa-caret-down" />}
-              styles={(theme) => ({
-                item: {
-                  "&[data-selected]": {
-                    "&, &:hover": {
-                      backgroundColor: theme.colors.gray[4],
-                      color: theme.colors.dark[9],
-                    },
-                  },
+            {search === "" ? (
+              <>
+                <h2 className="mr-[5px] my-auto mt-[6px] min-w-[140px]">
+                  Select Category:
+                </h2>
+                <Select
+                  value={filter}
+                  onChange={handleFilter}
+                  data={categories}
+                  rightSection={<i className="fa fa-caret-down" />}
+                  styles={(theme) => ({
+                    item: {
+                      "&[data-selected]": {
+                        "&, &:hover": {
+                          backgroundColor: theme.colors.gray[4],
+                          color: theme.colors.dark[9],
+                        },
+                      },
 
-                  "&[data-hovered]": {},
-                },
-              })}
-            ></Select>
+                      "&[data-hovered]": {},
+                    },
+                  })}
+                ></Select>
+              </>
+            ) : null}
           </div>
         </div>
         <H_Divider />
