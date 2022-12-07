@@ -2,9 +2,11 @@ import { Divider, Anchor, SimpleGrid } from "@mantine/core";
 import { IconShoppingCart } from "@tabler/icons";
 import { useSelector } from "react-redux";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function OrderDetails() {
   const cart = useSelector((state) => state.cart);
+  const router = useRouter();
 
   const orders = cart.map((item) => {
     let label = "";
@@ -43,17 +45,21 @@ export default function OrderDetails() {
       <div className="w-full order p-3 px-6 border-solid border-2 border-gray-600 rounded-md bg-gray-100">
         <div className="flex justify-between w-full items-center">
           <span className="font-bold text-2xl">Order Details</span>
-          <Link href="/cart">
-            <Anchor>
-              <button
-                className="py-1 font-bold rounded-md h-6 my-auto text-xl text-gray-800
+          {router.pathname === "/cart/checkout" ? (
+            <>
+              <Link href="/cart">
+                <Anchor>
+                  <button
+                    className="py-1 font-bold rounded-md h-6 my-auto text-xl text-gray-800
                                   hover:underline flex items-center"
-              >
-                <IconShoppingCart />
-                <span className="pt-0.5">&nbsp;Edit Cart</span>
-              </button>
-            </Anchor>
-          </Link>
+                  >
+                    <IconShoppingCart />
+                    <span className="pt-0.5">&nbsp;Edit Cart</span>
+                  </button>
+                </Anchor>
+              </Link>
+            </>
+          ) : null}
         </div>
 
         <div className="mt-[20px] text-xl flex justify-between uppercase px-2">
