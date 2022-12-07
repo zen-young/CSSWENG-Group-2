@@ -16,6 +16,7 @@
     "@mantine/core": "^5.5.5",
     "@mantine/hooks": "^5.5.5",
     "@mantine/next": "^5.5.5",
+    "@reduxjs/toolkit": "^1.9.1",
     "@tabler/icons": "^1.104.0",
     "embla-carousel-autoplay": "^7.0.5",
     "embla-carousel-react": "^7.0.3",
@@ -24,9 +25,13 @@
     "firebase-functions-test": "^3.0.0",
     "next": "12.3.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-redux": "^8.0.5",
+    "redux": "^4.2.0",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
+    "@redux-devtools/core": "^3.13.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "autoprefixer": "^10.4.12",

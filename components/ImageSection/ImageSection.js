@@ -1,16 +1,12 @@
 import React, { useState } from "react";
-import Image1 from "../../public/assets/image1.png";
-import Image2 from "../../public/assets/image2.png";
-import Image3 from "../../public/assets/image3.png";
-import Image4 from "../../public/assets/image4.png";
 import ChevronLeft from "../../public/assets/chevronLeft.svg";
 import ChevronRight from "../../public/assets/chevronRight.svg";
 import Image from "next/image";
+import {Container} from "@mantine/core"
 
 const ImageSection = ({ images, sizes, content, paperContent, packaging }) => {
 
   const [selectedImage, setSelectedImage] = useState(0);
-  // const sizes = ["2.4x1.25", "2.4x2", "3.5x2"];
 
   const prevImage = () => {
     if (selectedImage === 0) {
@@ -29,14 +25,12 @@ const ImageSection = ({ images, sizes, content, paperContent, packaging }) => {
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-center">
-        <div width="640px" height="388px">
-          {/* TODO: Fix Aspect Ratio */}
+        <div className="w-full h-[500px] relative">
           <Image
             src={images[selectedImage].src}
-            width={400}
-            height={400}
-            fit="scale-down"
+            layout="fill"
             alt="selectedImage"
+            objectFit="contain"
           />
         </div>
       </div>
@@ -85,9 +79,9 @@ const ImageSection = ({ images, sizes, content, paperContent, packaging }) => {
                 <span key={size} className="ml-2 text-[20px] font-normal">
                   {size}
                   {index === sizes.length - 2 ? (
-                    <span> or&nbsp;</span>
+                    <span> or</span>
                   ) : index === sizes.length - 1 ? null : (
-                    <span>,&nbsp;</span>
+                    <span>, </span>
                   )}
                 </span>
               ))}

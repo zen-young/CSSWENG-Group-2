@@ -18,6 +18,8 @@ import {
 import { IconShoppingCart, IconSearch } from "@tabler/icons";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import Link from "next/link";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -76,6 +78,10 @@ const useStyles = createStyles((theme) => ({
     boxShadow: "0px 4px 5px rgba(0, 0, 0, 0.25)",
     borderBottom: "1px solid rgba(0, 0, 0, 0.3)",
     background: "#FFFFFF",
+    // top: 0,
+    // width: "100%",
+    // position: "fixed",
+    zIndex: 50,
   },
 }));
 
@@ -85,6 +91,7 @@ export default function NavBar() {
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
   const router = useRouter();
+  const cart = useSelector((state) => state.cart);
 
   useEffect(() => {
     try {
@@ -179,13 +186,13 @@ export default function NavBar() {
   });
 
   return (
-    <Box sx={classes.header}>
-      <Header height={92} px="md">
+    <Box>
+      <Header height={92} px="md" fixed={true} sx={classes.header}>
         <Group noWrap position="apart" sx={{ height: "100%" }}>
           <Group position="left">
             <Anchor href="/">
               <Image
-                src="/../public/assets/Company Logo.png"
+                src="/assets/Company Logo.png"
                 width="252px"
                 height="80px"
                 alt="company logo"
@@ -197,7 +204,7 @@ export default function NavBar() {
             >
               <HoverCard width={200} position="bottom" shadow="md" withinPortal>
                 <HoverCard.Target>
-                  <a href="/products" className={classes.link}>
+                  <a className={classes.link}>
                     <Center inline>
                       <Box component="span" mr={5}>
                         <Text size="md" weight="bold">
@@ -213,11 +220,13 @@ export default function NavBar() {
                   <SimpleGrid cols={1} spacing={0}>
                     {links}
                     <Divider mb={10} />
-                    <a href="/products">
-                      <UnstyledButton className={classes.subLink} width={400}>
-                        View All Products
-                      </UnstyledButton>
-                    </a>
+                    <Link href="/products">
+                      <a>
+                        <UnstyledButton className={classes.subLink} width={400}>
+                          View All Products
+                        </UnstyledButton>
+                      </a>
+                    </Link>
                   </SimpleGrid>
                 </HoverCard.Dropdown>
               </HoverCard>
@@ -243,19 +252,19 @@ export default function NavBar() {
               value={search}
             />
 
-            {/* TODO: Add Cart Link */}
-            <a href="#" className={classes.link}>
-              <Center inline>
-                <IconShoppingCart size="46px" color="#292929" />
-                <Box component="span" mx={15}>
-                  <Text size="md" weight="bold">
-                    Your Cart:
-                  </Text>
-                  {/* TODO: Number of Items in Cart */}
-                  <Text size="md">__ items</Text>
-                </Box>
-              </Center>
-            </a>
+            <Link href="/cart">
+              <a className={classes.link}>
+                <Center inline>
+                  <IconShoppingCart size="46px" color="#292929" />
+                  <Box component="span" mx={15}>
+                    <Text size="md" weight="bold">
+                      Your Cart:
+                    </Text>
+                    <Text size="md">{cart.length} items</Text>
+                  </Box>
+                </Center>
+              </a>
+            </Link>
           </Group>
         </Group>
       </Header>

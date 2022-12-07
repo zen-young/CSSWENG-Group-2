@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { useRouter } from "next/router";
+import React from "react";
 import ImageSection from "../../components/ImageSection/ImageSection";
 import LabelSection from "../../components/LabelSection/LabelSection";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../redux/cart.slice";
 
 export async function getServerSideProps(context) {
   const id = context.params.id;
@@ -22,6 +23,12 @@ export async function getServerSideProps(context) {
 }
 
 export default function Product({ product }) {
+  const dispatch = useDispatch();
+
+  const handleAddToCart = (object) => {
+    dispatch(addToCart(object));
+  };
+
   return (
     <div className="flex flex-col-reverse sm:flex-row w-full">
       <div className="basis-1/2 p-8">
@@ -31,21 +38,13 @@ export default function Product({ product }) {
           })}
           content={product.description}
           sizes={product.product_sizes}
+          paper={product.paper_types}
           paperContent={product.paper_types.join(", ")}
           packaging={product.packaging}
         />
       </div>
       <div className="basis-1/2 p-8">
-        <LabelSection
-          productName={product.name}
-          sizes={product.product_sizes}
-          quantities={product.variations.map((variation) => {
-            return variation.quantity;
-          })}
-          prices={product.variations.map((variation) => {
-            return variation.price;
-          })}
-        />
+        <LabelSection product={product} addToCart={handleAddToCart} />
       </div>
     </div>
   );

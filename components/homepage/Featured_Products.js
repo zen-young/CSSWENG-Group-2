@@ -9,6 +9,7 @@ import {
   SimpleGrid,
   createStyles,
 } from "@mantine/core";
+import Link from "next/link";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -65,7 +66,6 @@ function Featured_Products({ products }) {
                 p="lg"
                 withBorder
                 className={classes.card}
-                
                 key={index}
               >
                 <Card.Section>
@@ -122,12 +122,11 @@ function Featured_Products({ products }) {
 
         <div className="flex mx-auto mt-[50px] justify-center">
           {paginationButtons}
-          <a
-            href="/products"
-            className="my-auto font-bold text-[20px] hover:underline"
-          >
-            View All Products {">"}
-          </a>
+          <Link href="/products">
+            <a className="my-auto font-bold text-[20px] hover:underline">
+              View All Products {">"}
+            </a>
+          </Link>
         </div>
       </div>
     </Container>
