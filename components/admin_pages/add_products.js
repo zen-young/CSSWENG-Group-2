@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
 import { IconCircleX } from "@tabler/icons";
 import { setDoc, doc, getDoc, updateDoc, arrayUnion, query, collection, getDocs, addDoc } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
@@ -18,6 +17,7 @@ function Add_Product({setPages}) {
     const [prodCateg, setProdCateg] = useState("")
     const [featured, setFeatured] = useState(false)
     const [prodDesc, setDescription] = useState("")
+    const [packaging, setPackaging] = useState("")
     const [sizes, setSizes] = useState([])
     const [paperTypes, setTypes] = useState([])
     const [rows, setRows] = useState([])
@@ -62,6 +62,7 @@ function Add_Product({setPages}) {
                 description: prodDesc,
                 product_sizes: sizes,
                 paper_colors: colors,
+                packaging: packaging,
                 paper_types: paperTypes,
                 variations: rows,
                 image_urls: urls,
@@ -75,15 +76,6 @@ function Add_Product({setPages}) {
             });
         } catch (err) {
             console.log(err);
-        }
-
-        //Update Categories
-        try {
-            await updateDoc(doc(db, "categories", prodCateg), {
-                products: arrayUnion(prodName.toString()),
-            })
-        } catch (error) {
-            console.log(error);
         }
     };
 
@@ -511,9 +503,9 @@ function Add_Product({setPages}) {
                     </div>
 
                     {/* PRODUCT DESCRIPTION TEXTAREA */}
-                    <div className="flex mb-[50px] w-full h-auto align-top">
+                    <div className="flex mb-5 w-full h-auto align-top">
                         <p className="w-2/5 text-[20px] align-top text-right pr-[25px]">
-                            Product Description:
+                            Contents:
                         </p>
                         <textarea
                             name="product_desc"
@@ -521,6 +513,18 @@ function Add_Product({setPages}) {
                             onChange={(e) => {
                                 setDescription(e.target.value);
                             }}
+                        />
+                    </div>
+
+                    <div className="flex mb-[50px] w-full h-auto">
+                        <p className="w-2/5 text-[20px] align-top text-right pr-[25px]">
+                            Packaging:
+                        </p>
+                        <input
+                            type="text"
+                            name="product_name"
+                            className="w-full p-1 border border-black rounded-sm mt-[5px]"
+                            onChange={(e) => { setPackaging(e.target.value) }}
                         />
                     </div>
                 </form>

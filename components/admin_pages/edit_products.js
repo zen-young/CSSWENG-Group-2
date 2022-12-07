@@ -1,12 +1,10 @@
 import { useState, useRef } from "react";
-import { useRouter } from "next/router";
 import { IconCircleX } from "@tabler/icons";
 import {
     deleteDoc,
     doc,
     getDoc,
     updateDoc,
-    arrayUnion,
     query,
     collection,
     getDocs,
@@ -28,6 +26,7 @@ function Edit_Product({ setPages, productName }) {
     const [prodCateg, setProdCateg] = useState("");
     const [featured, setFeatured] = useState(false);
     const [prodDesc, setDescription] = useState("");
+    const [packaging, setPackaging] = useState("")
     const [sizes, setSizes] = useState([]);
     const [paperTypes, setTypes] = useState([]);
     const [rows, setRows] = useState([]);
@@ -102,6 +101,7 @@ function Edit_Product({ setPages, productName }) {
                 category: prodCateg,
                 featured: featured,
                 description: prodDesc,
+                packaging: packaging,
                 product_sizes: updateFeatureValues()[0],
                 paper_types: updateFeatureValues()[1],
                 paper_colors: updateFeatureValues()[2],
@@ -115,38 +115,51 @@ function Edit_Product({ setPages, productName }) {
         } catch (err) {
             console.log(err);
         }
-
-        //Update Categories
-        try {
-            await updateDoc(doc(db, "categories", prodCateg), {
-                products: arrayUnion(prodName.toString()),
-            });
-        } catch (error) {
-            console.log(error);
-        }
     }
 
     // Deletes from database
     async function deleteDocument(){
-        if(newUrls.length > 0){
-            for(let i = 0; i < newUrls.length; i++){
-                var photo = newUrls[i];
-                const storageRef = ref(storage, photo);
-                deleteObject(storageRef).then(()=> {
-                    console.log("Deleted Image")
-                }).catch((error) =>{
-                    alert("Error Detected")
-                    console.log(error.message)
-                })
-            }
-        }
+        if (productURLSCopy.length > 0) {
+            var promises = [];
 
-        const docRef = doc(db, "products", docId);
-        await deleteDoc(docRef).then(() => {
-            // alert("Successfully Deleted Document")
-        }).catch((error) =>{
-            alert("Error Occurred: ", error)
-        });
+            for (let i = 0; i < productURLSCopy.length; i++) {
+                var photo = productURLSCopy[i];
+
+                const storageRef = ref(storage, photo);
+                promises.push(
+                    deleteObject(storageRef)
+                        .then(() => {
+                            console.log("Image deleted");
+                        })
+                        .catch((error) => {
+                            alert("Error Detected");
+                            console.log(error.message);
+                        })
+                );
+            }
+
+            Promise.all(promises).then(() => {
+                const docRef = doc(db, "products", docId);
+                deleteDoc(docRef)
+                    .then(() => {
+                        alert("Document Deleted");
+                        setPages(5);
+                    })
+                    .catch((error) => {
+                        alert("Error Occurred: ", error);
+                    });
+            });
+        } else {
+            const docRef = doc(db, "products", docId);
+            deleteDoc(docRef)
+                .then(() => {
+                    alert("Document Deleted");
+                    setPages(5)
+                })
+                .catch((error) => {
+                    alert("Error Occurred: ", error);
+                });
+        }
     }
 
     //Add Image to images array
@@ -543,6 +556,7 @@ function Edit_Product({ setPages, productName }) {
             setProductName(data.name);
             setProdCateg(data.category);
             setDescription(data.description);
+            setPackaging(data.packaging);
             setFeatured(data.featured);
             setProdURLS(data.image_urls);
             setProdURLCopy(data.image_urls);
@@ -603,7 +617,8 @@ function Edit_Product({ setPages, productName }) {
                                 <button 
                                     className="w-1/4 bg-red-500 rounded-md hover:brightness-90 text-white"
                                     onClick={ () => {
-                                        deleteDocument().then(() => {setPages(5)})} 
+                                            deleteDocument()
+                                        } 
                                     }
                                 >
                                     Delete
@@ -732,7 +747,7 @@ function Edit_Product({ setPages, productName }) {
                     {/* PRODUCT DESCRIPTION TEXTAREA */}
                     <div className="flex mb-[50px] w-full h-auto align-top">
                         <p className="w-2/5 text-[20px] align-top text-right pr-[25px]">
-                            Product Description:
+                            Contents:
                         </p>
                         <textarea
                             name="product_desc"
@@ -741,6 +756,19 @@ function Edit_Product({ setPages, productName }) {
                             onChange={(e) => {
                                 setDescription(e.target.value);
                             }}
+                        />
+                    </div>
+
+                    <div className="flex mb-[50px] w-full h-auto">
+                        <p className="w-2/5 text-[20px] align-top text-right pr-[25px]">
+                            Packaging:
+                        </p>
+                        <input
+                            type="text"
+                            name="product_name"
+                            className="w-full p-1 border border-black rounded-sm mt-[5px]"
+                            defaultValue={packaging}
+                            onChange={(e) => { setPackaging(e.target.value) }}
                         />
                     </div>
                 </form>
