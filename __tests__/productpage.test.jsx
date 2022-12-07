@@ -18,16 +18,23 @@ describe("Product Page", () => {
 
   beforeEach(() => {
     labelSectionData = {
-      productName: "Notepads",
-      quantities: ["5", "10", "20", "40", "80", "150"],
-      sizes: ["2.4x1.25", "2.4x2", "3.5x2"],
-      prices: [40, 60, 80],
+      category: "Halloween",
+      description: "Spooky Season",
+      name: "Christmas Cards",
+      image_urls: ["someurl"],
+      paper_colors: ['White', "Green"],
+      paper_types: ['Matte', 'Glossy'],
+      product_id : 'DAijsStEZYfJK6NxsA69',
+      product_sizes: ["2.4x1.25", "2.4x2", "3.5x2"],
+      variations: [{price: '1500', color: 'White', paper_type: 'Matte', quantity: '10', size:'3.5x2'},
+                   {price: '150', color: 'Green', paper_type: 'Glossy', quantity: '5', size:'2.4x2'}]
     };
   });
 
   it("Displayed rice changes according to quantity, size and price combination", () => {
-    render(<LabelSection {...labelSectionData} />);
+    render(<LabelSection product={labelSectionData} />);
 
+    /*
     const name = screen.getByText("Notepads");
     const dropDown = screen.getAllByAltText("down");
 
@@ -91,5 +98,6 @@ describe("Product Page", () => {
     );
 
     expect(correctPrice3).toBeVisible();
+    */
   });
 });
