@@ -48,10 +48,18 @@ export default function ProductList({ products, categories }) {
   }, [router.query]);
 
   useEffect(() => {
+    if (router.query.category) {
+      return;
+    }
+
     handleSearch(search);
   }, [search]);
 
   useEffect(() => {
+    if (router.query.search) {
+      return;
+    }
+
     handleFilter(filter);
   }, [filter]);
 
