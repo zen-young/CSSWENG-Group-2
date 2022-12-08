@@ -1,25 +1,29 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import { useAuth } from "../../context/AuthContext";
 
-import Admin_Settings from "./admin_settings";
 import Add_Product from "./add_products";
 import Edit_Product from "./edit_products";
-import Company_Info from "./company_info";
-import Contact_Info from "./contact_info";
-import ManageProducts from "./ManageProducts/ManageProducts";
+import Company_Info from "./manage_website/company_info";
+import Contact_Info from "./manage_website/contact_info";
+import Order_Page from "./manage_website/order_page";
+import ManageProducts from "./ManageProducts";
+import Edit_Email from "./edit_profile/edit_email";
+import Edit_Password from "./edit_profile/edit_password";
+import Home_Page from "./manage_website/home_page";
 
 function Admin_Panel() {
   const { user, logout } = useAuth();
   const router = useRouter();
-  const [hidden, setHidden] = useState(true);
+  const [hiddenWeb, setHiddenWeb] = useState(true);
+  const [hiddenAdmin, setHiddenAdmin] = useState(true);
 
   //Default Page after logging in
-  const [currPage, setCurrPage] = useState("Manage Products");
+  const [currPage, setCurrPage] = useState("Admin Settings");
   const [currProduct, setCurrProduct] = useState("");
-  const [pageIndex, setIndex] = useState(5);
+  const [pageIndex, setIndex] = useState(0);
 
   //Insert needed Pages into array
   const pages = [];
@@ -66,7 +70,7 @@ function Admin_Panel() {
           <Image src={"/assets/web_icon.png"} width={33} height={33} />
           <p
             onClick={() => {
-              hidden ? setHidden(false) : setHidden(true);
+              setHiddenWeb(!hiddenWeb);
               setCurrPage("Manage Website");
             }}
             className={`${
@@ -77,42 +81,64 @@ function Admin_Panel() {
           </p>
         </div>
 
-        <div className={`${hidden ? "hidden" : "visible"} mb-[20px] pl-[75px]`}>
+        <div
+          className={`${hiddenWeb ? "hidden" : "visible"} mb-[20px] pl-[75px]`}
+        >
           <p
             className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
-            onClick={() => {}}
+            onClick={() => {
+              setCurrPage("Home Page");
+              setIndex(3);
+            }}
           >
             Home Page
           </p>
 
           <p
-            className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
-            onClick={() => {}}
+            className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${
+              currPage == "Order Page" ? "underline" : ""
+            }`}
+            onClick={() => {
+              setCurrPage("Order Page");
+              setIndex(4);
+            }}
           >
             Order Page
           </p>
 
           <p
-            className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
+            className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${
+              currPage == "Company Information" ? "underline" : ""
+            }`}
             onClick={() => {
-              setIndex(3);
+              setCurrPage("Company Information");
+              setIndex(5);
             }}
           >
             Company Information
           </p>
 
           <p
-            className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
+            className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${
+              currPage == "Contact Information" ? "underline" : ""
+            }`}
             onClick={() => {
-              setIndex(4);
+              setCurrPage("Contact Information");
+              setIndex(6);
             }}
           >
             Contact Information
           </p>
 
           <p
-            className="font-semibold text-[20px] hover:underline hover:cursor-pointer"
-            onClick={() => {}}
+            className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${
+              currPage == "View Website" ? "underline" : ""
+            }`}
+            onClick={() => {
+              // setCurrPage("View Website")
+              // setIndex(7)
+              Router.push("/");
+            }}
           >
             View Website
           </p>
@@ -130,6 +156,36 @@ function Admin_Panel() {
             }}
           >
             Admin Settings
+          </p>
+        </div>
+
+        <div
+          className={`${
+            hiddenAdmin ? "hidden" : "visible"
+          } mb-[20px] pl-[75px]`}
+        >
+          <p
+            className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${
+              currPage == "Edit Email" ? "underline" : ""
+            }`}
+            onClick={() => {
+              setCurrPage("Edit Email");
+              setIndex(8);
+            }}
+          >
+            Change Email
+          </p>
+
+          <p
+            className={`font-semibold text-[20px] hover:underline hover:cursor-pointer ${
+              currPage == "Edit Password" ? "underline" : ""
+            }`}
+            onClick={() => {
+              setCurrPage("Edit Password");
+              setIndex(9);
+            }}
+          >
+            Change Password
           </p>
         </div>
 

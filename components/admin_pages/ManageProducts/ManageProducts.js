@@ -83,6 +83,7 @@ const ManageProducts = ({ setPages, setProduct }) => {
       })
     );
   };
+
   return (
     <>
       <ManageProductHeader setPages={setPages} />
