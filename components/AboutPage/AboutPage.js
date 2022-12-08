@@ -41,14 +41,10 @@ const AboutPage = () => {
         </div>
       </div>
 
-      <span className="font-normal font-robota text-[24px] text-[#222222] text-justify mb-[111px]">
-        Upscale Printing Solutions takes pride in being able to tap a wide
-        spectrum of the market to service their offset and digital printing
-        needs. With state of the art equipment, facilities and expertise, it
-        provides a complete and cost effective printing solutions to its
-        clients. Upscale Printing Solutions guarantees the highest quality of
-        service from printing to finishing.
-      </span>
+      <div
+        className="font-normal font-robota text-[24px] text-[#222222] mb-[100px] text-justify"
+        id="company_description"
+      />
 
       <div className="flex items-center justify-center text-[20px] font-bold text-center">
         * more info the product owner wishes to add like videos, clients,
