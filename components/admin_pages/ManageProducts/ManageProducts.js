@@ -10,6 +10,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { db } from "../../../firebaseConfig";
 import AddCategoryModal from "../../Modal/AddCategoryModal";
+import DeleteModal from "../../Modal/DeleteModal";
 import ManageProductCard from "./ManageProductCard/ManageProductCard";
 import ManageProductHeader from "./ManageProductHeader";
 import ManageCategoryTabs from "./ManageCategoryTabs";
@@ -20,12 +21,14 @@ const ManageProducts = ({ setPages, setProduct }) => {
   const [itemData, setItemData] = useState([]);
   const [selected, setSelected] = useState("viewAll");
   const [openAddModal, setOpenAddModal] = useState(false);
+  const [openDeleteProductModal, setOpenDeleteProductModal] = useState(false);
 
   const handleSelectedDelete = () => {
     itemData.map((item) => {
       if (item.checked) {
         deleteDoc(doc(db, "products", item.id.replace(/^\s+/g, "")))
           .then(() => {
+            setOpenDeleteProductModal(false);
             console.log("deleted");
           })
           .catch((err) => console.log(err));
@@ -118,7 +121,7 @@ const ManageProducts = ({ setPages, setProduct }) => {
 
           <button
             className="flex items-center bg-[#fc2829] border border-black text-white font-bold text-[14px] leading-[32px] py-[3px] px-[14px]"
-            onClick={handleSelectedDelete}
+            onClick={() => setOpenDeleteProductModal(true)}
           >
             <Image
               src="/assets/delete.png"
@@ -182,7 +185,14 @@ const ManageProducts = ({ setPages, setProduct }) => {
               ) : null
             )}
       </div>
-
+      {openDeleteProductModal && (
+        <DeleteModal
+          name={itemData.name}
+          closeModal={() => setOpenDeleteProductModal(false)}
+          description="Selected products will be deleted, it will be permanently removed and can no longer be recovered."
+          handleClick={handleSelectedDelete}
+        />
+      )}
       {openAddModal && (
         <AddCategoryModal closeModal={() => setOpenAddModal(false)} />
       )}
