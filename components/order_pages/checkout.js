@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Center, Box, Divider } from "@mantine/core";
 import OrderDetails from "../order_pages/order_details";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 export default function Checkout() {
   const cart = useSelector((state) => state.cart);
   const [isSelected, setIsSelected] = useState("Self Pickup");
+  const router = useRouter();
+
+  if (cart.length === 0) {
+    router.replace("/cart");
+  }
 
   const handleSubmit = () => {
     localStorage.setItem("cart_old", JSON.stringify(cart));
