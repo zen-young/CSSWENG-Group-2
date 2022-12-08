@@ -9,7 +9,7 @@ import Edit_Product from "./edit_products";
 import Company_Info from "./manage_website/company_info";
 import Contact_Info from "./manage_website/contact_info";
 import Order_Page from "./manage_website/order_page";
-import ManageProducts from "./ManageProducts";
+import ManageProducts from "./ManageProducts/ManageProducts";
 import Edit_Email from "./edit_profile/edit_email";
 import Edit_Password from "./edit_profile/edit_password";
 import Home_Page from "./manage_website/home_page";
