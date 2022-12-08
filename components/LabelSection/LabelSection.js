@@ -93,7 +93,7 @@ const LabelSection = ({ product, addToCart }) => {
               value={size}
               placeholder="Select Size"
               data={product.product_sizes}
-              onChange={(val) => setSize(val)}
+              onChange={(val) => setSize(val.substring(0, 32))}
             />
 
             <div className="text-[20px] font-bold mt-4">Color</div>
@@ -102,7 +102,7 @@ const LabelSection = ({ product, addToCart }) => {
               value={color}
               placeholder="Select Color"
               data={product.paper_colors}
-              onChange={(val) => setColor(val)}
+              onChange={(val) => setColor(val.substring(0, 32))}
             />
 
             <div className="text-[20px] font-bold mt-4">Paper</div>
@@ -111,14 +111,21 @@ const LabelSection = ({ product, addToCart }) => {
               value={paper}
               placeholder="Select Paper"
               data={product.paper_types}
-              onChange={(val) => setPaper(val)}
+              onChange={(val) => setPaper(val.substring(0, 32))}
             />
 
             <div className="text-[20px] font-bold mt-4">Quantity</div>
             <Input
+              value={quantity}
               className="mt-2"
               placeholder="Enter Quantity"
-              onChange={(e) => setQuantity(e.target.value)}
+              onChange={(e) => {
+                const re = /^[0-9\b]+$/;
+
+                if (e.target.value === "" || re.test(e.target.value)) {
+                  setQuantity(e.target.value.substring(0, 4));
+                }
+              }}
             />
           </>
         ) : null}
