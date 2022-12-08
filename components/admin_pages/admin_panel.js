@@ -21,13 +21,18 @@ function Admin_Panel() {
   const [hiddenAdmin, setHiddenAdmin] = useState(true);
 
   //Default Page after logging in
-  const [currPage, setCurrPage] = useState("Admin Settings");
+  const [currPage, setCurrPage] = useState("Manage Products");
   const [currProduct, setCurrProduct] = useState("");
   const [pageIndex, setIndex] = useState(0);
 
   //Insert needed Pages into array
   const pages = [];
-  pages.push({ pageName: "Admin Settings", html: <Admin_Settings /> });
+
+  // MANAGE PRODUCTS
+  pages.push({
+    pageName: "Manage Products",
+    html: <ManageProducts setPages={setIndex} setProduct={setCurrProduct} />,
+  });
   pages.push({
     pagename: "Add Product",
     html: <Add_Product setPages={setIndex} />,
@@ -36,12 +41,17 @@ function Admin_Panel() {
     pageName: "Edit Product",
     html: <Edit_Product setPages={setIndex} productName={currProduct} />,
   });
-  pages.push({ pageName: "Edit Product", html: <Company_Info /> });
-  pages.push({ pageName: "Edit Product", html: <Contact_Info /> });
-  pages.push({
-    pageName: "Manage Products",
-    html: <ManageProducts setPages={setIndex} setProduct={setCurrProduct} />,
-  });
+
+  // MANAGE WEBSITE
+  pages.push({ pageName: "Home Page", html: <Home_Page /> });
+  pages.push({ pageName: "Order Page", html: <Order_Page /> });
+  pages.push({ pageName: "Company Information", html: <Company_Info /> });
+  pages.push({ pageName: "Contact Information", html: <Contact_Info /> });
+  pages.push({ pageName: "View Website", html: <></> });
+
+  // ADMIN SETTINGS
+  pages.push({ pageName: "Edit Email", html: <Edit_Email /> });
+  pages.push({ pageName: "Edit Password", html: <Edit_Password /> });
 
   return (
     <div className="flex px-[150px] w-full h-full min-h-screen shadow-lg bg-gray-200">
@@ -56,7 +66,7 @@ function Admin_Panel() {
           <p
             onClick={() => {
               setCurrPage("Manage Products");
-              setIndex(5);
+              setIndex(0);
             }}
             className={`${
               currPage == "Manage Products" ? "underline" : ""
@@ -151,7 +161,7 @@ function Admin_Panel() {
               currPage == "Admin Settings" ? "underline" : ""
             } hover:cursor-pointer font-semibold text-[24px] ml-[10px]`}
             onClick={() => {
-              setIndex(0);
+              setHiddenAdmin(!hiddenAdmin);
               setCurrPage("Admin Settings");
             }}
           >
@@ -204,12 +214,6 @@ function Admin_Panel() {
 
       {/* Pages Container */}
       <div className="w-2/3 h-full min-h-screen bg-gray-100">
-        {/* 
-                    CHANGE INDEX TO VIEW PAGE FROM PAGES ARRAY
-                    index 0 = admin settings
-                    index 1 = add products page
-                    index 2 = edit/delete products page
-                */}
         {pages[pageIndex].html}
       </div>
     </div>
