@@ -856,8 +856,8 @@ function Edit_Product({ setPages, productName }) {
             className="font-bold text-[14px] border px-[20px] py-1 bg-green-500"
             disabled={btnDisabled}
             onClick={() => {
+              setDisabled(true);
               addToDatabase().then(() => {
-                setDisabled(true);
                 setPages(0);
               });
             }}

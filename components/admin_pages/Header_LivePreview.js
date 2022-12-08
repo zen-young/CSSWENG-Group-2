@@ -8,7 +8,7 @@ function Header_Live_Preview(props) {
             <p className="text-[26px] text-white ml-[25px] font-semibold">
                 {props.title}
             </p>
-            <button 
+            {/* <button 
                 className="ml-auto mr-10 py-2 px-5 bg-cyan-400 hover:brightness-90 rounded-sm font-bold text-[14px]"
                 onClick={() => {
                     if(props.link){
@@ -17,7 +17,7 @@ function Header_Live_Preview(props) {
                 }}
             >
                 Live Preview
-            </button>
+            </button> */}
         </div>
     );
 }

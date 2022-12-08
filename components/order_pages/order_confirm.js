@@ -5,12 +5,35 @@ import H_Divider from "../homepage/H_Divider";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../../redux/cart.slice";
 
+import { db } from "../../firebaseConfig";
+import { getDoc, doc } from "firebase/firestore";
+import { useState, useEffect } from "react";
+
 export default function OrderConfirm({ query }) {
   const cart = JSON.parse(localStorage.getItem("cart_old"));
   const hasAddress = query.delivery !== "Self Pickup";
   const dispatch = useDispatch();
 
+  const [add_info, setAddInfo] = useState("")
+  const [order_confirm, setConfirm] = useState("")
+
   dispatch(clearCart());
+
+  function getData(){
+    getDoc(doc(db, "website_information", "order_page")).then((res) => {
+      var data = res.data()
+      setAddInfo(data.additional_information)
+      setConfirm(data.order_confirmation)
+    })
+  }
+
+  useEffect(() => {
+    getData()
+    if(add_info){
+      document.getElementById("additional_info").innerHTML = add_info
+    }
+  }, [add_info])
+
 
   return (
     <>
@@ -19,8 +42,9 @@ export default function OrderConfirm({ query }) {
           <Center inline>
             <Box component="span" mx={15}>
               <span className="font-bold w-fit text-3xl">
-                Please screenshot this page and e-mail it to us at
-                upscale.printing@gmail.com
+                {/* Please screenshot this page and e-mail it to us at
+                upscale.printing@gmail.com */}
+                {order_confirm}
               </span>
             </Box>
           </Center>
@@ -137,25 +161,7 @@ export default function OrderConfirm({ query }) {
       <H_Divider />
 
       <div className="w-full">
-        <div className="px-32 w-full text-lg">
-          <p>
-            Alongside this form, <b>kindly attach the images and/or text</b> to
-            be printed on the product. If there are multiple products, indicate
-            which image/text will be printed in which product.
-          </p>
-
-          <p className="mt-4">Images should be the following:</p>
-          <ul className="ml-12 list-disc">
-            <li>.png or .jpg format</li>
-            <li>at least 300 dpi</li>
-            <li>.125 bleed</li>
-          </ul>
-
-          <p className="mt-4">
-            Once this form is sent, we will reply back to your email for
-            confirmation and any further details.
-          </p>
-        </div>
+        <div className="px-32 w-full text-lg" id="additional_info" />
         <div className="text-current px-12 mt-[32px] text-[24px] w-full font-bold uppercase rounded-md text-center">
           Thank You!
         </div>

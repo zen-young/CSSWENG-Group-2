@@ -10,3 +10,12 @@
     text-align: right;
 }
 
+#additional_info ul{
+    list-style: disc;
+    padding-left: 50px;
+}
+
+#additional_info ol {
+    list-style: decimal;
+    padding-left: 50px;
+}

@@ -704,11 +704,11 @@ function Add_Product({setPages}) {
                         className="font-bold text-[14px] border px-[20px] py-1 bg-green-500"
                         disabled={btnDisabled}
                         onClick={() => {
+                            setDisabled(true);
                             updateVariationsValue()
                             addToDatabase().then(() => {
                                 //What to do after adding to database
                                 // window.location.reload(false);
-                                setDisabled(true)
                                 setPages(0)
                             });
                         }}
