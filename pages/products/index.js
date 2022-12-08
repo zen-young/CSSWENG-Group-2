@@ -4,6 +4,7 @@ import ProductListHeader from "../../components/ProductList/ProductListHeader";
 import { db } from "../../firebaseConfig";
 import { collection, getDocs, query } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   const productList = [];
@@ -27,39 +28,34 @@ export async function getServerSideProps(context) {
     }
   });
 
-  const category = context.query.category || "All";
-  const search = context.query.search || "";
-
   return {
     props: {
       products: productList,
       categories: categoryList,
-      category: category,
-      search: search,
     },
   };
 }
 
-export default function ProductList({
-  products,
-  categories,
-  category,
-  search,
-}) {
+export default function ProductList({ products, categories }) {
   const [productList, setProductList] = useState(products);
-  const [filter, setFilter] = useState(category);
+  const [filter, setFilter] = useState("All");
+  const [search, setSearch] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
-    handleFilter(category);
-  }, []);
+    setFilter(router.query.category || "All");
+    setSearch(router.query.search || "");
+  }, [router.query]);
 
   useEffect(() => {
     handleSearch(search);
   }, [search]);
 
-  const handleFilter = (value) => {
-    setFilter(value);
+  useEffect(() => {
+    handleFilter(filter);
+  }, [filter]);
 
+  const handleFilter = (value) => {
     if (value === "All") {
       setProductList(products);
       return;
@@ -73,7 +69,7 @@ export default function ProductList({
 
   const handleSearch = (value) => {
     const filteredList = products.filter((product) => {
-      return product.name.toLowerCase().match(value.toLowerCase());
+      return product.name.toLowerCase().includes(value.toLowerCase());
     });
     setProductList(filteredList);
   };
@@ -83,8 +79,8 @@ export default function ProductList({
       <ProductListHeader
         categories={categories}
         filter={filter}
-        handleFilter={handleFilter}
         search={search}
+        router={router}
       />
       <ProductCardsGrid productList={productList} />
       <ProductListFooter />
