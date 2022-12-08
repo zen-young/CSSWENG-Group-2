@@ -10,6 +10,7 @@ function Order_Page() {
     const [order, setOrder] = useState("")
     const [add, setAdd] = useState("")
     const [editorVal, setEditorVal] = useState()
+    const [btnDisabled, setDisabled] = useState(false)
 
     function saveChanges(){
         var docRef = doc(db, "website_information", "order_page")
@@ -70,7 +71,8 @@ function Order_Page() {
                 <div className="flex justify-end mt-32">
                     <button 
                         className="text-[20px] font-bold bg-green-500 py-2 px-5 rounded-md place-self-end self-end"
-                        onClick={() => {saveChanges()}}
+                        disabled={btnDisabled}
+                        onClick={() => {setDisabled(true); saveChanges()}}
                     >
                         Save Changes
                     </button>

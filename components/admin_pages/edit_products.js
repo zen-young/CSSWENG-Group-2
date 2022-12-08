@@ -53,6 +53,7 @@ function Edit_Product({ setPages, productName }) {
   const [rowInputs, setRowInputs] = useState([]);
 
   const [warningHidden, setWarningHidden] = useState(true);
+  const [btnDisabled, setDisabled] = useState(false);
 
   //Adds a doc to the database
   async function addToDatabase() {
@@ -609,7 +610,7 @@ function Edit_Product({ setPages, productName }) {
                   className="w-1/4 bg-red-500 rounded-md hover:brightness-90 text-white"
                   onClick={() => {
                     deleteDocument().then(() => {
-                      setPages(5);
+                      setPages(0);
                     });
                   }}
                 >
@@ -846,16 +847,18 @@ function Edit_Product({ setPages, productName }) {
           <button
             className="font-bold text-[14px] border px-[20px] py-1 bg-gray-300"
             onClick={() => {
-              setPages(5);
+              setPages(0);
             }}
           >
             Discard Changes
           </button>
           <button
             className="font-bold text-[14px] border px-[20px] py-1 bg-green-500"
+            disabled={btnDisabled}
             onClick={() => {
               addToDatabase().then(() => {
-                setPages(5);
+                setDisabled(true);
+                setPages(0);
               });
             }}
           >

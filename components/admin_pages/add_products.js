@@ -31,6 +31,8 @@ function Add_Product({setPages}) {
     const [includeRow, setIncludedRows] = useState([true, true, true])
     const [rowInputs, setRowInputs] = useState([])
 
+    const [btnDisabled, setDisabled] = useState(false)
+
     //Adds a doc to the database
     async function addToDatabase(){
         const promises = [];
@@ -693,19 +695,21 @@ function Add_Product({setPages}) {
                         className="font-bold text-[14px] border px-[20px] py-1 bg-gray-300"
                         onClick={() => {
                             // window.location.reload(false);
-                            setPages(5)
+                            setPages(0)
                         }}
                     >
                         Discard Changes
                     </button>
                     <button
                         className="font-bold text-[14px] border px-[20px] py-1 bg-green-500"
+                        disabled={btnDisabled}
                         onClick={() => {
                             updateVariationsValue()
                             addToDatabase().then(() => {
                                 //What to do after adding to database
                                 // window.location.reload(false);
-                                setPages(5)
+                                setDisabled(true)
+                                setPages(0)
                             });
                         }}
                     >

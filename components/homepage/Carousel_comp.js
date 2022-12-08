@@ -1,4 +1,4 @@
-import { React, useRef } from "react";
+import { React, useRef, useState } from "react";
 
 import { Carousel } from "@mantine/carousel";
 import { createStyles } from "@mantine/core";
@@ -7,6 +7,8 @@ import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons";
 import Link from "next/link";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebaseConfig";
 
 const useStyles = createStyles((_theme, _params, getRef) => ({
   controls: {
@@ -39,26 +41,35 @@ function Carousel_comp() {
   };
   const autoplay = useRef(Autoplay(options));
 
-  const images = [
-    "/assets/promo_1.png",
-    "/assets/promo_2.png",
-    "/assets/promo_3.png",
-  ];
+  const [images, setImages] = useState("")
 
-  let slideList = images.map((item, index) => {
-    let x = "Product " + index;
-    return (
-      <Carousel.Slide key={index}>
-        <Image alt={x} src={item} layout="fill" objectFit="cover" />
-      </Carousel.Slide>
-    );
-  });
+  // const images = [
+  //   // "/assets/promo_1.png",
+  //   // "/assets/promo_2.png",
+  //   // "/assets/promo_3.png",
+  // ];
+
+  // let slideList = images.map((item, index) => {
+  //   let x = "Product " + index;
+  //   return (
+  //     <Carousel.Slide key={index}>
+  //       <Image alt={x} src={item} layout="fill" objectFit="cover" />
+  //     </Carousel.Slide>
+  //   );
+  // });
 
   const { classes } = useStyles();
 
+  useState(() => {
+    getDoc(doc(db, "website_information", "home_page")).then((res) => {
+      var data = res.data()
+      setImages(data.promotional_imgs)
+    })
+  }, [])
+
   return (
     <>
-      <Carousel
+      {images != "" && < Carousel
         slideSize="100%"
         height={800}
         slideGap="sm"
@@ -73,8 +84,14 @@ function Carousel_comp() {
         onMouseEnter={autoplay.current.stop}
         onMouseLeave={autoplay.current.reset}
       >
-        {slideList}
-      </Carousel>
+        {images.map((img, index) => {
+          return (
+            <Carousel.Slide key={index}>
+              <Image src={img} layout="fill" objectFit="cover" />
+            </Carousel.Slide>
+          );
+        })}
+      </Carousel>}
     </>
   );
 }

@@ -22,6 +22,8 @@ function Contact_Info() {
     const [insta_link, setInsta] = useState("");
     const [enableInsta, setEnableInsta] = useState("");
 
+    const [btnDisabled, setDisabled] = useState(false)
+
     function getData(){
         var docRef = doc(db, "website_information", "contact_information")
         getDoc(docRef).then((res) => {
@@ -195,7 +197,9 @@ function Contact_Info() {
                 <div className="flex justify-end">
                     <button
                         className="text-[20px] font-bold bg-green-500 py-2 px-5 rounded-md place-self-end self-end"
+                        disabled={btnDisabled}
                         onClick={() => {
+                            setDisabled(true)
                             saveChanges();
                         }}
                     >

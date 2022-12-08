@@ -17,6 +17,8 @@ function Company_Info() {
     const [img_file, setImgFile] = useState("")
     const [message, setMessage] = useState("")
 
+    const [btnDisabled, setDisabled] = useState(false)
+
     function getData(){
 
         var ref = doc(db, "website_information", "company_information")
@@ -153,7 +155,9 @@ function Company_Info() {
                 <div className="flex justify-end">
                     <button 
                         className="text-[20px] font-bold bg-green-500 py-2 px-5 rounded-md place-self-end self-end"
+                        disabled={btnDisabled}
                         onClick={() => {
+                            setDisabled(true)
                             saveChanges()
                         }}
                     >

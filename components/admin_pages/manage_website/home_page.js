@@ -1,7 +1,9 @@
 
 
 import { getDoc, collection, query, where, doc, getDocs, updateDoc } from "firebase/firestore"; 
-import { db } from "../../../firebaseConfig";
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
+import { uuidv4 } from "@firebase/util";
+import { db, storage } from "../../../firebaseConfig";
 import { useEffect, useState } from "react";
 import Header_Live_Preview from "../Header_LivePreview";
 import { IconCircleX } from "@tabler/icons";
@@ -13,19 +15,19 @@ function Home_Page(){
 
     //List of featured products
     const [featProducts, setFeatProducts] = useState([])
-    const [prodNames, setProdNames] = useState([])
 
     const [featURLS, setFeatURLS] = useState([]);
     const [featURLSCopy, setfeatURLCopy] = useState([]);
     const [newUrls, setNewUrls] = useState([]);
     const [message, setMessage] = useState("")
 
+    const [disabled, setDisabled] = useState(false)
+
     function getData(){
         var ref = doc(db, "website_information", "home_page")
         var x = getDoc(ref).then((res) => {
             if(res.exists()){
                 var data = res.data()
-                setProdNames(data.featured_products)
                 setFeatURLS(data.promotional_imgs)
                 setfeatURLCopy(data.promotional_imgs)
             }
@@ -112,7 +114,54 @@ function Home_Page(){
     }
 
     function saveChanges(){
+        const promises = [];
 
+        //Pushes images to storage with unique filename
+        images && images.map((image) => {
+            const uid = uuidv4();
+            const filename = "images/" + image.name + "_" + uid;
+            const storageRef = ref(storage, filename);
+
+            //Uploads Image with unique name
+            promises.push(
+            uploadBytesResumable(storageRef, image).then((uploadResult) => {
+                return getDownloadURL(uploadResult.ref);
+            }).catch((err) => {
+                alert("Error occurred")
+                window.location.reload(false)
+            })
+            );
+        });
+        
+        Promise.all(promises).then((urls) => {
+            const updatedUrls = featURLS.concat(urls);
+            var removedImages = featURLSCopy.filter((x) => !featURLS.includes(x));
+
+            Promise.all(removedImages.map(async (removed, index) => {
+                var imgRef = ref(storage, removed)
+
+                return deleteObject(imgRef).catch((err) => {
+                    alert("Error while deleting image")
+                    window.location.reload(false)
+                })
+
+            })).then(
+
+                updateDoc(doc(db, "website_information", "home_page"), {
+                    promotional_imgs: updatedUrls,
+                }).then(() => {
+                    alert("Home Page Updated !")
+                    window.location.reload(false)
+                }).catch((err) => {
+                    alert("Error occurred")
+                    window.location.reload(false)
+
+            }).catch((err) => {
+                alert("Error while deleting image")
+                window.location.reload(false)
+            })
+            )
+        });
     }
 
     useEffect(() => {
@@ -128,7 +177,7 @@ function Home_Page(){
             <div className="mx-auto w-11/12 bg-black h-[1px] mb-10" />
             <div
                 id="images_collection"
-                className="flex w-full gap-5 overflow-auto ml-5 mb-10"
+                className="flex w-full gap-5 ml-5 mb-10 pr-16"
             >
                 <p>{message}</p>
                 <div className="flex flex-nowrap gap-2 overflow-auto">
@@ -151,7 +200,7 @@ function Home_Page(){
                     })}
                 </div>
 
-                <div className="relative h-[100px] w-[150px] justify-center bg-gray-100 rounded-md border-2 border-black border-dotted cursor-pointer hover:brightness-90">
+                <div className="relative h-[100px] w-1/5 justify-center bg-gray-100 rounded-md border-2 border-black border-dotted cursor-pointer hover:brightness-90">
                     <input
                         id="image_files"
                         type="file"
@@ -173,7 +222,8 @@ function Home_Page(){
             <div className="flex justify-end mt-10">
                 <button 
                     className="text-[20px] font-bold bg-green-500 py-2 px-5 rounded-md place-self-end self-end mr-10 hover:brightness-90"
-                    onClick={() => {saveChanges()}}
+                    disabled={disabled}
+                    onClick={() => {setDisabled(true); saveChanges()}}
                 >
                     Save Changes
                 </button>
