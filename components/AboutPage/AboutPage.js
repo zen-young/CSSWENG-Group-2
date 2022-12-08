@@ -46,10 +46,13 @@ const AboutPage = () => {
         id="company_description"
       />
 
+      {/* 
       <div className="flex items-center justify-center text-[20px] font-bold text-center">
         * more info the product owner wishes to add like videos, clients,
         reviews, etc. *
       </div>
+  */}
+     
     </div>
   );
 };
