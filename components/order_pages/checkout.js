@@ -71,6 +71,7 @@ export default function Checkout() {
                   required
                   minLength={11}
                   maxLength={11}
+                  pattern="[0-9]{11}"
                 />
               </div>
             </div>
