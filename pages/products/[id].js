@@ -5,6 +5,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cart.slice";
+import { Store } from "react-notifications-component";
 
 export async function getServerSideProps(context) {
   const id = context.params.id;
@@ -27,6 +28,18 @@ export default function Product({ product }) {
 
   const handleAddToCart = (object) => {
     dispatch(addToCart(object));
+    Store.addNotification({
+      title: "Item added to cart!",
+      type: "success",
+      insert: "top",
+      container: "bottom-right",
+      animationIn: ["animate__animated", "animate__fadeIn"],
+      animationOut: ["animate__animated", "animate__fadeOut"],
+      dismiss: {
+        duration: 4000,
+        onScreen: true,
+      },
+    });
   };
 
   return (
