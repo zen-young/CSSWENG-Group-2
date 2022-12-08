@@ -26,19 +26,23 @@ export async function getServerSideProps(context) {
 export default function Product({ product }) {
   const dispatch = useDispatch();
 
-  const handleAddToCart = (object) => {
-    dispatch(addToCart(object));
+  const handleNotify = (title, type, duration) => {
     Store.addNotification({
-      title: "Item added to cart!",
-      type: "success",
+      title: title,
+      type: type,
       insert: "top",
       container: "bottom-right",
       animationIn: ["animate__animated", "animate__fadeIn"],
       animationOut: ["animate__animated", "animate__fadeOut"],
       dismiss: {
-        duration: 2000,
+        duration: duration,
       },
     });
+  };
+
+  const handleAddToCart = (object) => {
+    dispatch(addToCart(object));
+    handleNotify("Item added to cart!", "success", 2000);
   };
 
   return (
@@ -56,7 +60,11 @@ export default function Product({ product }) {
         />
       </div>
       <div className="basis-1/2 p-8">
-        <LabelSection product={product} addToCart={handleAddToCart} />
+        <LabelSection
+          product={product}
+          addToCart={handleAddToCart}
+          handleNotify={handleNotify}
+        />
       </div>
     </div>
   );

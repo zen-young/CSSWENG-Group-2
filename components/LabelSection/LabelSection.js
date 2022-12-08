@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Autocomplete, Input, Select } from "@mantine/core";
 
-const LabelSection = ({ product, addToCart }) => {
+const LabelSection = ({ product, addToCart, handleNotify }) => {
   const [variation, setVariation] = useState(-2); // -2 = no selection made, -1 = custom variation
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
@@ -52,10 +52,18 @@ const LabelSection = ({ product, addToCart }) => {
 
     if (variation === -1) {
       console.log(size, color, paper, quantity);
-      if (!size) return;
-      if (!quantity) return;
-      if (!(product.paper_colors && color)) return;
-      if (!(product.paper_types && paper)) return;
+      if (!size) {
+        handleNotify("Product order must have valid size!", "warning", 5000);
+        return;
+      }
+      if (!quantity || quantity === "0") {
+        handleNotify(
+          "Product order must have valid quantity!",
+          "warning",
+          5000
+        );
+        return;
+      }
 
       addToCart({
         product_id: product.product_id,
