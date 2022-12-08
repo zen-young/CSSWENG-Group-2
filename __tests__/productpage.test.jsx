@@ -13,22 +13,38 @@ window.ResizeObserver =
 
 global.CSSObject = jest.fn();
 
-describe("Product Page", () => {
-  let labelSectionData;
+describe("labelSection", () => {
+  let labelSectionData, labelSectionData2;
 
   beforeEach(() => {
     labelSectionData = {
       category: "Halloween",
       description: "Spooky Season",
-      name: "Christmas Cards",
+      name: "Halloween Poster",
       image_urls: ["someurl"],
-      paper_colors: ['White', "Green"],
+      paper_colors: ['Orange', "Yellow", "Black"],
       paper_types: ['Matte', 'Glossy'],
       product_id : 'DAijsStEZYfJK6NxsA69',
       product_sizes: ["2.4x1.25", "2.4x2", "3.5x2"],
-      variations: [{price: '1500', color: 'White', paper_type: 'Matte', quantity: '10', size:'3.5x2'},
-                   {price: '150', color: 'Green', paper_type: 'Glossy', quantity: '5', size:'2.4x2'}]
+      variations: [{price: '1500', color: 'Orange', paper_type: 'Matte', quantity: '10', size:'3.5x2'},
+                   {price: '150', color: 'Yellow', paper_type: 'Glossy', quantity: '5', size:'2.4x2'}]
     };
+
+    labelSectionData2 = {
+      category: "Christmas",
+      description: "Tis the season",
+      name: "Christmas Poster",
+      image_urls: ["someurl"],
+      paper_colors: ['White', "Green"],
+      paper_types: ['Matte', 'Glossy'],
+      product_id : 'DAijsStEZYfJK6N1500',
+      product_sizes: ["Small", "Medium", "Large"],
+      variations: [{price: '150', color: 'White', paper_type: 'Matte', quantity: '10', size:'Small'},
+                   {price: '150', color: 'Green', paper_type: 'Glossy', quantity: '5', size:'Medium'},
+                   {price: '150', color: 'White', paper_type: 'Glossy', quantity: '5', size:'Large'}]
+    };
+
+    
   });
 
   it("LabelSection renders with appropriate info according to passed data", () => {
@@ -107,5 +123,15 @@ describe("Product Page", () => {
 
     expect(correctPrice3).toBeVisible();
     */
+  });
+
+  it("LabelSection renders with appropriate info according to passed data (2)", () => {
+    render(<LabelSection product={labelSectionData2} />);
+
+    const prodName = screen.getByText(labelSectionData2.name)
+    
+    //const descContainer = screen.getByText(labelSectionData.description)
+
+    expect(prodName).toBeVisible()
   });
 });
