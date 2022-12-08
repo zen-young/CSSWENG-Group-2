@@ -35,8 +35,12 @@ describe("Product Page", () => {
     render(<LabelSection product={labelSectionData} />);
 
     const prodName = screen.getByText(labelSectionData.name)
+    const categName = screen.getByText(labelSectionData.category)
+    const descContainer = screen.getByText(labelSectionData.description)
 
     expect(prodName).toBeVisible()
+    expect(categName).toBeVisible()
+    expect(descContainer).toBeVisible()
 
     /*
     const name = screen.getByText("Notepads");
