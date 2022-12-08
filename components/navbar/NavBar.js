@@ -134,7 +134,7 @@ export default function NavBar() {
   const handleKeypress = (e) => {
     if (e.key === "Enter") {
       const searchResult = products.filter((product) => {
-        return product.name.toLowerCase().match(search.toLowerCase());
+        return product.name.toLowerCase().includes(search.toLowerCase());
       });
 
       if (searchResult.length < 1) {

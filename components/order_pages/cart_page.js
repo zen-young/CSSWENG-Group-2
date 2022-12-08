@@ -7,6 +7,7 @@ import OrderCards from "../order_pages/order_card";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCart } from "../../redux/cart.slice";
+import { Store } from "react-notifications-component";
 
 export default function Cart() {
   const cart = useSelector((state) => state.cart);
@@ -23,6 +24,17 @@ export default function Cart() {
     const index = e.currentTarget.id.split("-")[2];
     dispatch(removeFromCart(cart[index]));
     removeUnusedRefs();
+    Store.addNotification({
+      title: "Removed item from cart!",
+      type: "danger",
+      insert: "top",
+      container: "bottom-right",
+      animationIn: ["animate__animated", "animate__fadeIn"],
+      animationOut: ["animate__animated", "animate__fadeOut"],
+      dismiss: {
+        duration: 2000,
+      },
+    });
   };
 
   const handleDeleteSelected = () => {
@@ -35,6 +47,17 @@ export default function Cart() {
         }
       });
     removeUnusedRefs();
+    Store.addNotification({
+      title: "Removed selected items from cart!",
+      type: "danger",
+      insert: "top",
+      container: "bottom-right",
+      animationIn: ["animate__animated", "animate__fadeIn"],
+      animationOut: ["animate__animated", "animate__fadeOut"],
+      dismiss: {
+        duration: 2000,
+      },
+    });
   };
 
   const handleSelectAll = (e) => {

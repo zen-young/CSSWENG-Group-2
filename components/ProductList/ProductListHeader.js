@@ -5,8 +5,8 @@ import { Select } from "@mantine/core";
 export default function ProductListHeader({
   categories,
   filter,
-  handleFilter,
   search,
+  router,
 }) {
   return (
     <>
@@ -32,7 +32,7 @@ export default function ProductListHeader({
                 </h2>
                 <Select
                   value={filter}
-                  onChange={handleFilter}
+                  onChange={(val) => router.push(`/products?category=${val}`)}
                   data={categories}
                   rightSection={<i className="fa fa-caret-down" />}
                   styles={(theme) => ({

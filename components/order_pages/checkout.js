@@ -43,6 +43,7 @@ export default function Checkout() {
                   placeholder="Last Name"
                   className="p-2 border border-black rounded-sm mt-[5px] ml-4 w-2/5"
                   required
+                  maxLength={32}
                 />
                 <input
                   type="text"
@@ -50,6 +51,7 @@ export default function Checkout() {
                   placeholder="First Name"
                   className="p-2 border border-black rounded-sm mt-[5px] w-2/5"
                   required
+                  maxLength={32}
                 />
               </div>
             </div>
@@ -62,11 +64,13 @@ export default function Checkout() {
               <div className="w-4/5 flex">
                 <input
                   type="tel"
-                  inputmode="tel"
+                  inputMode="tel"
                   name="phone_no"
                   placeholder="XXXXXXXXXX"
                   className="p-2 border border-black rounded-sm mt-[5px] mx-4 w-2/5"
                   required
+                  minLength={11}
+                  maxLength={11}
                 />
               </div>
             </div>
@@ -78,8 +82,8 @@ export default function Checkout() {
               </p>
               <div className="w-4/5 flex">
                 <input
-                  type="text"
-                  inputmode="email"
+                  type="email"
+                  inputMode="email"
                   name="email"
                   placeholder="sample@email.com"
                   className="p-2 border border-black rounded-sm mt-[5px] ml-4 w-full"
@@ -125,6 +129,7 @@ export default function Checkout() {
                       placeholder="House No, Building, Street, Subdivision, Barangay"
                       className="p-2 border border-black rounded-sm mt-[5px] ml-4 w-full"
                       required
+                      maxLength={128}
                     />
                   </div>
                 </div>
@@ -141,6 +146,7 @@ export default function Checkout() {
                       placeholder="City/Municipality"
                       className="p-2 border border-black rounded-sm mt-[5px] ml-4 w-2/5"
                       required
+                      maxLength={128}
                     />
                     <input
                       type="text"
@@ -148,6 +154,7 @@ export default function Checkout() {
                       placeholder="Province"
                       className="p-2 border border-black rounded-sm mt-[5px] w-2/5"
                       required
+                      maxLength={128}
                     />
                   </div>
                 </div>
@@ -159,12 +166,15 @@ export default function Checkout() {
                   </p>
                   <div className="w-4/5 flex">
                     <input
-                      type="number"
-                      inputmode="numeric"
+                      type="text"
+                      inputMode="numeric"
                       name="zip_code"
                       placeholder="Zip Code"
                       className="p-2 border border-black rounded-sm mt-[5px] mx-4 w-2/5"
                       required
+                      minLength={4}
+                      maxLength={4}
+                      pattern="[0-9]{4}"
                     />
                   </div>
                 </div>
