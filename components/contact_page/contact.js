@@ -102,6 +102,7 @@ function Contact_Page() {
           </p>
         </div>
 
+        {/*  
         <form action="">
           <div className="flex-row px-[50px] py-[50px]">
             <label htmlFor="Name" className="block text-[24px] font-bold">
@@ -152,6 +153,7 @@ function Contact_Page() {
             </div>
           </div>
         </form>
+            */}
       </div>
 
       <H_Divider />
